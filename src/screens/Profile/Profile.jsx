@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
 import AppHeader from "../../components/AppHeader";
+import ConfettiCannon from "react-native-confetti-cannon";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -42,6 +43,9 @@ const Profile = () => {
   const [badgeModalVisible, setBadgeModalVisible] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState(null);
 
+  // State for handling the streak fireworks
+  const [fireworks, setFireworks] = useState(false);
+
   // State for delete account confirmation
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
@@ -52,6 +56,18 @@ const Profile = () => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+  // Trigger fireworks if streak is greater than 2
+  const handleStreakPress = () => {
+    if (userData.streak > 2) {
+      setFireworks(true);
+
+      // Stop fireworks after 2 seconds
+      setTimeout(() => {
+        setFireworks(false);
+      }, 5000);
+    }
   };
 
   const handleBadgePress = (badge) => {
@@ -76,9 +92,13 @@ const Profile = () => {
       <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
 
       {/* Streak Section */}
-      <View style={styles.streakContainer}>
+      <TouchableOpacity
+        style={styles.streakContainer}
+        onPress={handleStreakPress}
+        disabled={fireworks}
+      >
         <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
-      </View>
+      </TouchableOpacity>
 
       <ScrollView>
         {/* Profile Header */}
@@ -255,6 +275,17 @@ const Profile = () => {
           </View>
         </Modal>
       </ScrollView>
+      {fireworks && (
+        <View style={styles.confettiContainer}>
+          <ConfettiCannon
+            count={150}
+            origin={{ x: 0, y: 0 }}
+            explosionSpeed={350}
+            fadeOut={false}
+            autoStart={true}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -267,7 +298,6 @@ const styles = StyleSheet.create({
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 30,
     marginBottom: 20,
     justifyContent: "space-between",
   },
@@ -289,12 +319,14 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   streakContainer: {
-    position: "absolute",
-    right: 0,
-    top: "14%",
+    // position: "absolute",
+    // right: 0,
+    // top: "14%",
+    alignSelf: "flex-end",
     padding: 10,
     borderRadius: 10,
     backgroundColor: "#79d2eb",
+    overflow: "visible",
   },
   streakText: {
     color: "#fff",
@@ -498,6 +530,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 18,
+  },
+  confettiContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999, // Ensure it's on top
+    pointerEvents: "none", // Allow touches to pass through
   },
 });
 
