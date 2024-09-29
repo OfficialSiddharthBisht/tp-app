@@ -49,6 +49,10 @@ const Login = () => {
     }
     // API call and navigation goes here.
     alert("Login successful!");
+    setLoginData({
+      email: "",
+      password: "",
+    });
     navigation.navigate("Profile");
   };
 
