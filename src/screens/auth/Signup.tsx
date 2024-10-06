@@ -84,7 +84,7 @@ const SignUp = () => {
           email: "",
           password: "",
         });
-        navigation.navigate("Login"); // Navigate to login after successful signup
+        navigation.navigate("Login");
       } else {
         alert(data.message || "Sign up failed");
       }
