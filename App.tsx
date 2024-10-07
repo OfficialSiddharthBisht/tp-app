@@ -6,9 +6,7 @@ import ContextProvider from "./src/contexts/ContextProvider";
 
 import Home from "./src/screens/Home";
 import SignUp from "./src/screens/auth/Signup";
-import Profile from "./src/screens/Profile";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, View } from "react-native";
+import Profile from "./src/screens/Profile/Profile";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -22,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={SignUp} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Profile" component={Profile} />
         </Stack.Navigator>
       </ContextProvider>
     </NavigationContainer>

@@ -9,17 +9,25 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
+import GOOGLE_LOGO from "../../assets/google_logo.png"; // Add the correct path to your Google logo
+import APPLE_LOGO from "../../assets/apple_logo.png"; // Add the correct path to your Apple logo
+import FACEBOOK_LOGO from "../../assets/facebook_logo.png"; // Add the correct path to your Facebook logo
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
+// API URL for signup
+const API_URL =
+  "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signup";
+
 const SignUp = () => {
   const navigation = useNavigation();
-  const [loginData, setLoginData] = useState({
-    username: "",
+  const [signUpData, setSignUpData] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -33,14 +41,61 @@ const SignUp = () => {
     inputRef?.current?.focus();
   };
 
-  const handleSignUp = () => {
-    if (!loginData.name || !loginData.email || !loginData.password) {
-      alert("Please fill all fields");
+  // Email validation using regex
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSignUp = async () => {
+    const { name, email, password } = signUpData;
+
+    // Validate inputs
+    if (!name || !email || !password) {
+      alert("Please fill out all fields.");
       return;
     }
 
-    // API call and navigation will go here
-    alert("Sign up successful");
+    if (!isValidEmail(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    try {
+      // API request for signup
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Sign up successful!");
+        setSignUpData({
+          name: "",
+          email: "",
+          password: "",
+        });
+        navigation.navigate("Login");
+      } else {
+        alert(data.message || "Sign up failed");
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+      console.error(error);
+    }
+  };
+
+  const handleSocialLogin = (provider) => {
+    alert(`Sign Up with ${provider} is not yet implemented.`);
   };
 
   return (
@@ -55,7 +110,7 @@ const SignUp = () => {
               <Image source={LOGO} style={styles.logo} resizeMode="cover" />
             </View>
             <View style={styles.headerContainer}>
-              <Text style={styles.headerText}>Signup</Text>
+              <Text style={styles.headerText}>Create your account</Text>
             </View>
             <View style={styles.formContainer}>
               <View style={styles.inputGroup}>
@@ -64,8 +119,10 @@ const SignUp = () => {
                   ref={inputRef1}
                   style={styles.inputField}
                   placeholder="Username"
-                  value={loginData.name}
-                  onChangeText={(e) => setLoginData({ ...loginData, name: e })}
+                  value={signUpData.name}
+                  onChangeText={(e) =>
+                    setSignUpData({ ...signUpData, name: e })
+                  }
                   onSubmitEditing={() => handleNextInput(inputRef2)}
                   returnKeyType="next"
                 />
@@ -76,8 +133,10 @@ const SignUp = () => {
                   ref={inputRef2}
                   style={styles.inputField}
                   placeholder="Email"
-                  value={loginData.email}
-                  onChangeText={(e) => setLoginData({ ...loginData, email: e })}
+                  value={signUpData.email}
+                  onChangeText={(e) =>
+                    setSignUpData({ ...signUpData, email: e })
+                  }
                   onSubmitEditing={() => handleNextInput(inputRef3)}
                   returnKeyType="next"
                   keyboardType="email-address"
@@ -90,9 +149,9 @@ const SignUp = () => {
                     ref={inputRef3}
                     style={styles.inputField}
                     placeholder="Password"
-                    value={loginData.password}
+                    value={signUpData.password}
                     onChangeText={(e) =>
-                      setLoginData({ ...loginData, password: e })
+                      setSignUpData({ ...signUpData, password: e })
                     }
                     secureTextEntry={!passwordVisible}
                     keyboardType={passwordVisible ? "visible-password" : null}
@@ -116,12 +175,42 @@ const SignUp = () => {
                 <Text style={styles.linkText}>Sign in</Text>
               </TouchableOpacity>
             </View>
+
             <View style={styles.signUpButtonContainer}>
               <TouchableOpacity
                 style={styles.signUpButton}
                 onPress={handleSignUp}
               >
                 <Text style={styles.signUpButtonText}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Divider */}
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.orText}>Or</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {/* Social login buttons */}
+            <View style={styles.socialLoginContainer}>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin("Google")}
+                style={styles.socialLogoContainer}
+              >
+                <Image source={GOOGLE_LOGO} style={styles.socialLogo} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin("Apple")}
+                style={styles.socialLogoContainer}
+              >
+                <Image source={APPLE_LOGO} style={styles.socialLogo} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin("Facebook")}
+                style={styles.socialLogoContainer}
+              >
+                <Image source={FACEBOOK_LOGO} style={styles.socialLogo} />
               </TouchableOpacity>
             </View>
           </View>
@@ -184,14 +273,6 @@ const styles = StyleSheet.create({
     right: 10,
     top: 17,
   },
-  linkContainer: {
-    flexDirection: "row",
-    marginLeft: 4,
-    marginTop: 4,
-  },
-  linkText: {
-    color: "#c55f5a",
-  },
   signUpButtonContainer: {
     width: "100%",
     marginTop: 48,
@@ -208,6 +289,48 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 18,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#c5c5c5",
+  },
+  orText: {
+    marginHorizontal: 8,
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#c5c5c5",
+  },
+  socialLoginContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    gap: 20,
+  },
+  socialLogoContainer: {
+    width: 48,
+    height: 48,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+  },
+  socialLogo: {
+    width: "100%",
+    height: "100%",
+  },
+  linkContainer: {
+    flexDirection: "row",
+    marginLeft: 4,
+    marginTop: 4,
+  },
+  linkText: {
+    color: "#c7222a",
   },
 });
 

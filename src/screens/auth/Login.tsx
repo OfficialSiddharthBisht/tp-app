@@ -9,12 +9,20 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
+import GOOGLE_LOGO from "../../assets/google_logo.png"; // Add the correct path to your Google logo
+import APPLE_LOGO from "../../assets/apple_logo.png"; // Add the correct path to your Apple logo
+import FACEBOOK_LOGO from "../../assets/facebook_logo.png"; // Add the correct path to your Facebook logo
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+
+// API URL
+const API_URL =
+  "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signin";
 
 const Login = () => {
   const navigation = useNavigation();
@@ -37,7 +45,7 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!loginData.email || !loginData.password) {
       alert("Please fill out both fields.");
       return;
@@ -47,8 +55,39 @@ const Login = () => {
       alert("Please enter a valid email address.");
       return;
     }
-    // API call and navigation goes here.
-    alert("Login successful!");
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login successful!");
+        setLoginData({
+          email: "",
+          password: "",
+        });
+        navigation.replace("Home");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+      console.error(error);
+    }
+  };
+
+  const handleSocialLogin = (provider) => {
+    alert(`Login with ${provider} is not yet implemented.`);
   };
 
   return (
@@ -120,6 +159,39 @@ const Login = () => {
                 <Text style={styles.loginButtonText}>Login</Text>
               </TouchableOpacity>
             </View>
+
+            {/* Divider */}
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.orText}>Or</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {/* Social login buttons */}
+            <View style={styles.socialLoginContainer}>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin("Google")}
+                style={{ ...styles.socialLogoContainer, padding: 4 }}
+              >
+                <Image source={GOOGLE_LOGO} style={styles.socialLogo} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin("Apple")}
+                style={{ ...styles.socialLogoContainer, padding: 4 }}
+              >
+                <Image source={APPLE_LOGO} style={styles.socialLogo} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin("Facebook")}
+                style={{
+                  ...styles.socialLogoContainer,
+                  paddingVertical: 4,
+                  paddingRight: 6,
+                }}
+              >
+                <Image source={FACEBOOK_LOGO} style={styles.socialLogo} />
+              </TouchableOpacity>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -180,14 +252,6 @@ const styles = StyleSheet.create({
     right: 10,
     top: 17,
   },
-  linkContainer: {
-    flexDirection: "row",
-    marginLeft: 4,
-    marginTop: 4,
-  },
-  linkText: {
-    color: "#c55f5a",
-  },
   loginButtonContainer: {
     width: "100%",
     marginTop: 48,
@@ -204,6 +268,48 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 18,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#c5c5c5",
+  },
+  orText: {
+    marginHorizontal: 8,
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#c5c5c5",
+  },
+  socialLoginContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    gap: 20,
+  },
+  socialLogoContainer: {
+    width: 48,
+    height: 48,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+  },
+  socialLogo: {
+    width: "100%",
+    height: "100%",
+  },
+  linkContainer: {
+    flexDirection: "row",
+    marginLeft: 4,
+    marginTop: 4,
+  },
+  linkText: {
+    color: "#c7222a",
   },
 });
 
