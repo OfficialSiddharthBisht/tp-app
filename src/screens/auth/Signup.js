@@ -125,6 +125,7 @@ const SignUp = () => {
                   }
                   onSubmitEditing={() => handleNextInput(inputRef2)}
                   returnKeyType="next"
+                  autoCapitalize="none"
                 />
               </View>
               <View style={styles.inputGroup}>
@@ -140,6 +141,7 @@ const SignUp = () => {
                   onSubmitEditing={() => handleNextInput(inputRef3)}
                   returnKeyType="next"
                   keyboardType="email-address"
+                  autoCapitalize="none"
                 />
               </View>
               <View style={styles.inputGroup}>
