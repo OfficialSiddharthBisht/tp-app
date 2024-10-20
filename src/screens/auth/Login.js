@@ -59,6 +59,8 @@ const Login = () => {
     }
 
     try {
+
+      // Remove this block of code before devlopment. 
       if (
         loginData.email === "kbeducationhub@gmail.com" &&
         loginData.password === "123456Aa@"
