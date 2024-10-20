@@ -63,7 +63,12 @@ const Login = () => {
         loginData.email === "kbeducationhub@gmail.com" &&
         loginData.password === "123456Aa@"
       ) {
-        navigation.replace("Home");
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        );
         return;
       }
 
@@ -86,7 +91,12 @@ const Login = () => {
           email: "",
           password: "",
         });
-        navigation.replace("Home");
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        );
       } else {
         alert(data.message || "Login failed");
       }

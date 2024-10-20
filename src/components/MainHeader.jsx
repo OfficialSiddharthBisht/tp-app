@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   View,
@@ -23,9 +23,33 @@ const MainHeader = () => {
     setModalVisible(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setModalVisible(false);
-    navigation.replace("Login");
+
+    try {
+      const response = await fetch(
+        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signout",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        })
+      );
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   const handleOptionSelect = (route) => {
@@ -196,7 +220,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   closeText: {
-    color: "#007BFF", 
+    color: "#007BFF",
   },
 });
 
