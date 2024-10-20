@@ -132,6 +132,7 @@ const Login = () => {
                   onSubmitEditing={handleNextInput}
                   returnKeyType="next"
                   keyboardType="email-address"
+                  autoCapitalize="none"
                 />
               </View>
               <View style={styles.inputGroup}>
