@@ -47,10 +47,21 @@ const Keyboard: React.FC = () => {
           {Object.keys(row).map((key, keyIndex) => {
             const keyData = row[key];
 
+            // Apply special styles for the bottom row
+            const isBottomRow = rowIndex === virtualKeyboardWithSound.length - 1;
+            const bottomKeyStyle =
+              keyIndex === 0 || keyIndex === 1 || keyIndex === 2
+                ? styles.bottomKeySmall
+                : keyIndex === 3
+                ? styles.bottomKeyLarge
+                : keyIndex === 4
+                ? styles.bottomKeySmall
+                : styles.bottomKeyMedium;
+
             return (
               <TouchableOpacity
                 key={keyIndex}
-                style={styles.key}
+                style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
                 onLongPress={() => handleLongPress(key)}  // Trigger sound on long press
                 onPressOut={handlePressOut}               // Stop sound on release
               >
@@ -65,90 +76,122 @@ const Keyboard: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingHorizontal: 10, // Optional padding for spacing without limiting the width
-    },
-    headerContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingVertical: 1,
-      marginBottom: 1,
-    },
-    headerTitle: {
-      fontSize: 22,
-      fontWeight: "600",
-      marginLeft: 20,
-    },
-    videoContainer: {
-      position: "relative",
-    },
-    video: {
-      width: "100%",
-      height: 200,
-      borderRadius: 10,
-      marginBottom: 20,
-    },
-    videoButton: {
-      position: "absolute",
-      bottom: 20,
-      left: "45%",
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
-      padding: 10,
-      borderRadius: 50,
-    },
-    inputContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: "#f0f0f0",
-      borderRadius: 10,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      marginBottom: 20, // Add some spacing to avoid overlap with the keyboard
-    },
-    voiceButton: {
-      backgroundColor: "#fff",
-      padding: 10,
-      borderRadius: 5,
-      marginRight: 10,
-    },
-    input: {
-      flex: 1,
-      height: 40,
-      fontSize: 16,
-      padding: 10,
-      backgroundColor: "#fff",
-      borderRadius: 5,
-      borderColor: "#ddd",
-      borderWidth: 1,
-    },
-    keyboardContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap', // Allows keys to wrap onto new rows
-      justifyContent: 'center',
-      padding: 10,
-      backgroundColor: '#bdd8dd',
-    },
-    row: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginVertical: 5,
-    },
-    key: {
-      width: keyWidth, // Dynamically adjust key width to fit 7 keys per row
-      height: 50,
-      margin: 1, // Adjust margin for consistent spacing
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#f9e3d2',
-      borderRadius: 5,
-      borderColor: '#ccc',
-      borderWidth: 1,
-    },
-    keyText: {
-      fontSize: 20,
-      color: '#333',
-    },
-  });
+  container: {
+    flex: 1,
+    paddingHorizontal: 10, // Optional padding for spacing without limiting the width
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 1,
+    marginBottom: 1,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "600",
+    marginLeft: 20,
+  },
+  videoContainer: {
+    position: "relative",
+  },
+  video: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  videoButton: {
+    position: "absolute",
+    bottom: 20,
+    left: "45%",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 10,
+    borderRadius: 50,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    marginBottom: 20, // Add some spacing to avoid overlap with the keyboard
+  },
+  voiceButton: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    borderColor: "#ddd",
+    borderWidth: 1,
+  },
+  keyboardContainer: {
+    flexDirection: 'column',
+    padding: 10,
+    backgroundColor: '#bdd8dd',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 1,
+  },
+  key: {
+    width: '10%', // Regular key width for the top 4 rows
+    height: 50,
+    margin: 1, // Adjust margin for consistent spacing
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9e3d2',
+    borderRadius: 5,
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  // Special styles for the bottom row
+  bottomKeySmall: {
+    width: '10%', // Keys with 10% width
+    height: 50,
+    margin: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9e3d2',
+    borderRadius: 5,
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  bottomKeyLarge: {
+    width: '40%', // Key with 40% width
+    height: 50,
+    margin: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9e3d2',
+    borderRadius: 5,
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  bottomKeyMedium: {
+    width: '20%', // Key with 20% width
+    height: 50,
+    margin: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9e3d2',
+    borderRadius: 5,
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  keyText: {
+    fontSize: 20,
+    color: '#333',
+  },
+});
 
 export default Keyboard;

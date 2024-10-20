@@ -168,12 +168,16 @@ const virtualKeyboardWithSound = [
       phoneticKey: 'm',
       audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/m.mp3')),
     },
+    ŋ: {
+      phoneticKey: 'ŋ',
+      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/ng.mp3')),
+    },
     ʔ: {
       phoneticKey: 'ʔ',
       audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/stoppers/glottalStop.mp3')),
     },
     Delete: {
-      phoneticKey: 'Delete',
+      phoneticKey: 'Del',
       audio: null, // No sound associated with Delete
     },
   },
@@ -187,7 +191,7 @@ const virtualKeyboardWithSound = [
       audio: null, // No sound associated with emoji key
     },
     '.': {
-      phoneticKey: '.',
+      phoneticKey: ':',
       audio: null, // No sound associated
     },
     Space: {
