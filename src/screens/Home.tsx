@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { Audio } from "expo-av";
 import VideoPlayer from "./Home/VideoPlayer";
 import { StatusBar } from "expo-status-bar";
+import Keyboard from "../components/Keyboard";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
@@ -136,20 +137,21 @@ const Home = () => {
         />
       </View>
       <StatusBar style="dark" />
+      <Keyboard />
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 40,
+    // Removed marginHorizontal: 40 to give more space to the keyboard
+    paddingHorizontal: 10, // Optional padding to keep some spacing without limiting the width
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
-    marginBottom: 10,
+    paddingVertical: 1,
+    marginBottom: 1,
   },
   headerTitle: {
     fontSize: 22,
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
   },
   video: {
     width: "100%",
-    height: 250,
+    height: 200,
     borderRadius: 10,
     marginBottom: 20,
   },
