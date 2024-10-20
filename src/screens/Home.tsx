@@ -149,8 +149,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // Removed marginHorizontal: 40 to give more space to the keyboard
-    paddingHorizontal: 10, // Optional padding to keep some spacing without limiting the width
+    paddingHorizontal: 10,
   },
   headerContainer: {
     flexDirection: "row",

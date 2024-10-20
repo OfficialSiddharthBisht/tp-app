@@ -157,8 +157,10 @@ const styles = StyleSheet.create({
   },
   keyboardContainer: {
     flexDirection: "column",
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     backgroundColor: "#bdd8dd",
+    marginHorizontal: -10,
   },
   row: {
     flexDirection: "row",
