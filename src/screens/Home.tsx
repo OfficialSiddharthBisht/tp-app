@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
+  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -83,6 +84,25 @@ const Home = () => {
     description: "This is a sample video for demo purposes.",
   };
 
+  const [blinkerOpacity] = useState(new Animated.Value(1));
+
+  // FOR FUTURE REFRENCE IF POINTER NEEDS THE BLINKING EFFECT
+
+  // useEffect(() => {
+  //   Animated.sequence([
+  //     Animated.timing(blinkerOpacity, {
+  //       toValue: 0,
+  //       duration: 500,
+  //       useNativeDriver: false,
+  //     }),
+  //     Animated.timing(blinkerOpacity, {
+  //       toValue: 1,
+  //       duration: 500,
+  //       useNativeDriver: false,
+  //     }),
+  //   ]).start();
+  // }, [blinkerOpacity]);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* App Header */}
@@ -137,9 +157,37 @@ const Home = () => {
           onChangeText={(text) => setInputValue(text)}
           // editable={false}
         /> */}
-        <Text style={[styles.input, !inputValue && { opacity: 0.7 }]}>
-          {inputValue ? inputValue : "Enter your answer"}
-        </Text>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            backgroundColor: "#fff",
+            borderRadius: 5,
+            borderColor: "#ddd",
+            borderWidth: 1,
+          }}
+        >
+          <Text style={[styles.input, !inputValue && { color: "#999" }]}>
+            {inputValue ? inputValue : "Enter your answer"}{" "}
+          </Text>
+          {inputValue && (
+            <Text
+              style={{
+                alignSelf: "center",
+                marginLeft: "-3.5%",
+              }}
+            >
+              <Animated.View
+                style={[
+                  styles.blinker,
+                  {
+                    opacity: blinkerOpacity,
+                  },
+                ]}
+              />
+            </Text>
+          )}
+        </View>
       </View>
       <StatusBar style="dark" />
       <Keyboard setInputValue={setInputValue} />
@@ -149,8 +197,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // Removed marginHorizontal: 40 to give more space to the keyboard
-    paddingHorizontal: 10, // Optional padding to keep some spacing without limiting the width
+    paddingHorizontal: 10,
   },
   headerContainer: {
     flexDirection: "row",
@@ -194,14 +241,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   input: {
-    flex: 1,
     fontSize: 16,
     padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    color: "#888",
+    color: "#666",
+  },
+  blinker: {
+    width: 2,
+    height: 20,
+    // flex: 1,
+    backgroundColor: "#f11",
+    borderRadius: 4,
   },
 });
 
