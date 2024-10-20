@@ -1,17 +1,23 @@
-import React, { useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import virtualKeyboardWithSound from '../utils/en.keyboardSounds.utils';
-import { Audio } from 'expo-av'; // Assuming you're using Expo's Audio library
+import React, { useRef } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
+import virtualKeyboardWithSound from "../utils/en.keyboardSounds.utils";
+import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window'); // Get screen width
+const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 
-const Keyboard: React.FC = () => {
+const Keyboard: React.FC = ({ setInputValue }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
-      .flatMap(row => Object.entries(row))
+      .flatMap((row) => Object.entries(row))
       .find(([k, data]) => k === key && data.audio instanceof Object);
 
     if (keyData && keyData[1].audio) {
@@ -25,6 +31,10 @@ const Keyboard: React.FC = () => {
       } catch (error) {
         console.error("Error playing sound:", error);
       }
+    }
+
+    if (key === "Delete") {
+      setInputValue("");
     }
   };
 
@@ -40,6 +50,16 @@ const Keyboard: React.FC = () => {
     }
   };
 
+  const handleInput = (key) => {
+    if (key === "Delete") {
+      setInputValue((prev) => prev.slice(0, -1));
+    } else if (key === "Space") {
+      setInputValue((prev) => prev + " ");
+    } else {
+      setInputValue((prev) => prev + key);
+    }
+  };
+
   return (
     <View style={styles.keyboardContainer}>
       {virtualKeyboardWithSound.map((row, rowIndex) => (
@@ -48,7 +68,8 @@ const Keyboard: React.FC = () => {
             const keyData = row[key];
 
             // Apply special styles for the bottom row
-            const isBottomRow = rowIndex === virtualKeyboardWithSound.length - 1;
+            const isBottomRow =
+              rowIndex === virtualKeyboardWithSound.length - 1;
             const bottomKeyStyle =
               keyIndex === 0 || keyIndex === 1 || keyIndex === 2
                 ? styles.bottomKeySmall
@@ -62,8 +83,9 @@ const Keyboard: React.FC = () => {
               <TouchableOpacity
                 key={keyIndex}
                 style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
-                onLongPress={() => handleLongPress(key)}  // Trigger sound on long press
-                onPressOut={handlePressOut}               // Stop sound on release
+                onLongPress={() => handleLongPress(key)} // Trigger sound on long press
+                onPressOut={handlePressOut} // Stop sound on release
+                onPress={() => handleInput(key)}
               >
                 <Text style={styles.keyText}>{key}</Text>
               </TouchableOpacity>
@@ -134,63 +156,63 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   keyboardContainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
     padding: 10,
-    backgroundColor: '#bdd8dd',
+    backgroundColor: "#bdd8dd",
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginVertical: 1,
   },
   key: {
-    width: '10%', // Regular key width for the top 4 rows
+    width: "10%", // Regular key width for the top 4 rows
     height: 50,
     margin: 1, // Adjust margin for consistent spacing
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9e3d2',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
   // Special styles for the bottom row
   bottomKeySmall: {
-    width: '10%', // Keys with 10% width
+    width: "10%", // Keys with 10% width
     height: 50,
     margin: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9e3d2',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
   bottomKeyLarge: {
-    width: '40%', // Key with 40% width
+    width: "40%", // Key with 40% width
     height: 50,
     margin: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9e3d2',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
   bottomKeyMedium: {
-    width: '20%', // Key with 20% width
+    width: "20%", // Key with 20% width
     height: 50,
     margin: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9e3d2',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
   keyText: {
     fontSize: 20,
-    color: '#333',
+    color: "#333",
   },
 });
 

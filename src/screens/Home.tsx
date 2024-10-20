@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -129,15 +130,19 @@ const Home = () => {
             color="#888"
           />
         </TouchableOpacity>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           placeholder="Type something..."
           value={inputValue}
           onChangeText={(text) => setInputValue(text)}
-        />
+          // editable={false}
+        /> */}
+        <Text style={[styles.input, !inputValue && { opacity: 0.7 }]}>
+          {inputValue ? inputValue : "Enter your answer"}
+        </Text>
       </View>
       <StatusBar style="dark" />
-      <Keyboard />
+      <Keyboard setInputValue={setInputValue} />
     </SafeAreaView>
   );
 };
@@ -180,24 +185,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 30,
+    gap: 15,
   },
   voiceButton: {
     backgroundColor: "#fff",
     padding: 10,
     borderRadius: 5,
-    marginRight: 10,
   },
   input: {
     flex: 1,
-    height: 40,
     fontSize: 16,
     padding: 10,
     backgroundColor: "#fff",
     borderRadius: 5,
     borderColor: "#ddd",
     borderWidth: 1,
+    color: "#888",
   },
 });
 
