@@ -10,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Audio } from "expo-av";
-import VideoPlayer from "./Home/VideoPlayer";
+import VideoPlayer from "../components/VideoPlayer";
 import { StatusBar } from "expo-status-bar";
 
 const Home = () => {

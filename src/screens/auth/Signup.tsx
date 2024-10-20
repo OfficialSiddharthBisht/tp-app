@@ -14,9 +14,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
-import GOOGLE_LOGO from "../../assets/google_logo.png"; // Add the correct path to your Google logo
-import APPLE_LOGO from "../../assets/apple_logo.png"; // Add the correct path to your Apple logo
-import FACEBOOK_LOGO from "../../assets/facebook_logo.png"; // Add the correct path to your Facebook logo
+import GOOGLE_LOGO from "../../assets/google_logo.png";
+import APPLE_LOGO from "../../assets/apple_logo.png";
+import FACEBOOK_LOGO from "../../assets/facebook_logo.png";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
