@@ -120,13 +120,15 @@ const Login = () => {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.inputGroup}>
-                <Text style={styles.labelText(width)}>Username</Text>
+                <Text style={styles.labelText(width)}>Email</Text>
                 <TextInput
                   ref={inputRef1}
                   style={styles.inputField(width)}
-                  placeholder="Username or email"
+                  placeholder="Email"
                   value={loginData.email}
-                  onChangeText={(e) => setLoginData({ ...loginData, email: e })}
+                  onChangeText={(e) =>
+                    setLoginData({ ...loginData, email: e.toLowerCase() })
+                  }
                   onSubmitEditing={handleNextInput}
                   returnKeyType="next"
                   keyboardType="email-address"
