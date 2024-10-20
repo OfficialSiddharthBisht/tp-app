@@ -15,6 +15,7 @@ import { Audio } from "expo-av";
 import VideoPlayer from "../components/VideoPlayer";
 import { StatusBar } from "expo-status-bar";
 import Keyboard from "../components/Keyboard";
+import MainHeader from "../components/MainHeader";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
@@ -112,6 +113,7 @@ const Home = () => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Home</Text>
       </View> */}
+      <MainHeader />
 
       {/* Video Player */}
       {/* <View style={styles.videoContainer}>
