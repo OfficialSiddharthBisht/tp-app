@@ -106,12 +106,12 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* App Header */}
-      <View style={styles.headerContainer}>
+      {/* <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={28} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Home</Text>
-      </View>
+      </View> */}
 
       {/* Video Player */}
       {/* <View style={styles.videoContainer}>
