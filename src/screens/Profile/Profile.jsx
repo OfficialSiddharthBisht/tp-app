@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
 import AppHeader from "../../components/AppHeader";
 import ConfettiCannon from "react-native-confetti-cannon";
+import MainHeader from "../../components/MainHeader";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -89,203 +90,206 @@ const Profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
+      <MainHeader />
+      <View style={{ marginHorizontal: 40 }}>
+        <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
 
-      {/* Streak Section */}
-      <TouchableOpacity
-        style={styles.streakContainer}
-        onPress={handleStreakPress}
-        disabled={fireworks}
-      >
-        <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
-      </TouchableOpacity>
+        {/* Streak Section */}
+        <TouchableOpacity
+          style={styles.streakContainer}
+          onPress={handleStreakPress}
+          disabled={fireworks}
+        >
+          <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
+        </TouchableOpacity>
 
-      <ScrollView>
-        {/* Profile Header */}
-        <View style={styles.profileHeader}>
-          <Image source={LOGO} style={styles.logo} resizeMode="cover" />
-          <View style={styles.userInfo}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.profileName}
-            >
-              {userData.name}
-            </Text>
-            <Text style={styles.profileEmail}>{userData.email}</Text>
-          </View>
-        </View>
-
-        {/* Prominent Points Display */}
-        <View style={styles.pointsContainer}>
-          <Text style={styles.pointsLabel}>Points</Text>
-          <Text style={styles.pointsValue}>{userData.points}</Text>
-        </View>
-
-        {/* Stats Section */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsValue}>{userData.currentLevel}</Text>
-            <Text style={styles.statsLabel}>Level</Text>
-          </View>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsValue}>{userData.currentSublevel}</Text>
-            <Text style={styles.statsLabel}>Sublevel</Text>
-          </View>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsValue}>{userData.languages.length}</Text>
-            <Text style={styles.statsLabel}>Languages</Text>
-          </View>
-        </View>
-
-        {/* Account Info */}
-        <View style={styles.profileDetails}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Account Type</Text>
-            <View style={styles.accountRow}>
-              <Text style={styles.detailValue}>{userData.accountType}</Text>
-              {/* Upgrade Button */}
-              {userData.accountType === "free" && (
-                <TouchableOpacity
-                  style={styles.upgradeButton}
-                  onPress={() => alert("Upgrade to Premium")}
-                >
-                  <Text style={styles.upgradeButtonText}>Upgrade</Text>
-                </TouchableOpacity>
-              )}
+        <ScrollView>
+          {/* Profile Header */}
+          <View style={styles.profileHeader}>
+            <Image source={LOGO} style={styles.logo} resizeMode="cover" />
+            <View style={styles.userInfo}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.profileName}
+              >
+                {userData.name}
+              </Text>
+              <Text style={styles.profileEmail}>{userData.email}</Text>
             </View>
           </View>
 
-          {/* Conditionally display the role if it's not "user" */}
-          {userData.role !== "user" && (
+          {/* Prominent Points Display */}
+          <View style={styles.pointsContainer}>
+            <Text style={styles.pointsLabel}>Points</Text>
+            <Text style={styles.pointsValue}>{userData.points}</Text>
+          </View>
+
+          {/* Stats Section */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statsBox}>
+              <Text style={styles.statsValue}>{userData.currentLevel}</Text>
+              <Text style={styles.statsLabel}>Level</Text>
+            </View>
+            <View style={styles.statsBox}>
+              <Text style={styles.statsValue}>{userData.currentSublevel}</Text>
+              <Text style={styles.statsLabel}>Sublevel</Text>
+            </View>
+            <View style={styles.statsBox}>
+              <Text style={styles.statsValue}>{userData.languages.length}</Text>
+              <Text style={styles.statsLabel}>Languages</Text>
+            </View>
+          </View>
+
+          {/* Account Info */}
+          <View style={styles.profileDetails}>
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Role</Text>
-              <Text style={styles.detailValue}>{userData.role}</Text>
+              <Text style={styles.detailLabel}>Account Type</Text>
+              <View style={styles.accountRow}>
+                <Text style={styles.detailValue}>{userData.accountType}</Text>
+                {/* Upgrade Button */}
+                {userData.accountType === "free" && (
+                  <TouchableOpacity
+                    style={styles.upgradeButton}
+                    onPress={() => alert("Upgrade to Premium")}
+                  >
+                    <Text style={styles.upgradeButtonText}>Upgrade</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
+
+            {/* Conditionally display the role if it's not "user" */}
+            {userData.role !== "user" && (
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Role</Text>
+                <Text style={styles.detailValue}>{userData.role}</Text>
+              </View>
+            )}
+
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Joined</Text>
+              <Text style={styles.detailValue}>
+                {formatDate(userData.createdAt)}
+              </Text>
+            </View>
+          </View>
+
+          {/* Badges Section */}
+          <View style={styles.badgesSection}>
+            <Text style={styles.sectionTitle}>Badges</Text>
+            <View style={styles.badgesContainer}>
+              {userData.badges.map((badge, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.badge}
+                  onPress={() => handleBadgePress(badge)}
+                >
+                  <Text style={styles.badgeText}>{badge.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={() => {
+                alert("Logged out!");
+                navigation.navigate("Login");
+              }}
+            >
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Delete Account Button */}
+          <View style={styles.deleteAccountContainer}>
+            <TouchableOpacity
+              style={styles.deleteAccountButton}
+              onPress={handleDeleteAccount}
+            >
+              <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Modal for Badge Details */}
+          {selectedBadge && (
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={badgeModalVisible}
+              onRequestClose={() => setBadgeModalVisible(false)}
+              statusBarTranslucent
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalView}>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>{selectedBadge.name}</Text>
+                  </View>
+                  <Text style={styles.modalDescription}>
+                    {selectedBadge.description}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.closeIconContainer}
+                    onPress={() => setBadgeModalVisible(false)}
+                  >
+                    <Icon name="close" size={24} color="#000" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
           )}
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Joined</Text>
-            <Text style={styles.detailValue}>
-              {formatDate(userData.createdAt)}
-            </Text>
-          </View>
-        </View>
-
-        {/* Badges Section */}
-        <View style={styles.badgesSection}>
-          <Text style={styles.sectionTitle}>Badges</Text>
-          <View style={styles.badgesContainer}>
-            {userData.badges.map((badge, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.badge}
-                onPress={() => handleBadgePress(badge)}
-              >
-                <Text style={styles.badgeText}>{badge.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Logout Button */}
-        <View style={styles.logoutContainer}>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={() => {
-              alert("Logged out!");
-              navigation.navigate("Login");
-            }}
-          >
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Delete Account Button */}
-        <View style={styles.deleteAccountContainer}>
-          <TouchableOpacity
-            style={styles.deleteAccountButton}
-            onPress={handleDeleteAccount}
-          >
-            <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Modal for Badge Details */}
-        {selectedBadge && (
+          {/* Modal for Delete Account Confirmation */}
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
-            visible={badgeModalVisible}
-            onRequestClose={() => setBadgeModalVisible(false)}
+            visible={deleteModalVisible}
+            onRequestClose={() => setDeleteModalVisible(false)}
             statusBarTranslucent
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalView}>
-                <View style={styles.modalHeader}>
-                  <Text style={styles.modalTitle}>{selectedBadge.name}</Text>
-                </View>
+                <Text style={styles.modalTitle}>Confirm Account Deletion</Text>
                 <Text style={styles.modalDescription}>
-                  {selectedBadge.description}
+                  Are you sure you want to delete your account? This action
+                  cannot be undone, and you will lose all your data, points, and
+                  progress.
                 </Text>
-                <TouchableOpacity
-                  style={styles.closeIconContainer}
-                  onPress={() => setBadgeModalVisible(false)}
-                >
-                  <Icon name="close" size={24} color="#000" />
-                </TouchableOpacity>
+
+                {/* Confirmation buttons */}
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={confirmDeleteAccount}
+                  >
+                    <Text style={styles.confirmButtonText}>Delete</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => setDeleteModalVisible(false)}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </Modal>
-        )}
-
-        {/* Modal for Delete Account Confirmation */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={deleteModalVisible}
-          onRequestClose={() => setDeleteModalVisible(false)}
-          statusBarTranslucent
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>Confirm Account Deletion</Text>
-              <Text style={styles.modalDescription}>
-                Are you sure you want to delete your account? This action cannot
-                be undone, and you will lose all your data, points, and
-                progress.
-              </Text>
-
-              {/* Confirmation buttons */}
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.confirmButton}
-                  onPress={confirmDeleteAccount}
-                >
-                  <Text style={styles.confirmButtonText}>Delete</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => setDeleteModalVisible(false)}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+        </ScrollView>
+        {fireworks && (
+          <View style={styles.confettiContainer}>
+            <ConfettiCannon
+              count={150}
+              origin={{ x: 0, y: 0 }}
+              explosionSpeed={350}
+              fadeOut={false}
+              autoStart={true}
+            />
           </View>
-        </Modal>
-      </ScrollView>
-      {fireworks && (
-        <View style={styles.confettiContainer}>
-          <ConfettiCannon
-            count={150}
-            origin={{ x: 0, y: 0 }}
-            explosionSpeed={350}
-            fadeOut={false}
-            autoStart={true}
-          />
-        </View>
-      )}
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -293,7 +297,6 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 40,
   },
   profileHeader: {
     flexDirection: "row",
