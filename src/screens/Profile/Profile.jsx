@@ -103,7 +103,11 @@ const Profile = () => {
           <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
         </TouchableOpacity>
 
-        <ScrollView>
+        <ScrollView
+          style={{ height: "auto" }}
+          showsVerticalScrollIndicator={false}
+          alwaysBounceVertical
+        >
           {/* Profile Header */}
           <View style={styles.profileHeader}>
             <Image source={LOGO} style={styles.logo} resizeMode="cover" />
@@ -213,71 +217,70 @@ const Profile = () => {
               <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
             </TouchableOpacity>
           </View>
-
-          {/* Modal for Badge Details */}
-          {selectedBadge && (
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={badgeModalVisible}
-              onRequestClose={() => setBadgeModalVisible(false)}
-              statusBarTranslucent
-            >
-              <View style={styles.modalContainer}>
-                <View style={styles.modalView}>
-                  <View style={styles.modalHeader}>
-                    <Text style={styles.modalTitle}>{selectedBadge.name}</Text>
-                  </View>
-                  <Text style={styles.modalDescription}>
-                    {selectedBadge.description}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.closeIconContainer}
-                    onPress={() => setBadgeModalVisible(false)}
-                  >
-                    <Icon name="close" size={24} color="#000" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Modal>
-          )}
-
-          {/* Modal for Delete Account Confirmation */}
+        </ScrollView>
+        {/* Modal for Badge Details */}
+        {selectedBadge && (
           <Modal
-            animationType="fade"
+            animationType="slide"
             transparent={true}
-            visible={deleteModalVisible}
-            onRequestClose={() => setDeleteModalVisible(false)}
+            visible={badgeModalVisible}
+            onRequestClose={() => setBadgeModalVisible(false)}
             statusBarTranslucent
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalView}>
-                <Text style={styles.modalTitle}>Confirm Account Deletion</Text>
-                <Text style={styles.modalDescription}>
-                  Are you sure you want to delete your account? This action
-                  cannot be undone, and you will lose all your data, points, and
-                  progress.
-                </Text>
-
-                {/* Confirmation buttons */}
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity
-                    style={styles.confirmButton}
-                    onPress={confirmDeleteAccount}
-                  >
-                    <Text style={styles.confirmButtonText}>Delete</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.cancelButton}
-                    onPress={() => setDeleteModalVisible(false)}
-                  >
-                    <Text style={styles.cancelButtonText}>Cancel</Text>
-                  </TouchableOpacity>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>{selectedBadge.name}</Text>
                 </View>
+                <Text style={styles.modalDescription}>
+                  {selectedBadge.description}
+                </Text>
+                <TouchableOpacity
+                  style={styles.closeIconContainer}
+                  onPress={() => setBadgeModalVisible(false)}
+                >
+                  <Icon name="close" size={24} color="#000" />
+                </TouchableOpacity>
               </View>
             </View>
           </Modal>
-        </ScrollView>
+        )}
+
+        {/* Modal for Delete Account Confirmation */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={deleteModalVisible}
+          onRequestClose={() => setDeleteModalVisible(false)}
+          statusBarTranslucent
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Confirm Account Deletion</Text>
+              <Text style={styles.modalDescription}>
+                Are you sure you want to delete your account? This action cannot
+                be undone, and you will lose all your data, points, and
+                progress.
+              </Text>
+
+              {/* Confirmation buttons */}
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={styles.confirmButton}
+                  onPress={confirmDeleteAccount}
+                >
+                  <Text style={styles.confirmButtonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => setDeleteModalVisible(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         {fireworks && (
           <View style={styles.confettiContainer}>
             <ConfettiCannon
