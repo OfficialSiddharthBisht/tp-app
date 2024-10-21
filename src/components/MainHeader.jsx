@@ -7,7 +7,7 @@ import {
   Modal,
   StyleSheet,
   Image,
-  TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -15,7 +15,8 @@ import LOGO from "../assets/true_phonetics_logo_square_bknhyt.jpg";
 
 const MainHeader = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(""); // New state to track which modal to show
+  const [modalType, setModalType] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const navigation = useNavigation();
 
   const showModal = (type) => {
@@ -25,6 +26,7 @@ const MainHeader = () => {
 
   const handleLogout = async () => {
     setModalVisible(false);
+    setLoading(true); // Set loading to true
 
     try {
       const response = await fetch(
@@ -49,6 +51,8 @@ const MainHeader = () => {
       );
     } catch (error) {
       console.error("Error during logout:", error);
+    } finally {
+      setLoading(false); // Set loading back to false after API call
     }
   };
 
@@ -67,7 +71,7 @@ const MainHeader = () => {
 
       <TouchableOpacity onPress={() => showModal("profile")}>
         <Image
-          source={{ uri: "https://via.placeholder.com/40" }} // Replace with user's image
+          source={{ uri: "https://via.placeholder.com/40" }}
           style={styles.profileImage}
         />
       </TouchableOpacity>
@@ -107,6 +111,20 @@ const MainHeader = () => {
               <Text style={styles.closeText}>Close</Text>
             </TouchableOpacity>
           </View>
+        </View>
+      </Modal>
+
+      {/* Loading Indicator Modal */}
+      <Modal
+        transparent={true}
+        animationType="fade"
+        visible={loading}
+        onRequestClose={() => setLoading(false)}
+        statusBarTranslucent
+      >
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={styles.loadingText}>Logging out...</Text>
         </View>
       </Modal>
 
@@ -221,6 +239,18 @@ const styles = StyleSheet.create({
   },
   closeText: {
     color: "#007BFF",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 100,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: "#fff",
+    fontSize: 16,
   },
 });
 
