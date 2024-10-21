@@ -104,7 +104,7 @@ const Profile = () => {
         </TouchableOpacity>
 
         <ScrollView
-          style={{ height: "auto" }}
+          style={{ height: "auto" }} // ! IMPORTANT:--> change it to a percent value if it does not work of all the screens
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical
         >
