@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
+  ActivityIndicator, 
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
@@ -18,6 +19,7 @@ import MainHeader from "../../components/MainHeader";
 
 const Profile = () => {
   const navigation = useNavigation();
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false); 
 
   // Mocked user data from API response
   const userData = {
@@ -76,13 +78,37 @@ const Profile = () => {
     setBadgeModalVisible(true);
   };
 
+  const handleLogout = async () => {
+    setLoadingModalVisible(true);
+    try {
+      const response = await fetch(
+        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signout",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      alert("Logout failed. Please try again.");
+    } finally {
+      setLoadingModalVisible(false);
+    }
+  };
+
   const handleDeleteAccount = () => {
-    // Show confirmation modal
     setDeleteModalVisible(true);
   };
 
   const confirmDeleteAccount = () => {
-    // Handle account deletion logic here
     alert("Account deleted");
     setDeleteModalVisible(false);
     navigation.navigate("Signup");
@@ -104,7 +130,7 @@ const Profile = () => {
         </TouchableOpacity>
 
         <ScrollView
-          style={{ height: "auto" }} // ! IMPORTANT:--> change it to a percent value if it does not work of all the screens
+          style={{ height: "auto" }}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical
         >
@@ -199,10 +225,7 @@ const Profile = () => {
           <View style={styles.logoutContainer}>
             <TouchableOpacity
               style={styles.logoutButton}
-              onPress={() => {
-                alert("Logged out!");
-                navigation.navigate("Login");
-              }}
+              onPress={handleLogout}
             >
               <Text style={styles.logoutButtonText}>Logout</Text>
             </TouchableOpacity>
@@ -218,7 +241,8 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        {/* Modal for Badge Details */}
+
+        {/* Badge Details Modal */}
         {selectedBadge && (
           <Modal
             animationType="slide"
@@ -246,7 +270,7 @@ const Profile = () => {
           </Modal>
         )}
 
-        {/* Modal for Delete Account Confirmation */}
+        {/* Delete Account Confirmation Modal */}
         <Modal
           animationType="fade"
           transparent={true}
@@ -281,6 +305,22 @@ const Profile = () => {
             </View>
           </View>
         </Modal>
+
+        {/* Loading Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={loadingModalVisible}
+          onRequestClose={() => setLoadingModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <ActivityIndicator size="large" color="#79d2eb" />
+              <Text style={styles.loadingText}>Logging out...</Text>
+            </View>
+          </View>
+        </Modal>
+
         {fireworks && (
           <View style={styles.confettiContainer}>
             <ConfettiCannon
@@ -325,9 +365,6 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   streakContainer: {
-    // position: "absolute",
-    // right: 0,
-    // top: "14%",
     alignSelf: "flex-end",
     padding: 10,
     borderRadius: 10,
@@ -545,6 +582,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 999, // Ensure it's on top
     pointerEvents: "none", // Allow touches to pass through
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#79d2eb",
   },
 });
 
