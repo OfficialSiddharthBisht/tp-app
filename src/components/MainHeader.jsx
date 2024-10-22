@@ -1,4 +1,4 @@
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   View,
@@ -43,12 +43,10 @@ const MainHeader = () => {
         throw new Error("Logout failed");
       }
 
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Login" }],
-        })
-      );
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     } catch (error) {
       console.error("Error during logout:", error);
     } finally {
