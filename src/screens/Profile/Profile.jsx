@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
+  ActivityIndicator, 
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
@@ -14,9 +15,11 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
 import AppHeader from "../../components/AppHeader";
 import ConfettiCannon from "react-native-confetti-cannon";
+import MainHeader from "../../components/MainHeader";
 
 const Profile = () => {
   const navigation = useNavigation();
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false); 
 
   // Mocked user data from API response
   const userData = {
@@ -75,13 +78,37 @@ const Profile = () => {
     setBadgeModalVisible(true);
   };
 
+  const handleLogout = async () => {
+    setLoadingModalVisible(true);
+    try {
+      const response = await fetch(
+        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signout",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      alert("Logout failed. Please try again.");
+    } finally {
+      setLoadingModalVisible(false);
+    }
+  };
+
   const handleDeleteAccount = () => {
-    // Show confirmation modal
     setDeleteModalVisible(true);
   };
 
   const confirmDeleteAccount = () => {
-    // Handle account deletion logic here
     alert("Account deleted");
     setDeleteModalVisible(false);
     navigation.navigate("Signup");
@@ -89,129 +116,133 @@ const Profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
+      <MainHeader />
+      <View style={{ marginHorizontal: 40 }}>
+        <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
 
-      {/* Streak Section */}
-      <TouchableOpacity
-        style={styles.streakContainer}
-        onPress={handleStreakPress}
-        disabled={fireworks}
-      >
-        <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
-      </TouchableOpacity>
+        {/* Streak Section */}
+        <TouchableOpacity
+          style={styles.streakContainer}
+          onPress={handleStreakPress}
+          disabled={fireworks}
+        >
+          <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
+        </TouchableOpacity>
 
-      <ScrollView>
-        {/* Profile Header */}
-        <View style={styles.profileHeader}>
-          <Image source={LOGO} style={styles.logo} resizeMode="cover" />
-          <View style={styles.userInfo}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.profileName}
-            >
-              {userData.name}
-            </Text>
-            <Text style={styles.profileEmail}>{userData.email}</Text>
-          </View>
-        </View>
-
-        {/* Prominent Points Display */}
-        <View style={styles.pointsContainer}>
-          <Text style={styles.pointsLabel}>Points</Text>
-          <Text style={styles.pointsValue}>{userData.points}</Text>
-        </View>
-
-        {/* Stats Section */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsValue}>{userData.currentLevel}</Text>
-            <Text style={styles.statsLabel}>Level</Text>
-          </View>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsValue}>{userData.currentSublevel}</Text>
-            <Text style={styles.statsLabel}>Sublevel</Text>
-          </View>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsValue}>{userData.languages.length}</Text>
-            <Text style={styles.statsLabel}>Languages</Text>
-          </View>
-        </View>
-
-        {/* Account Info */}
-        <View style={styles.profileDetails}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Account Type</Text>
-            <View style={styles.accountRow}>
-              <Text style={styles.detailValue}>{userData.accountType}</Text>
-              {/* Upgrade Button */}
-              {userData.accountType === "free" && (
-                <TouchableOpacity
-                  style={styles.upgradeButton}
-                  onPress={() => alert("Upgrade to Premium")}
-                >
-                  <Text style={styles.upgradeButtonText}>Upgrade</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-
-          {/* Conditionally display the role if it's not "user" */}
-          {userData.role !== "user" && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Role</Text>
-              <Text style={styles.detailValue}>{userData.role}</Text>
-            </View>
-          )}
-
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Joined</Text>
-            <Text style={styles.detailValue}>
-              {formatDate(userData.createdAt)}
-            </Text>
-          </View>
-        </View>
-
-        {/* Badges Section */}
-        <View style={styles.badgesSection}>
-          <Text style={styles.sectionTitle}>Badges</Text>
-          <View style={styles.badgesContainer}>
-            {userData.badges.map((badge, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.badge}
-                onPress={() => handleBadgePress(badge)}
+        <ScrollView
+          style={{ height: "auto" }}
+          showsVerticalScrollIndicator={false}
+          alwaysBounceVertical
+        >
+          {/* Profile Header */}
+          <View style={styles.profileHeader}>
+            <Image source={LOGO} style={styles.logo} resizeMode="cover" />
+            <View style={styles.userInfo}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.profileName}
               >
-                <Text style={styles.badgeText}>{badge.name}</Text>
-              </TouchableOpacity>
-            ))}
+                {userData.name}
+              </Text>
+              <Text style={styles.profileEmail}>{userData.email}</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Logout Button */}
-        <View style={styles.logoutContainer}>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={() => {
-              alert("Logged out!");
-              navigation.navigate("Login");
-            }}
-          >
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
+          {/* Prominent Points Display */}
+          <View style={styles.pointsContainer}>
+            <Text style={styles.pointsLabel}>Points</Text>
+            <Text style={styles.pointsValue}>{userData.points}</Text>
+          </View>
 
-        {/* Delete Account Button */}
-        <View style={styles.deleteAccountContainer}>
-          <TouchableOpacity
-            style={styles.deleteAccountButton}
-            onPress={handleDeleteAccount}
-          >
-            <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
-          </TouchableOpacity>
-        </View>
+          {/* Stats Section */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statsBox}>
+              <Text style={styles.statsValue}>{userData.currentLevel}</Text>
+              <Text style={styles.statsLabel}>Level</Text>
+            </View>
+            <View style={styles.statsBox}>
+              <Text style={styles.statsValue}>{userData.currentSublevel}</Text>
+              <Text style={styles.statsLabel}>Sublevel</Text>
+            </View>
+            <View style={styles.statsBox}>
+              <Text style={styles.statsValue}>{userData.languages.length}</Text>
+              <Text style={styles.statsLabel}>Languages</Text>
+            </View>
+          </View>
 
-        {/* Modal for Badge Details */}
+          {/* Account Info */}
+          <View style={styles.profileDetails}>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Account Type</Text>
+              <View style={styles.accountRow}>
+                <Text style={styles.detailValue}>{userData.accountType}</Text>
+                {/* Upgrade Button */}
+                {userData.accountType === "free" && (
+                  <TouchableOpacity
+                    style={styles.upgradeButton}
+                    onPress={() => alert("Upgrade to Premium")}
+                  >
+                    <Text style={styles.upgradeButtonText}>Upgrade</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
+            {/* Conditionally display the role if it's not "user" */}
+            {userData.role !== "user" && (
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Role</Text>
+                <Text style={styles.detailValue}>{userData.role}</Text>
+              </View>
+            )}
+
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Joined</Text>
+              <Text style={styles.detailValue}>
+                {formatDate(userData.createdAt)}
+              </Text>
+            </View>
+          </View>
+
+          {/* Badges Section */}
+          <View style={styles.badgesSection}>
+            <Text style={styles.sectionTitle}>Badges</Text>
+            <View style={styles.badgesContainer}>
+              {userData.badges.map((badge, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.badge}
+                  onPress={() => handleBadgePress(badge)}
+                >
+                  <Text style={styles.badgeText}>{badge.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Delete Account Button */}
+          <View style={styles.deleteAccountContainer}>
+            <TouchableOpacity
+              style={styles.deleteAccountButton}
+              onPress={handleDeleteAccount}
+            >
+              <Text style={styles.deleteAccountButtonText}>Delete Account</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+
+        {/* Badge Details Modal */}
         {selectedBadge && (
           <Modal
             animationType="slide"
@@ -239,7 +270,7 @@ const Profile = () => {
           </Modal>
         )}
 
-        {/* Modal for Delete Account Confirmation */}
+        {/* Delete Account Confirmation Modal */}
         <Modal
           animationType="fade"
           transparent={true}
@@ -274,18 +305,34 @@ const Profile = () => {
             </View>
           </View>
         </Modal>
-      </ScrollView>
-      {fireworks && (
-        <View style={styles.confettiContainer}>
-          <ConfettiCannon
-            count={150}
-            origin={{ x: 0, y: 0 }}
-            explosionSpeed={350}
-            fadeOut={false}
-            autoStart={true}
-          />
-        </View>
-      )}
+
+        {/* Loading Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={loadingModalVisible}
+          onRequestClose={() => setLoadingModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <ActivityIndicator size="large" color="#79d2eb" />
+              <Text style={styles.loadingText}>Logging out...</Text>
+            </View>
+          </View>
+        </Modal>
+
+        {fireworks && (
+          <View style={styles.confettiContainer}>
+            <ConfettiCannon
+              count={150}
+              origin={{ x: 0, y: 0 }}
+              explosionSpeed={350}
+              fadeOut={false}
+              autoStart={true}
+            />
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -293,7 +340,6 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 40,
   },
   profileHeader: {
     flexDirection: "row",
@@ -319,9 +365,6 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   streakContainer: {
-    // position: "absolute",
-    // right: 0,
-    // top: "14%",
     alignSelf: "flex-end",
     padding: 10,
     borderRadius: 10,
@@ -539,6 +582,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 999, // Ensure it's on top
     pointerEvents: "none", // Allow touches to pass through
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#79d2eb",
   },
 });
 
