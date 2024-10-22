@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,12 +8,14 @@ import {
 } from "react-native";
 import virtualKeyboardWithSound from "../utils/en.keyboardSounds.utils";
 import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
+import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 
 const Keyboard: React.FC = ({ setInputValue }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
+  const [flag, setFlag] = useState(false);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -55,6 +57,8 @@ const Keyboard: React.FC = ({ setInputValue }) => {
       setInputValue((prev) => prev.slice(0, -1));
     } else if (key === "Space") {
       setInputValue((prev) => prev + " ");
+    } else if (key === "123") {
+      setFlag((prev) => !prev);
     } else {
       setInputValue((prev) => prev + key);
     }
@@ -93,6 +97,38 @@ const Keyboard: React.FC = ({ setInputValue }) => {
           })}
         </View>
       ))}
+      {flag &&
+        numericKeyboardWithSound.map((row, rowIndex) => (
+          <View key={rowIndex} style={styles.row}>
+            {Object.keys(row).map((key, keyIndex) => {
+              const keyData = row[key];
+
+              // Apply special styles for the bottom row
+              const isBottomRow =
+                rowIndex === numericKeyboardWithSound.length - 1;
+              const bottomKeyStyle =
+                keyIndex === 0 || keyIndex === 1 || keyIndex === 2
+                  ? styles.bottomKeySmall
+                  : keyIndex === 3
+                  ? styles.bottomKeyLarge
+                  : keyIndex === 4
+                  ? styles.bottomKeySmall
+                  : styles.bottomKeyMedium;
+
+              return (
+                <TouchableOpacity
+                  key={keyIndex}
+                  style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                  onLongPress={() => handleLongPress(key)} // Trigger sound on long press
+                  onPressOut={handlePressOut} // Stop sound on release
+                  onPress={() => handleInput(key)}
+                >
+                  <Text style={styles.keyText}>{key}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        ))}
     </View>
   );
 };
