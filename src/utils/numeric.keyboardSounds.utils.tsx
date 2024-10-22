@@ -16,209 +16,137 @@ const numericKeyboardWithSound = [
   {
     "1": {
       phoneticKey: "1",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/1.mp3")),
+      audio: null,
     },
     "2": {
       phoneticKey: "2",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/2.mp3")),
+      audio: null,
     },
     "3": {
       phoneticKey: "3",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/3.mp3")),
+      audio: null,
     },
     "@": {
       phoneticKey: "@",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/at.mp3")),
+      audio: null,
     },
     "#": {
       phoneticKey: "#",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/hash.mp3")
-        ),
+      audio: null,
     },
     "*": {
       phoneticKey: "*",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/star.mp3")
-        ),
+      audio: null,
     },
     "(": {
       phoneticKey: "(",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/openParenthesis.mp3")
-        ),
+      audio: null,
     },
     ")": {
       phoneticKey: ")",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/closeParenthesis.mp3")
-        ),
+      audio: null,
     },
   },
   {
     "4": {
       phoneticKey: "4",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/4.mp3")),
+      audio: null,
     },
     "5": {
       phoneticKey: "5",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/5.mp3")),
+      audio: null,
     },
     "6": {
       phoneticKey: "6",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/6.mp3")),
+      audio: null,
     },
     "-": {
       phoneticKey: "-",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/hyphen.mp3")
-        ),
+      audio: null,
     },
     _: {
       phoneticKey: "_",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/underscore.mp3")
-        ),
+      audio: null,
     },
     "=": {
       phoneticKey: "=",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/equals.mp3")
-        ),
+      audio: null,
     },
     "[": {
       phoneticKey: "[",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/openBracket.mp3")
-        ),
+      audio: null,
     },
     "]": {
       phoneticKey: "]",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/closeBracket.mp3")
-        ),
+      audio: null,
     },
   },
   {
     "7": {
       phoneticKey: "7",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/7.mp3")),
+      audio: null,
     },
     "8": {
       phoneticKey: "8",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/8.mp3")),
+      audio: null,
     },
     "9": {
       phoneticKey: "9",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/9.mp3")),
+      audio: null,
     },
     "+": {
       phoneticKey: "+",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/plus.mp3")
-        ),
+      audio: null,
     },
     "&": {
       phoneticKey: "&",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/ampersand.mp3")
-        ),
+      audio: null,
     },
     "{": {
       phoneticKey: "{",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/openCurlyBrace.mp3")
-        ),
+      audio: null,
     },
     "}": {
       phoneticKey: "}",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/closeCurlyBrace.mp3")
-        ),
+      audio: null,
     },
     "|": {
       phoneticKey: "|",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/pipe.mp3")
-        ),
+      audio: null,
     },
   },
   {
     "0": {
       phoneticKey: "0",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/0.mp3")),
+      audio: null,
     },
     ".": {
       phoneticKey: ".",
-      audio: async () =>
-        await loadSoundAsync(require("../assets/sounds/numericSounds/dot.mp3")),
+      audio: null,
     },
     "/": {
       phoneticKey: "/",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/slash.mp3")
-        ),
+      audio: null,
     },
     "\\": {
       phoneticKey: "\\",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/backslash.mp3")
-        ),
+      audio: null,
     },
     ":": {
       phoneticKey: ":",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/colon.mp3")
-        ),
+      audio: null,
     },
     ";": {
       phoneticKey: ";",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/semicolon.mp3")
-        ),
+      audio: null,
     },
     "<": {
       phoneticKey: "<",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/lessThan.mp3")
-        ),
+      audio: null,
     },
     ">": {
       phoneticKey: ">",
-      audio: async () =>
-        await loadSoundAsync(
-          require("../assets/sounds/numericSounds/greaterThan.mp3")
-        ),
+      audio: null,
     },
     Delete: {
       phoneticKey: "Del",
