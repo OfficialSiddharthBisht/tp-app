@@ -59,8 +59,7 @@ const Login = () => {
     }
 
     try {
-
-      // Remove this block of code before devlopment. 
+      // Remove this block of code before devlopment.
       if (
         loginData.email === "kbeducationhub@gmail.com" &&
         loginData.password === "123456Aa@"
@@ -192,7 +191,7 @@ const Login = () => {
             {/* Divider */}
             <View style={styles.dividerContainer}>
               <View style={styles.dividerLine} />
-              <Text style={styles.orText}>Or</Text>
+              <Text style={styles.orText(width)}>Or</Text>
               <View style={styles.dividerLine} />
             </View>
 
@@ -303,43 +302,42 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 16,
+    marginVertical: "5%",
+    gap: 10,
   },
   dividerLine: {
     flex: 1,
     height: 1,
     backgroundColor: "#c5c5c5",
   },
-  orText: {
-    marginHorizontal: 8,
-    fontWeight: "600",
-    fontSize: 16,
+  orText: (width) => ({
+    fontSize: width * 0.04,
     color: "#c5c5c5",
-  },
+  }),
   socialLoginContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-evenly",
-    gap: 20,
+    gap: 15,
   },
   socialLogoContainer: {
-    width: 48,
-    height: 48,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
     borderRadius: 12,
   },
   socialLogo: {
-    width: "100%",
-    height: "100%",
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
   },
   linkContainer: {
     flexDirection: "row",
     marginLeft: 4,
     marginTop: 4,
+    gap: 4,
   },
   linkText: {
-    color: "#c7222a",
+    color: "#79d2eb",
+    fontWeight: "600",
   },
 });
 

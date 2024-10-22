@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  Dimensions,
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,6 +37,8 @@ const SignUp = () => {
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
   const inputRef3 = useRef(null);
+
+  const { width, height } = Dimensions.get("window");
 
   const handleNextInput = (inputRef) => {
     inputRef?.current?.focus();
@@ -107,17 +110,21 @@ const SignUp = () => {
         >
           <View style={styles.innerContainer}>
             <View style={styles.logoContainer}>
-              <Image source={LOGO} style={styles.logo} resizeMode="cover" />
+              <Image
+                source={LOGO}
+                style={styles.logo(width)}
+                resizeMode="cover"
+              />
             </View>
             <View style={styles.headerContainer}>
-              <Text style={styles.headerText}>Create your account</Text>
+              <Text style={styles.headerText(width)}>Create your account</Text>
             </View>
             <View style={styles.formContainer}>
               <View style={styles.inputGroup}>
-                <Text>Username</Text>
+                <Text style={styles.labelText(width)}>Username</Text>
                 <TextInput
                   ref={inputRef1}
-                  style={styles.inputField}
+                  style={styles.inputField(width)}
                   placeholder="Username"
                   value={signUpData.name}
                   onChangeText={(e) =>
@@ -129,10 +136,10 @@ const SignUp = () => {
                 />
               </View>
               <View style={styles.inputGroup}>
-                <Text>Email</Text>
+                <Text style={styles.labelText(width)}>Email</Text>
                 <TextInput
                   ref={inputRef2}
-                  style={styles.inputField}
+                  style={styles.inputField(width)}
                   placeholder="Email"
                   value={signUpData.email}
                   onChangeText={(e) =>
@@ -145,11 +152,11 @@ const SignUp = () => {
                 />
               </View>
               <View style={styles.inputGroup}>
-                <Text>Password</Text>
+                <Text style={styles.labelText(width)}>Password</Text>
                 <View style={styles.passwordContainer}>
                   <TextInput
                     ref={inputRef3}
-                    style={styles.inputField}
+                    style={styles.inputField(width)}
                     placeholder="Password"
                     value={signUpData.password}
                     onChangeText={(e) =>
@@ -180,17 +187,17 @@ const SignUp = () => {
 
             <View style={styles.signUpButtonContainer}>
               <TouchableOpacity
-                style={styles.signUpButton}
+                style={styles.signUpButton(width)}
                 onPress={handleSignUp}
               >
-                <Text style={styles.signUpButtonText}>Sign Up</Text>
+                <Text style={styles.signUpButtonText(width)}>Sign Up</Text>
               </TouchableOpacity>
             </View>
 
             {/* Divider */}
             <View style={styles.dividerContainer}>
               <View style={styles.dividerLine} />
-              <Text style={styles.orText}>Or</Text>
+              <Text style={styles.orText(width)}>Or</Text>
               <View style={styles.dividerLine} />
             </View>
 
@@ -198,19 +205,23 @@ const SignUp = () => {
             <View style={styles.socialLoginContainer}>
               <TouchableOpacity
                 onPress={() => handleSocialLogin("Google")}
-                style={styles.socialLogoContainer}
+                style={{ ...styles.socialLogoContainer, padding: 4 }}
               >
                 <Image source={GOOGLE_LOGO} style={styles.socialLogo} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleSocialLogin("Apple")}
-                style={styles.socialLogoContainer}
+                style={{ ...styles.socialLogoContainer, padding: 4 }}
               >
                 <Image source={APPLE_LOGO} style={styles.socialLogo} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleSocialLogin("Facebook")}
-                style={styles.socialLogoContainer}
+                style={{
+                  ...styles.socialLogoContainer,
+                  paddingVertical: 4,
+                  paddingRight: 6,
+                }}
               >
                 <Image source={FACEBOOK_LOGO} style={styles.socialLogo} />
               </TouchableOpacity>
@@ -225,7 +236,7 @@ const SignUp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 40,
+    marginHorizontal: "10%",
   },
   flexContainer: {
     flex: 1,
@@ -233,40 +244,41 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     justifyContent: "center",
-    marginBottom: "50%",
+    marginBottom: "10%",
   },
   logoContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: 10,
-    marginVertical: 8,
-    borderRadius: 100,
+    marginVertical: "5%",
   },
-  logo: {
+  logo: (width) => ({
     borderRadius: 100,
-    height: 128,
-    width: 128,
-  },
+    height: width * 0.3,
+    width: width * 0.3,
+  }),
   headerContainer: {
     alignItems: "center",
   },
-  headerText: {
+  headerText: (width) => ({
     fontWeight: "600",
-    fontSize: 24,
-  },
+    fontSize: width * 0.06,
+  }),
   formContainer: {
-    marginTop: 32,
+    marginTop: "10%",
     gap: 16,
   },
   inputGroup: {
     gap: 8,
   },
-  inputField: {
+  labelText: (width) => ({
+    fontSize: width * 0.045,
+  }),
+  inputField: (width) => ({
     width: "100%",
     backgroundColor: "white",
     borderRadius: 12,
-    padding: 16,
-  },
+    padding: width * 0.04,
+  }),
   passwordContainer: {
     position: "relative",
   },
@@ -277,62 +289,60 @@ const styles = StyleSheet.create({
   },
   signUpButtonContainer: {
     width: "100%",
-    marginTop: 48,
+    marginTop: "10%",
   },
-  signUpButton: {
+  signUpButton: (width) => ({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#79d2eb",
-    padding: 12,
+    padding: width * 0.02,
     borderRadius: 12,
-  },
-  signUpButtonText: {
+  }),
+  signUpButtonText: (width) => ({
     color: "#fff",
     fontWeight: "600",
-    fontSize: 18,
-  },
+    fontSize: width * 0.05,
+  }),
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 16,
+    marginVertical: "5%",
+    gap: 10,
   },
   dividerLine: {
     flex: 1,
     height: 1,
     backgroundColor: "#c5c5c5",
   },
-  orText: {
-    marginHorizontal: 8,
-    fontWeight: "600",
-    fontSize: 16,
-    color: "#c5c5c5",
-  },
+  orText: (width) => ({
+    fontSize: width * 0.04,
+  }),
   socialLoginContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-evenly",
-    gap: 20,
+    gap: 15,
   },
   socialLogoContainer: {
-    width: 48,
-    height: 48,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
     borderRadius: 12,
   },
   socialLogo: {
-    width: "100%",
-    height: "100%",
+    height: 40,
+    width: 40,
+    resizeMode: "contain",
   },
   linkContainer: {
     flexDirection: "row",
-    marginLeft: 4,
     marginTop: 4,
+    marginLeft: 4,
+    gap: 4,
   },
   linkText: {
-    color: "#c7222a",
+    color: "#79d2eb",
+    fontWeight: "600",
   },
 });
 
