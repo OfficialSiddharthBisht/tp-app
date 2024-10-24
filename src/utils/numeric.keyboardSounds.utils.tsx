@@ -158,7 +158,7 @@ const numericKeyboardWithSound = [
       phoneticKey: "123",
       audio: null, // No sound associated
     },
-    em: {
+    "☺️": {
       phoneticKey: "em",
       audio: null, // No sound associated with emoji key
     },
