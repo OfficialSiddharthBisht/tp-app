@@ -66,69 +66,69 @@ const Keyboard: React.FC = ({ setInputValue }) => {
 
   return (
     <View style={styles.keyboardContainer}>
-      {virtualKeyboardWithSound.map((row, rowIndex) => (
-        <View key={rowIndex} style={styles.row}>
-          {Object.keys(row).map((key, keyIndex) => {
-            const keyData = row[key];
+      {!flag
+        ? virtualKeyboardWithSound.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {Object.keys(row).map((key, keyIndex) => {
+                const keyData = row[key];
 
-            // Apply special styles for the bottom row
-            const isBottomRow =
-              rowIndex === virtualKeyboardWithSound.length - 1;
-            const bottomKeyStyle =
-              keyIndex === 0 || keyIndex === 1 || keyIndex === 2
-                ? styles.bottomKeySmall
-                : keyIndex === 3
-                ? styles.bottomKeyLarge
-                : keyIndex === 4
-                ? styles.bottomKeySmall
-                : styles.bottomKeyMedium;
+                // Apply special styles for the bottom row
+                const isBottomRow =
+                  rowIndex === virtualKeyboardWithSound.length - 1;
+                const bottomKeyStyle =
+                  keyIndex === 0 || keyIndex === 1 || keyIndex === 2
+                    ? styles.bottomKeySmall
+                    : keyIndex === 3
+                    ? styles.bottomKeyLarge
+                    : keyIndex === 4
+                    ? styles.bottomKeySmall
+                    : styles.bottomKeyMedium;
 
-            return (
-              <TouchableOpacity
-                key={keyIndex}
-                style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
-                onLongPress={() => handleLongPress(key)} // Trigger sound on long press
-                onPressOut={handlePressOut} // Stop sound on release
-                onPress={() => handleInput(key)}
-              >
-                <Text style={styles.keyText}>{key}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      ))}
-      {flag &&
-        numericKeyboardWithSound.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.row}>
-            {Object.keys(row).map((key, keyIndex) => {
-              const keyData = row[key];
+                return (
+                  <TouchableOpacity
+                    key={keyIndex}
+                    style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                    onLongPress={() => handleLongPress(key)} // Trigger sound on long press
+                    onPressOut={handlePressOut} // Stop sound on release
+                    onPress={() => handleInput(key)}
+                  >
+                    <Text style={styles.keyText}>{key}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))
+        : numericKeyboardWithSound.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {Object.keys(row).map((key, keyIndex) => {
+                const keyData = row[key];
 
-              // Apply special styles for the bottom row
-              const isBottomRow =
-                rowIndex === numericKeyboardWithSound.length - 1;
-              const bottomKeyStyle =
-                keyIndex === 0 || keyIndex === 1 || keyIndex === 2
-                  ? styles.bottomKeySmall
-                  : keyIndex === 3
-                  ? styles.bottomKeyLarge
-                  : keyIndex === 4
-                  ? styles.bottomKeySmall
-                  : styles.bottomKeyMedium;
+                // Apply special styles for the bottom row
+                const isBottomRow =
+                  rowIndex === numericKeyboardWithSound.length - 1;
+                const bottomKeyStyle =
+                  keyIndex === 0 || keyIndex === 1 || keyIndex === 2
+                    ? styles.bottomKeySmall
+                    : keyIndex === 3
+                    ? styles.bottomKeyLarge
+                    : keyIndex === 4
+                    ? styles.bottomKeySmall
+                    : styles.bottomKeyMedium;
 
-              return (
-                <TouchableOpacity
-                  key={keyIndex}
-                  style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
-                  onLongPress={() => handleLongPress(key)} // Trigger sound on long press
-                  onPressOut={handlePressOut} // Stop sound on release
-                  onPress={() => handleInput(key)}
-                >
-                  <Text style={styles.keyText}>{key}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        ))}
+                return (
+                  <TouchableOpacity
+                    key={keyIndex}
+                    style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                    onLongPress={() => handleLongPress(key)} // Trigger sound on long press
+                    onPressOut={handlePressOut} // Stop sound on release
+                    onPress={() => handleInput(key)}
+                  >
+                    <Text style={styles.keyText}>{key}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))}
     </View>
   );
 };
