@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Modal,
   View,
@@ -7,9 +7,29 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Platform,
+  Linking,
+  Alert,
 } from "react-native";
 
 const KeyboardModal = ({ isVisible, onClose }) => {
+  const appStoreURL = "https://apps.apple.com/app/id1234567890";
+  const googlePlayURL =
+    "https://play.google.com/store/apps/details?id=com.truephonetics.keyboard";
+
+  const handleDownloadPress = async () => {
+    onClose();
+    const url = Platform.OS === "ios" ? appStoreURL : googlePlayURL;
+
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      Linking.openURL(url).catch((err) =>
+        console.error("Failed to open URL:", err)
+      );
+    } else {
+      Alert.alert("Error", "Unable to open the store link.");
+    }
+  };
+
   const buttonText =
     Platform.OS === "ios"
       ? "Download from App Store"
@@ -41,7 +61,11 @@ const KeyboardModal = ({ isVisible, onClose }) => {
                 😉.
               </Text>
 
-              <TouchableOpacity style={styles.downloadButton}>
+              {/* Download button */}
+              <TouchableOpacity
+                style={styles.downloadButton}
+                onPress={handleDownloadPress}
+              >
                 <Text style={styles.downloadButtonText}>{buttonText}</Text>
               </TouchableOpacity>
             </View>
