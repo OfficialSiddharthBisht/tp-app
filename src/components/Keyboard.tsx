@@ -9,6 +9,7 @@ import {
 import virtualKeyboardWithSound from "../utils/en.keyboardSounds.utils";
 import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
 import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
+import KeyboardModal from "./KeyboardModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
@@ -16,6 +17,7 @@ const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 const Keyboard: React.FC = ({ setInputValue }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -44,7 +46,7 @@ const Keyboard: React.FC = ({ setInputValue }) => {
     if (audioRef.current) {
       try {
         await audioRef.current.stopAsync();
-        await audioRef.current.unloadAsync(); // Release the audio resources after stopping
+        await audioRef.current.unloadAsync();
         audioRef.current = null;
       } catch (error) {
         console.error("Error stopping sound:", error);
@@ -59,6 +61,8 @@ const Keyboard: React.FC = ({ setInputValue }) => {
       setInputValue((prev) => prev + " ");
     } else if (key === "123") {
       setFlag((prev) => !prev);
+    } else if (key === "☺️") {
+      setModalVisible(true);
     } else {
       setInputValue((prev) => prev + key);
     }
@@ -129,6 +133,12 @@ const Keyboard: React.FC = ({ setInputValue }) => {
               })}
             </View>
           ))}
+      {isModalVisible && (
+        <KeyboardModal
+          isVisible={isModalVisible}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
     </View>
   );
 };
@@ -136,7 +146,7 @@ const Keyboard: React.FC = ({ setInputValue }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10, // Optional padding for spacing without limiting the width
+    paddingHorizontal: 10,
   },
   headerContainer: {
     flexDirection: "row",
