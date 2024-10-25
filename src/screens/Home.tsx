@@ -141,7 +141,7 @@ const Home = () => {
         </TouchableOpacity>
       </View> */}
 
-      <VideoPlayer levelVideo={levelVideo} />
+      <VideoPlayer level={1} />
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
