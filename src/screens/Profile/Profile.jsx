@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
-  ActivityIndicator, 
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
@@ -16,10 +16,11 @@ import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
 import AppHeader from "../../components/AppHeader";
 import ConfettiCannon from "react-native-confetti-cannon";
 import MainHeader from "../../components/MainHeader";
+import LoadingModal from "../../components/LoadingModal";
 
 const Profile = () => {
   const navigation = useNavigation();
-  const [loadingModalVisible, setLoadingModalVisible] = useState(false); 
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 
   // Mocked user data from API response
   const userData = {
@@ -307,19 +308,11 @@ const Profile = () => {
         </Modal>
 
         {/* Loading Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
+        <LoadingModal
           visible={loadingModalVisible}
-          onRequestClose={() => setLoadingModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <ActivityIndicator size="large" color="#79d2eb" />
-              <Text style={styles.loadingText}>Logging out...</Text>
-            </View>
-          </View>
-        </Modal>
+          onClose={() => setLoadingModalVisible(false)}
+          title={"Logging Out..."}
+        />
 
         {fireworks && (
           <View style={styles.confettiContainer}>
