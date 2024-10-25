@@ -10,6 +10,7 @@ import {
   Keyboard,
   StyleSheet,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
@@ -31,6 +32,7 @@ const Login = () => {
     password: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
@@ -59,6 +61,8 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
+
       // Remove this block of code before publish.
       if (
         loginData.email === "kbeducationhub@gmail.com" &&
@@ -93,13 +97,15 @@ const Login = () => {
         navigation.reset({
           index: 0,
           routes: [{ name: "Home" }],
-        })
+        });
       } else {
         alert(data.message || "Login failed");
       }
     } catch (error) {
       alert("An error occurred. Please try again.");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,8 +185,13 @@ const Login = () => {
               <TouchableOpacity
                 style={styles.loginButton(width)}
                 onPress={handleLogin}
+                disabled={loading}
               >
-                <Text style={styles.loginButtonText(width)}>Login</Text>
+                {loading ? (
+                  <ActivityIndicator color={"#fff"} />
+                ) : (
+                  <Text style={styles.loginButtonText(width)}>Login</Text>
+                )}
               </TouchableOpacity>
             </View>
 
