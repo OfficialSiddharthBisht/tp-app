@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
@@ -33,6 +34,7 @@ const SignUp = () => {
     password: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
@@ -65,6 +67,8 @@ const SignUp = () => {
     }
 
     try {
+      setLoading(true);
+
       // API request for signup
       const response = await fetch(API_URL, {
         method: "POST",
@@ -94,6 +98,8 @@ const SignUp = () => {
     } catch (error) {
       alert("An error occurred. Please try again.");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -190,7 +196,11 @@ const SignUp = () => {
                 style={styles.signUpButton(width)}
                 onPress={handleSignUp}
               >
-                <Text style={styles.signUpButtonText(width)}>Sign Up</Text>
+                {loading ? (
+                  <ActivityIndicator color={"#fff"} />
+                ) : (
+                  <Text style={styles.signUpButtonText(width)}>Sign Up</Text>
+                )}
               </TouchableOpacity>
             </View>
 
