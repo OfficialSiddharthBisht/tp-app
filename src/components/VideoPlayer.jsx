@@ -42,8 +42,16 @@ const VideoPlayer = ({ level }) => {
 
   const video = videos.find((vid) => vid.level === level);
 
-  const onPlaybackStatusUpdate = (status) => {
+  const onPlaybackStatusUpdate = async (status) => {
     if (status.didJustFinish) {
+      await videoRef.current.setPositionAsync(0);
+      await videoRef.current.pauseAsync();
+      setVideoEnded(true);
+    }
+    if (status.isPlaying) {
+      setVideoEnded(false);
+    }
+    if (!status.isPlaying) {
       setVideoEnded(true);
     }
   };
@@ -115,7 +123,7 @@ const styles = StyleSheet.create({
   },
   video: {
     width: "100%",
-    height: Dimensions.get("window").width * 0.85,
+    height: Dimensions.get("window").width * 0.8,
   },
   fullScreenVideo: {
     width: Dimensions.get("window").height,
