@@ -158,7 +158,11 @@ const Home = () => {
           }}
         >
           <Text style={[styles.input, !inputValue && { color: "#999" }]}>
-            {inputValue ? inputValue : "Enter your answer"}{" "}
+            {inputValue
+              ? inputValue.length > 20
+                ? `...${inputValue.slice(-30)}`
+                : inputValue
+              : "Enter your answer"}{" "}
           </Text>
           {inputValue && (
             <Text
