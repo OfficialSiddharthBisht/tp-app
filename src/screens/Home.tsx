@@ -10,12 +10,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { Audio } from "expo-av";
 import VideoPlayer from "../components/VideoPlayer";
 import { StatusBar } from "expo-status-bar";
 import Keyboard from "../components/Keyboard";
 import MainHeader from "../components/MainHeader";
+import AudioPlayer from "../components/AudioPlayer";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
@@ -145,20 +145,8 @@ const Home = () => {
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
-        <TouchableOpacity style={styles.voiceButton} onPress={playPauseSound}>
-          <Icon
-            name={isPlaying ? "pause" : "play-arrow"}
-            size={24}
-            color="#888"
-          />
-        </TouchableOpacity>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Type something..."
-          value={inputValue}
-          onChangeText={(text) => setInputValue(text)}
-          // editable={false}
-        /> */}
+        <AudioPlayer soundIndex={0} />
+
         <View
           style={{
             flex: 1,
@@ -237,11 +225,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     gap: 15,
   },
-  voiceButton: {
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 5,
-  },
+
   input: {
     fontSize: 16,
     padding: 10,
