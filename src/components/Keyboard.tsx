@@ -65,6 +65,7 @@ const Keyboard: React.FC = ({
   };
 
   const handleAnswerCheck = () => {
+    if (!inputValue) return;
     setIsAnswerModalVisible(true);
     if (inputValue == soundObj.answer) {
       setInputValue("");
