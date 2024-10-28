@@ -12,6 +12,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import LOGO from "../assets/true_phonetics_logo_square_bknhyt.jpg";
+import LoadingModal from "./LoadingModal";
 
 const MainHeader = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -113,18 +114,12 @@ const MainHeader = () => {
       </Modal>
 
       {/* Loading Indicator Modal */}
-      <Modal
-        transparent={true}
-        animationType="fade"
+
+      <LoadingModal
         visible={loading}
-        onRequestClose={() => setLoading(false)}
-        statusBarTranslucent
-      >
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
-          <Text style={styles.loadingText}>Logging out...</Text>
-        </View>
-      </Modal>
+        onClose={() => setLoading(false)}
+        title={"Logging out"}
+      />
 
       {/* Modal for Hamburger Menu */}
       <Modal

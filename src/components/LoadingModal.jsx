@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Modal,
-  View,
-  Text,
-  ActivityIndicator,
-  StyleSheet,
-} from "react-native";
+import { Modal, View, Text, ActivityIndicator, StyleSheet } from "react-native";
 
 const LoadingModal = ({ visible, onClose, title }) => {
   return (
@@ -14,6 +8,7 @@ const LoadingModal = ({ visible, onClose, title }) => {
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalView}>
