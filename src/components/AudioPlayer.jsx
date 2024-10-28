@@ -8,10 +8,9 @@ import {
 import { Audio } from "expo-av";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const AudioPlayer = ({ soundUri }) => {
+const AudioPlayer = ({ soundUri, isLoading }) => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handlePlayPause = async () => {
     if (currentSound) {
@@ -22,11 +21,9 @@ const AudioPlayer = ({ soundUri }) => {
     }
 
     if (soundUri) {
-      setIsLoading(true);
       const { sound } = await Audio.Sound.createAsync({ uri: soundUri });
       setCurrentSound(sound);
       setIsPlaying(true);
-      setIsLoading(false);
 
       const status = await sound.getStatusAsync();
       const durationMs = status.durationMillis;

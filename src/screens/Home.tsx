@@ -23,10 +23,12 @@ const Home = () => {
   const [soundObj, setSoundObj] = useState(null);
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [soundIndex, setSoundIndex] = useState(0);
+  const [isSoundLoading, setIsSoundLoading] = useState(false);
 
   useEffect(() => {
     const fetchSound = async () => {
       try {
+        setIsSoundLoading(true);
         const response = await fetch(
           "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
         );
@@ -37,6 +39,8 @@ const Home = () => {
         }
       } catch (error) {
         console.error("Error fetching sound:", error);
+      } finally {
+        setIsSoundLoading(false);
       }
     };
     fetchSound();
@@ -67,7 +71,7 @@ const Home = () => {
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
-        <AudioPlayer soundUri={soundUri} />
+        <AudioPlayer soundUri={soundUri} isLoading={isSoundLoading} />
 
         <View
           style={{
