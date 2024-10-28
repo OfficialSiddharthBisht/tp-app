@@ -1,29 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { Audio } from "expo-av";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const AudioPlayer = ({ soundIndex }) => {
+const AudioPlayer = ({ soundUri }) => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [soundUri, setSoundUri] = useState(null);
-
-  useEffect(() => {
-    const fetchSound = async () => {
-      try {
-        const response = await fetch(
-          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
-        );
-        const data = await response.json();
-        if (data.success && data.sounds[soundIndex]) {
-          setSoundUri(data.sounds[soundIndex].sound);
-        }
-      } catch (error) {
-        console.error("Error fetching sound:", error);
-      }
-    };
-    fetchSound();
-  }, [soundIndex]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePlayPause = async () => {
     if (currentSound) {
@@ -34,9 +22,11 @@ const AudioPlayer = ({ soundIndex }) => {
     }
 
     if (soundUri) {
+      setIsLoading(true);
       const { sound } = await Audio.Sound.createAsync({ uri: soundUri });
       setCurrentSound(sound);
       setIsPlaying(true);
+      setIsLoading(false);
 
       const status = await sound.getStatusAsync();
       const durationMs = status.durationMillis;
@@ -54,11 +44,15 @@ const AudioPlayer = ({ soundIndex }) => {
   return (
     <View>
       <TouchableOpacity style={styles.voiceButton} onPress={handlePlayPause}>
-        <Icon
-          name={isPlaying ? "pause" : "play-arrow"}
-          size={24}
-          color="#888"
-        />
+        {isLoading ? (
+          <ActivityIndicator size="small" color="#888" />
+        ) : (
+          <Icon
+            name={isPlaying ? "pause" : "play-arrow"}
+            size={24}
+            color="#888"
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
