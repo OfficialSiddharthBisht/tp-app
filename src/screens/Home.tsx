@@ -19,73 +19,28 @@ import AudioPlayer from "../components/AudioPlayer";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
-  const navigation = useNavigation();
-  const [isPlaying, setIsPlaying] = useState(false); // Track the state of the s ound
-  const [sound, setSound] = useState(null); // Track the sound object
-  const videoRef = useRef(null); // Reference for the video
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Track video play/pause state
+  const [soundUri, setSoundUri] = useState(null);
+  const [soundObj, setSoundObj] = useState(null);
+  const [blinkerOpacity] = useState(new Animated.Value(1));
+  const [soundIndex, setSoundIndex] = useState(0);
 
   useEffect(() => {
-    // Cleanup when the component is unmounted
-    return () => {
-      if (sound) {
-        sound.unloadAsync(); // Unload the sound when component unmounts
+    const fetchSound = async () => {
+      try {
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
+        );
+        const data = await response.json();
+        if (data.success && data.sounds[soundIndex]) {
+          setSoundUri(data.sounds[soundIndex].sound);
+          setSoundObj(data.sounds[soundIndex]);
+        }
+      } catch (error) {
+        console.error("Error fetching sound:", error);
       }
     };
-  }, [sound]);
-
-  const playPauseSound = async () => {
-    try {
-      if (sound === null) {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../assets/sounds/letterSounds/stoppers/glottalStop.mp3")
-        );
-        setSound(newSound);
-
-        // Handle status updates like when the sound finishes
-        newSound.setOnPlaybackStatusUpdate((status) => {
-          if (status.isLoaded && status.didJustFinish) {
-            // Sound has finished playing, reset state
-            setIsPlaying(false);
-            setSound(null); // Unload the sound to allow it to be reloaded later
-          }
-        });
-
-        await newSound.playAsync();
-        setIsPlaying(true);
-      } else {
-        // Toggle between play and pause
-        if (isPlaying) {
-          await sound.pauseAsync();
-          setIsPlaying(false);
-        } else {
-          await sound.playAsync();
-          setIsPlaying(true);
-        }
-      }
-    } catch (error) {
-      console.log("Error loading or playing sound: ", error);
-    }
-  };
-
-  const toggleVideoPlayback = async () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        await videoRef.current.pauseAsync();
-      } else {
-        await videoRef.current.playAsync();
-      }
-      setIsVideoPlaying(!isVideoPlaying);
-    }
-  };
-
-  const levelVideo = {
-    link: "https://www.w3schools.com/html/mov_bbb.mp4", // Example video URL
-    title: "Sample Video",
-    description: "This is a sample video for demo purposes.",
-  };
-
-  const [blinkerOpacity] = useState(new Animated.Value(1));
+    fetchSound();
+  }, [soundIndex]);
 
   // FOR FUTURE REFRENCE IF POINTER NEEDS THE BLINKING EFFECT
 
@@ -106,46 +61,13 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* App Header */}
-      {/* <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={28} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Home</Text>
-      </View> */}
       <MainHeader />
-
-      {/* Video Player */}
-      {/* <View style={styles.videoContainer}>
-        <Video
-          ref={videoRef}
-          source={{ uri: "https://www.w3schools.com/html/mov_bbb.mp4" }} // Example video URL
-          rate={1.0}
-          volume={1.0}
-          isMuted={false}
-          resizeMode="contain"
-          shouldPlay={isVideoPlaying} // Control initial play state
-          isLooping
-          style={styles.video}
-        />
-
-        <TouchableOpacity
-          style={styles.videoButton}
-          onPress={toggleVideoPlayback}
-        >
-          <Icon
-            name={isVideoPlaying ? "pause" : "play-arrow"}
-            size={24}
-            color="#fff"
-          />
-        </TouchableOpacity>
-      </View> */}
 
       <VideoPlayer level={1} />
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
-        <AudioPlayer soundIndex={0} />
+        <AudioPlayer soundUri={soundUri} />
 
         <View
           style={{
@@ -184,7 +106,14 @@ const Home = () => {
         </View>
       </View>
       <StatusBar style="dark" />
-      <Keyboard setInputValue={setInputValue} />
+      <Keyboard
+        setInputValue={setInputValue}
+        soundObj={soundObj}
+        setSoundIndex={setSoundIndex}
+        inputValue={inputValue}
+        soundUri={soundUri}
+        setSoundObj={setSoundObj}
+      />
     </SafeAreaView>
   );
 };
@@ -226,7 +155,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
-    paddingVertical: 30,
+    paddingVertical: 10,
     gap: 15,
   },
 
