@@ -10,14 +10,24 @@ import virtualKeyboardWithSound from "../utils/en.keyboardSounds.utils";
 import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
 import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
 import KeyboardModal from "./KeyboardModal";
+import AnswerModal from "./AnswerModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 
-const Keyboard: React.FC = ({ setInputValue }) => {
+const Keyboard: React.FC = ({
+  setInputValue,
+  soundObj,
+  setSoundIndex,
+  inputValue,
+  soundUri,
+  setSoundObj,
+}) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -54,6 +64,19 @@ const Keyboard: React.FC = ({ setInputValue }) => {
     }
   };
 
+  const handleAnswerCheck = () => {
+    setIsAnswerModalVisible(true);
+    if (inputValue == soundObj.answer) {
+      setInputValue("");
+      setSoundIndex((prev) => prev + 1);
+      setSoundObj(null);
+      setIsCorrect(true);
+    } else {
+      setIsCorrect(false);
+      console.log("wrong answer");
+    }
+  };
+
   const handleInput = (key) => {
     if (key === "Delete") {
       setInputValue((prev) => prev.slice(0, -1));
@@ -63,6 +86,8 @@ const Keyboard: React.FC = ({ setInputValue }) => {
       setFlag((prev) => !prev);
     } else if (key === "☺️") {
       setModalVisible(true);
+    } else if (key === "Submit") {
+      handleAnswerCheck();
     } else {
       setInputValue((prev) => prev + key);
     }
@@ -137,6 +162,13 @@ const Keyboard: React.FC = ({ setInputValue }) => {
         <KeyboardModal
           isVisible={isModalVisible}
           onClose={() => setModalVisible(false)}
+        />
+      )}
+      {isAnswerModalVisible && (
+        <AnswerModal
+          isVisible={isAnswerModalVisible}
+          onClose={() => setIsAnswerModalVisible(false)}
+          isCorrect={isCorrect}
         />
       )}
     </View>
