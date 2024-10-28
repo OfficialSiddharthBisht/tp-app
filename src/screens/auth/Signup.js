@@ -12,6 +12,7 @@ import {
   Dimensions,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
@@ -114,129 +115,135 @@ const SignUp = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.flexContainer}
         >
-          <View style={styles.innerContainer}>
-            <View style={styles.logoContainer}>
-              <Image
-                source={LOGO}
-                style={styles.logo(width)}
-                resizeMode="cover"
-              />
-            </View>
-            <View style={styles.headerContainer}>
-              <Text style={styles.headerText(width)}>Create your account</Text>
-            </View>
-            <View style={styles.formContainer}>
-              <View style={styles.inputGroup}>
-                <Text style={styles.labelText(width)}>Username</Text>
-                <TextInput
-                  ref={inputRef1}
-                  style={styles.inputField(width)}
-                  placeholder="Username"
-                  value={signUpData.name}
-                  onChangeText={(e) =>
-                    setSignUpData({ ...signUpData, name: e })
-                  }
-                  onSubmitEditing={() => handleNextInput(inputRef2)}
-                  returnKeyType="next"
-                  autoCapitalize="none"
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.innerContainer}>
+              <View style={styles.logoContainer}>
+                <Image
+                  source={LOGO}
+                  style={styles.logo(width)}
+                  resizeMode="cover"
                 />
               </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.labelText(width)}>Email</Text>
-                <TextInput
-                  ref={inputRef2}
-                  style={styles.inputField(width)}
-                  placeholder="Email"
-                  value={signUpData.email}
-                  onChangeText={(e) =>
-                    setSignUpData({ ...signUpData, email: e })
-                  }
-                  onSubmitEditing={() => handleNextInput(inputRef3)}
-                  returnKeyType="next"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
+              <View style={styles.headerContainer}>
+                <Text style={styles.headerText(width)}>
+                  Create your account
+                </Text>
               </View>
-              <View style={styles.inputGroup}>
-                <Text style={styles.labelText(width)}>Password</Text>
-                <View style={styles.passwordContainer}>
+              <View style={styles.formContainer}>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.labelText(width)}>Username</Text>
                   <TextInput
-                    ref={inputRef3}
+                    ref={inputRef1}
                     style={styles.inputField(width)}
-                    placeholder="Password"
-                    value={signUpData.password}
+                    placeholder="Username"
+                    value={signUpData.name}
                     onChangeText={(e) =>
-                      setSignUpData({ ...signUpData, password: e })
+                      setSignUpData({ ...signUpData, name: e })
                     }
-                    secureTextEntry={!passwordVisible}
-                    keyboardType={passwordVisible ? "visible-password" : null}
+                    onSubmitEditing={() => handleNextInput(inputRef2)}
+                    returnKeyType="next"
+                    autoCapitalize="none"
                   />
-                  <TouchableOpacity
-                    style={styles.eyeIcon}
-                    onPress={() => setPasswordVisible(!passwordVisible)}
-                  >
-                    <Ionicons
-                      name={passwordVisible ? "eye-outline" : "eye-off-outline"}
-                      size={24}
-                      color="grey"
+                </View>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.labelText(width)}>Email</Text>
+                  <TextInput
+                    ref={inputRef2}
+                    style={styles.inputField(width)}
+                    placeholder="Email"
+                    value={signUpData.email}
+                    onChangeText={(e) =>
+                      setSignUpData({ ...signUpData, email: e })
+                    }
+                    onSubmitEditing={() => handleNextInput(inputRef3)}
+                    returnKeyType="next"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.labelText(width)}>Password</Text>
+                  <View style={styles.passwordContainer}>
+                    <TextInput
+                      ref={inputRef3}
+                      style={styles.inputField(width)}
+                      placeholder="Password"
+                      value={signUpData.password}
+                      onChangeText={(e) =>
+                        setSignUpData({ ...signUpData, password: e })
+                      }
+                      secureTextEntry={!passwordVisible}
+                      keyboardType={passwordVisible ? "visible-password" : null}
                     />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.eyeIcon}
+                      onPress={() => setPasswordVisible(!passwordVisible)}
+                    >
+                      <Ionicons
+                        name={
+                          passwordVisible ? "eye-outline" : "eye-off-outline"
+                        }
+                        size={24}
+                        color="grey"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-            <View style={styles.linkContainer}>
-              <Text>Already have an account? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                <Text style={styles.linkText}>Sign in</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.linkContainer}>
+                <Text>Already have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text style={styles.linkText}>Sign in</Text>
+                </TouchableOpacity>
+              </View>
 
-            <View style={styles.signUpButtonContainer}>
-              <TouchableOpacity
-                style={styles.signUpButton(width)}
-                onPress={handleSignUp}
-              >
-                {loading ? (
-                  <ActivityIndicator color={"#fff"} />
-                ) : (
-                  <Text style={styles.signUpButtonText(width)}>Sign Up</Text>
-                )}
-              </TouchableOpacity>
-            </View>
+              <View style={styles.signUpButtonContainer}>
+                <TouchableOpacity
+                  style={styles.signUpButton(width)}
+                  onPress={handleSignUp}
+                >
+                  {loading ? (
+                    <ActivityIndicator color={"#fff"} />
+                  ) : (
+                    <Text style={styles.signUpButtonText(width)}>Sign Up</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
 
-            {/* Divider */}
-            <View style={styles.dividerContainer}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.orText(width)}>Or</Text>
-              <View style={styles.dividerLine} />
-            </View>
+              {/* Divider */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.orText(width)}>Or</Text>
+                <View style={styles.dividerLine} />
+              </View>
 
-            {/* Social login buttons */}
-            <View style={styles.socialLoginContainer}>
-              <TouchableOpacity
-                onPress={() => handleSocialLogin("Google")}
-                style={{ ...styles.socialLogoContainer, padding: 4 }}
-              >
-                <Image source={GOOGLE_LOGO} style={styles.socialLogo} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleSocialLogin("Apple")}
-                style={{ ...styles.socialLogoContainer, padding: 4 }}
-              >
-                <Image source={APPLE_LOGO} style={styles.socialLogo} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleSocialLogin("Facebook")}
-                style={{
-                  ...styles.socialLogoContainer,
-                  paddingVertical: 4,
-                  paddingRight: 6,
-                }}
-              >
-                <Image source={FACEBOOK_LOGO} style={styles.socialLogo} />
-              </TouchableOpacity>
+              {/* Social login buttons */}
+              <View style={styles.socialLoginContainer}>
+                <TouchableOpacity
+                  onPress={() => handleSocialLogin("Google")}
+                  style={{ ...styles.socialLogoContainer, padding: 4 }}
+                >
+                  <Image source={GOOGLE_LOGO} style={styles.socialLogo} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSocialLogin("Apple")}
+                  style={{ ...styles.socialLogoContainer, padding: 4 }}
+                >
+                  <Image source={APPLE_LOGO} style={styles.socialLogo} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSocialLogin("Facebook")}
+                  style={{
+                    ...styles.socialLogoContainer,
+                    paddingVertical: 4,
+                    paddingRight: 6,
+                  }}
+                >
+                  <Image source={FACEBOOK_LOGO} style={styles.socialLogo} />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
