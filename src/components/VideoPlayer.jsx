@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Text,
   StatusBar,
+  ScrollView,
 } from "react-native";
 import { ResizeMode, Video } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -77,7 +78,9 @@ const VideoPlayer = ({ level }) => {
   }
 
   return (
-    <View style={[styles.container, fullScreen && styles.fullScreenContainer]}>
+    <ScrollView
+      style={[styles.container, fullScreen && styles.fullScreenContainer]}
+    >
       {video ? (
         <View>
           <Video
@@ -97,7 +100,7 @@ const VideoPlayer = ({ level }) => {
       ) : (
         <Text style={styles.error}>Video for level {level} not found</Text>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
