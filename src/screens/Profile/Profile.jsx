@@ -61,21 +61,21 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem("authToken"); // Fetch token from storage
+        const token = await AsyncStorage.getItem("authToken"); 
         const response = await fetch(
           "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Add Bearer token here
+              Authorization: `Bearer ${token}`, 
             },
           }
         );
 
         const data = await response.json();
         if (data.success) {
-          setUserData(data.user); // Set fetched user data
+          setUserData(data.user); 
         } else {
           console.error("Failed to fetch user profile:", data.message);
         }
