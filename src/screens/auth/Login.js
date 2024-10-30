@@ -20,6 +20,7 @@ import APPLE_LOGO from "../../assets/apple_logo.png";
 import FACEBOOK_LOGO from "../../assets/facebook_logo.png";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // API URL
 const API_URL =
@@ -90,6 +91,9 @@ const Login = () => {
 
       if (response.ok) {
         alert("Login successful!");
+
+        await AsyncStorage.setItem("authToken", data.token);
+
         setLoginData({
           email: "",
           password: "",
