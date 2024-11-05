@@ -71,9 +71,12 @@ const Home = () => {
       const currentLength = inputValue.length;
       const answerText = soundObj.answer;
 
-      // Add the next character only if there's more left in the answer
-      if (currentLength < answerText.length) {
-        setInputValue(inputValue + answerText[currentLength]);
+      if (!answerText.startsWith(inputValue)) {
+        setInputValue(answerText[0]);
+      } else {
+        if (currentLength < answerText.length) {
+          setInputValue(inputValue + answerText[currentLength]);
+        }
       }
     }
   };
