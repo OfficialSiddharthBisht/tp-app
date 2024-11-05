@@ -48,6 +48,23 @@ const Home = () => {
     fetchSound();
   }, [soundIndex]);
 
+  // FOR FUTURE REFRENCE IF POINTER NEEDS THE BLINKING EFFECT
+
+  // useEffect(() => {
+  //   Animated.sequence([
+  //     Animated.timing(blinkerOpacity, {
+  //       toValue: 0,
+  //       duration: 500,
+  //       useNativeDriver: false,
+  //     }),
+  //     Animated.timing(blinkerOpacity, {
+  //       toValue: 1,
+  //       duration: 500,
+  //       useNativeDriver: false,
+  //     }),
+  //   ]).start();
+  // }, [blinkerOpacity]);
+
   // Function to handle hint button press
   const handleHintPress = () => {
     if (soundObj?.answer) {
