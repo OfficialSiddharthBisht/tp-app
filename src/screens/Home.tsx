@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -16,6 +16,7 @@ import { StatusBar } from "expo-status-bar";
 import Keyboard from "../components/Keyboard";
 import MainHeader from "../components/MainHeader";
 import AudioPlayer from "../components/AudioPlayer";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
@@ -24,6 +25,7 @@ const Home = () => {
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [soundIndex, setSoundIndex] = useState(0);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
+  const [hintIndex, setHintIndex] = useState(0);
 
   useEffect(() => {
     const fetchSound = async () => {
@@ -46,26 +48,27 @@ const Home = () => {
     fetchSound();
   }, [soundIndex]);
 
-  // FOR FUTURE REFRENCE IF POINTER NEEDS THE BLINKING EFFECT
+  // Function to handle hint button press
+  const handleHintPress = () => {
+    if (soundObj?.answer) {
+      const currentLength = inputValue.length;
+      const answerText = soundObj.answer;
 
-  // useEffect(() => {
-  //   Animated.sequence([
-  //     Animated.timing(blinkerOpacity, {
-  //       toValue: 0,
-  //       duration: 500,
-  //       useNativeDriver: false,
-  //     }),
-  //     Animated.timing(blinkerOpacity, {
-  //       toValue: 1,
-  //       duration: 500,
-  //       useNativeDriver: false,
-  //     }),
-  //   ]).start();
-  // }, [blinkerOpacity]);
+      // Add the next character only if there's more left in the answer
+      if (currentLength < answerText.length) {
+        setInputValue(inputValue + answerText[currentLength]);
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <MainHeader />
+
+      {/* Hint Button */}
+      <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
+        <FontAwesome name="lightbulb-o" size={24} color="#fff" />
+      </TouchableOpacity>
 
       <VideoPlayer level={1} />
 
@@ -121,38 +124,27 @@ const Home = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
   },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 1,
-    marginBottom: 1,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginLeft: 20,
-  },
-  videoContainer: {
-    position: "relative",
-  },
-  video: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  videoButton: {
+  hintButton: {
     position: "absolute",
-    bottom: 20,
-    left: "45%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 10,
-    borderRadius: 50,
+    zIndex: 100,
+    top: "15%",
+    right: 10,
+    backgroundColor: "#007AFF",
+    padding: 8,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  hintButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
   inputContainer: {
     flexDirection: "row",
@@ -162,7 +154,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 15,
   },
-
   input: {
     fontSize: 16,
     padding: 10,
@@ -171,7 +162,6 @@ const styles = StyleSheet.create({
   blinker: {
     width: 2,
     height: 20,
-    // flex: 1,
     backgroundColor: "#f11",
     borderRadius: 4,
   },
