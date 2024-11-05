@@ -47,7 +47,7 @@ const Keyboard: React.FC = ({
       }
     }
 
-    if (key === "Delete") {
+    if (key === "🗑️") {
       setInputValue("");
     }
   };
