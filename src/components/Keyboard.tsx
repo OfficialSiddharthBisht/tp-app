@@ -79,9 +79,9 @@ const Keyboard: React.FC = ({
   };
 
   const handleInput = (key) => {
-    if (key === "Delete") {
+    if (key === "🗑️") {
       setInputValue((prev) => prev.slice(0, -1));
-    } else if (key === "Space") {
+    } else if (key === "␣") {
       setInputValue((prev) => prev + " ");
     } else if (key === "123") {
       setFlag((prev) => !prev);

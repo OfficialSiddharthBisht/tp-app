@@ -293,7 +293,7 @@ const virtualKeyboardWithSound = [
           require("../assets/sounds/letterSounds/stoppers/glottalStop.mp3")
         ),
     },
-    Delete: {
+    "🗑️": {
       phoneticKey: "Del",
       audio: null, // No sound associated with Delete
     },
@@ -311,7 +311,7 @@ const virtualKeyboardWithSound = [
       phoneticKey: ":",
       audio: null, // No sound associated
     },
-    Space: {
+    "␣": {
       phoneticKey: "Space",
       audio: null, // No sound associated with Space key
     },
