@@ -148,7 +148,7 @@ const numericKeyboardWithSound = [
       phoneticKey: ">",
       audio: null,
     },
-    Delete: {
+    "🗑️": {
       phoneticKey: "Del",
       audio: null, // No sound associated with Delete
     },
@@ -166,7 +166,7 @@ const numericKeyboardWithSound = [
       phoneticKey: ":",
       audio: null, // No sound associated
     },
-    Space: {
+    "␣": {
       phoneticKey: "Space",
       audio: null, // No sound associated with Space key
     },
