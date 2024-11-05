@@ -87,7 +87,7 @@ const Home = () => {
 
       {/* Hint Button */}
       <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
-        <FontAwesome name="lightbulb-o" size={24} color="#fff" />
+        <FontAwesome name="lightbulb-o" size={24} color="red" />
       </TouchableOpacity>
 
       <VideoPlayer level={1} />
@@ -155,7 +155,9 @@ const styles = StyleSheet.create({
     zIndex: 100,
     top: "15%",
     right: 10,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#bdd8dd",
+    borderWidth: 0.5,
+    borderColor: "#888",
     padding: 8,
     borderRadius: 80,
     alignItems: "center",
