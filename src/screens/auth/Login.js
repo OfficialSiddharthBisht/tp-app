@@ -64,18 +64,6 @@ const Login = () => {
     try {
       setLoading(true);
 
-      // Remove this block of code before publish.
-      if (
-        loginData.email === "kbeducationhub@gmail.com" &&
-        loginData.password === "123456Aa@"
-      ) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        });
-        return;
-      }
-
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
