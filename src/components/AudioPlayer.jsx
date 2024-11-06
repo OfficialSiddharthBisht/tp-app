@@ -21,9 +21,9 @@ const AudioPlayer = ({ soundUri, isLoading }) => {
     }
 
     if (soundUri) {
+      setIsPlaying(true);
       const { sound } = await Audio.Sound.createAsync({ uri: soundUri });
       setCurrentSound(sound);
-      setIsPlaying(true);
 
       const status = await sound.getStatusAsync();
       const durationMs = status.durationMillis;

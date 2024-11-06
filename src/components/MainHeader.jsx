@@ -196,6 +196,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#bdd8dd",
   },
   modalContainer: {
     flex: 1,
