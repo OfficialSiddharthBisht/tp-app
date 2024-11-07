@@ -259,15 +259,22 @@ const Profile = () => {
           <View style={styles.badgesSection}>
             <Text style={styles.sectionTitle}>Badges</Text>
             <View style={styles.badgesContainer}>
-              {userDATA?.badges?.map((badge, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.badge}
-                  onPress={() => handleBadgePress(badge)}
-                >
-                  <Text style={styles.badgeText}>{badge.name}</Text>
-                </TouchableOpacity>
-              ))}
+              {userDATA?.badges?.length > 0 ? (
+                userDATA?.badges?.map((badge, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.badge}
+                    onPress={() => handleBadgePress(badge)}
+                  >
+                    <Text style={styles.badgeText}>{badge.name}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text>
+                  You're on the right track—your first badge is within reach!
+                  Keep pushing forward!
+                </Text>
+              )}
             </View>
           </View>
 
