@@ -148,11 +148,14 @@ const Login = () => {
                     style={styles.inputField(width)}
                     placeholder="Password"
                     value={loginData.password}
+                    autoCapitalize="none"
                     onChangeText={(e) =>
                       setLoginData({ ...loginData, password: e })
                     }
                     secureTextEntry={!passwordVisible}
-                    keyboardType={passwordVisible ? "visible-password" : null}
+                    keyboardType={
+                      passwordVisible ? "visible-password" : "default"
+                    }
                   />
                   <TouchableOpacity
                     style={styles.eyeIcon}
