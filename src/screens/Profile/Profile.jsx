@@ -61,21 +61,21 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem("authToken"); 
+        const token = await AsyncStorage.getItem("authToken");
         const response = await fetch(
           "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, 
+              Authorization: `Bearer ${token}`,
             },
           }
         );
 
         const data = await response.json();
         if (data.success) {
-          setUserData(data.user); 
+          setUserData(data.user);
         } else {
           console.error("Failed to fetch user profile:", data.message);
         }
@@ -96,7 +96,7 @@ const Profile = () => {
     return `${day}/${month}/${year}`;
   };
 
-  if (!userData) {
+  if (!userDATA) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -107,7 +107,7 @@ const Profile = () => {
 
   // Trigger fireworks if streak is greater than 2
   const handleStreakPress = () => {
-    if (userData.streak > 2) {
+    if (userData?.streak > 2) {
       setFireworks(true);
 
       // Stop fireworks after 2 seconds
@@ -158,8 +158,6 @@ const Profile = () => {
     navigation.navigate("Signup");
   };
 
-  console.log(userDATA);
-
   return (
     <SafeAreaView style={styles.container}>
       <MainHeader />
@@ -167,7 +165,7 @@ const Profile = () => {
         <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
 
         {/* Streak Section */}
-        {userDATA?.streak && (
+        {userDATA?.streak >= 0 && (
           <TouchableOpacity
             style={styles.streakContainer}
             onPress={handleStreakPress}
@@ -208,11 +206,11 @@ const Profile = () => {
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statsBox}>
-              <Text style={styles.statsValue}>{userDATA?.currentLevel}</Text>
+              <Text style={styles.statsValue}>{userDATA?.level}</Text>
               <Text style={styles.statsLabel}>Level</Text>
             </View>
             <View style={styles.statsBox}>
-              <Text style={styles.statsValue}>{userDATA?.currentSublevel}</Text>
+              <Text style={styles.statsValue}>{userDATA?.sublevel}</Text>
               <Text style={styles.statsLabel}>Sublevel</Text>
             </View>
             <View style={styles.statsBox}>
@@ -261,7 +259,7 @@ const Profile = () => {
           <View style={styles.badgesSection}>
             <Text style={styles.sectionTitle}>Badges</Text>
             <View style={styles.badgesContainer}>
-              {userData?.badges.map((badge, index) => (
+              {userDATA?.badges?.map((badge, index) => (
                 <TouchableOpacity
                   key={index}
                   style={styles.badge}
