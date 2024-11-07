@@ -26,6 +26,15 @@ const Home = () => {
   const [soundIndex, setSoundIndex] = useState(0);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
+  const [showHintNotification, setShowHintNotification] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHintNotification(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const fetchSound = async () => {
@@ -86,9 +95,16 @@ const Home = () => {
       <MainHeader />
 
       {/* Hint Button */}
-      <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
-        <FontAwesome name="lightbulb-o" size={24} color="red" />
-      </TouchableOpacity>
+      <>
+        <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
+          <FontAwesome name="lightbulb-o" size={24} color="red" />
+        </TouchableOpacity>
+        {showHintNotification && (
+          <View style={styles.hintNotification}>
+            <Text style={styles.hintText}>Press here for a hint!</Text>
+          </View>
+        )}
+      </>
 
       <VideoPlayer level={1} />
 
@@ -167,6 +183,26 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "600",
+  },
+  hintNotification: {
+    position: "absolute",
+    alignSelf: "flex-end",
+    top: "15.5%",
+    borderWidth: 0.5,
+    borderColor: "#888",
+    right: 50,
+    zIndex: 100,
+    flexDirection: "row",
+    backgroundColor: "#bdd8dd",
+    padding: 5,
+    borderRadius: 10,
+  },
+  hintText: {
+    color: "black",
+    fontSize: 12,
+    fontWeight: "600",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
   inputContainer: {
     flexDirection: "row",
