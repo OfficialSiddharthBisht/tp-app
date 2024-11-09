@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -10,82 +10,52 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { Audio } from "expo-av";
 import VideoPlayer from "../components/VideoPlayer";
 import { StatusBar } from "expo-status-bar";
 import Keyboard from "../components/Keyboard";
 import MainHeader from "../components/MainHeader";
+import AudioPlayer from "../components/AudioPlayer";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
-  const navigation = useNavigation();
-  const [isPlaying, setIsPlaying] = useState(false); // Track the state of the s ound
-  const [sound, setSound] = useState(null); // Track the sound object
-  const videoRef = useRef(null); // Reference for the video
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Track video play/pause state
+  const [soundUri, setSoundUri] = useState(null);
+  const [soundObj, setSoundObj] = useState(null);
+  const [blinkerOpacity] = useState(new Animated.Value(1));
+  const [soundIndex, setSoundIndex] = useState(0);
+  const [isSoundLoading, setIsSoundLoading] = useState(false);
+  const [hintIndex, setHintIndex] = useState(0);
+  const [showHintNotification, setShowHintNotification] = useState(true);
 
   useEffect(() => {
-    // Cleanup when the component is unmounted
-    return () => {
-      if (sound) {
-        sound.unloadAsync(); // Unload the sound when component unmounts
+    const timer = setTimeout(() => {
+      setShowHintNotification(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchSound = async () => {
+      try {
+        setIsSoundLoading(true);
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
+        );
+        const data = await response.json();
+        if (data.success && data.sounds[soundIndex]) {
+          setSoundUri(data.sounds[soundIndex].sound);
+          setSoundObj(data.sounds[soundIndex]);
+        }
+      } catch (error) {
+        console.error("Error fetching sound:", error);
+      } finally {
+        setIsSoundLoading(false);
       }
     };
-  }, [sound]);
-
-  const playPauseSound = async () => {
-    try {
-      if (sound === null) {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../assets/sounds/letterSounds/stoppers/glottalStop.mp3")
-        );
-        setSound(newSound);
-
-        // Handle status updates like when the sound finishes
-        newSound.setOnPlaybackStatusUpdate((status) => {
-          if (status.isLoaded && status.didJustFinish) {
-            // Sound has finished playing, reset state
-            setIsPlaying(false);
-            setSound(null); // Unload the sound to allow it to be reloaded later
-          }
-        });
-
-        await newSound.playAsync();
-        setIsPlaying(true);
-      } else {
-        // Toggle between play and pause
-        if (isPlaying) {
-          await sound.pauseAsync();
-          setIsPlaying(false);
-        } else {
-          await sound.playAsync();
-          setIsPlaying(true);
-        }
-      }
-    } catch (error) {
-      console.log("Error loading or playing sound: ", error);
-    }
-  };
-
-  const toggleVideoPlayback = async () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        await videoRef.current.pauseAsync();
-      } else {
-        await videoRef.current.playAsync();
-      }
-      setIsVideoPlaying(!isVideoPlaying);
-    }
-  };
-
-  const levelVideo = {
-    link: "https://www.w3schools.com/html/mov_bbb.mp4", // Example video URL
-    title: "Sample Video",
-    description: "This is a sample video for demo purposes.",
-  };
-
-  const [blinkerOpacity] = useState(new Animated.Value(1));
+    fetchSound();
+  }, [soundIndex]);
 
   // FOR FUTURE REFRENCE IF POINTER NEEDS THE BLINKING EFFECT
 
@@ -104,61 +74,44 @@ const Home = () => {
   //   ]).start();
   // }, [blinkerOpacity]);
 
+  // Function to handle hint button press
+  const handleHintPress = () => {
+    if (soundObj?.answer) {
+      const currentLength = inputValue.length;
+      const answerText = soundObj.answer;
+
+      if (!answerText.startsWith(inputValue)) {
+        setInputValue(answerText[0]);
+      } else {
+        if (currentLength < answerText.length) {
+          setInputValue(inputValue + answerText[currentLength]);
+        }
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* App Header */}
-      {/* <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={28} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Home</Text>
-      </View> */}
       <MainHeader />
 
-      {/* Video Player */}
-      {/* <View style={styles.videoContainer}>
-        <Video
-          ref={videoRef}
-          source={{ uri: "https://www.w3schools.com/html/mov_bbb.mp4" }} // Example video URL
-          rate={1.0}
-          volume={1.0}
-          isMuted={false}
-          resizeMode="contain"
-          shouldPlay={isVideoPlaying} // Control initial play state
-          isLooping
-          style={styles.video}
-        />
-
-        <TouchableOpacity
-          style={styles.videoButton}
-          onPress={toggleVideoPlayback}
-        >
-          <Icon
-            name={isVideoPlaying ? "pause" : "play-arrow"}
-            size={24}
-            color="#fff"
-          />
+      {/* Hint Button */}
+      <>
+        <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
+          <FontAwesome name="lightbulb-o" size={24} color="red" />
         </TouchableOpacity>
-      </View> */}
+        {showHintNotification && (
+          <View style={styles.hintNotification}>
+            <Text style={styles.hintText}>Press here for a hint!</Text>
+          </View>
+        )}
+      </>
 
-      <VideoPlayer levelVideo={levelVideo} />
+      <VideoPlayer level={1} />
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
-        <TouchableOpacity style={styles.voiceButton} onPress={playPauseSound}>
-          <Icon
-            name={isPlaying ? "pause" : "play-arrow"}
-            size={24}
-            color="#888"
-          />
-        </TouchableOpacity>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Type something..."
-          value={inputValue}
-          onChangeText={(text) => setInputValue(text)}
-          // editable={false}
-        /> */}
+        <AudioPlayer soundUri={soundUri} isLoading={isSoundLoading} />
+
         <View
           style={{
             flex: 1,
@@ -170,7 +123,11 @@ const Home = () => {
           }}
         >
           <Text style={[styles.input, !inputValue && { color: "#999" }]}>
-            {inputValue ? inputValue : "Enter your answer"}{" "}
+            {inputValue
+              ? inputValue.length > 20
+                ? `...${inputValue.slice(-30)}`
+                : inputValue
+              : "Enter your answer"}{" "}
           </Text>
           {inputValue && (
             <Text
@@ -192,55 +149,68 @@ const Home = () => {
         </View>
       </View>
       <StatusBar style="dark" />
-      <Keyboard setInputValue={setInputValue} />
+      <Keyboard
+        setInputValue={setInputValue}
+        soundObj={soundObj}
+        setSoundIndex={setSoundIndex}
+        inputValue={inputValue}
+        soundUri={soundUri}
+        setSoundObj={setSoundObj}
+      />
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
   },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 1,
-    marginBottom: 1,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginLeft: 20,
-  },
-  videoContainer: {
-    position: "relative",
-  },
-  video: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  videoButton: {
+  hintButton: {
     position: "absolute",
-    bottom: 20,
-    left: "45%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 10,
-    borderRadius: 50,
+    zIndex: 100,
+    top: "15%",
+    right: 10,
+    backgroundColor: "#bdd8dd",
+    borderWidth: 0.5,
+    borderColor: "#888",
+    padding: 8,
+    borderRadius: 80,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  hintButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  hintNotification: {
+    position: "absolute",
+    alignSelf: "flex-end",
+    top: "15.5%",
+    borderWidth: 0.5,
+    borderColor: "#888",
+    right: 50,
+    zIndex: 100,
+    flexDirection: "row",
+    backgroundColor: "#bdd8dd",
+    padding: 5,
+    borderRadius: 10,
+  },
+  hintText: {
+    color: "black",
+    fontSize: 12,
+    fontWeight: "600",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
-    paddingVertical: 30,
+    paddingVertical: 10,
     gap: 15,
-  },
-  voiceButton: {
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 5,
   },
   input: {
     fontSize: 16,
@@ -250,7 +220,6 @@ const styles = StyleSheet.create({
   blinker: {
     width: 2,
     height: 20,
-    // flex: 1,
     backgroundColor: "#f11",
     borderRadius: 4,
   },

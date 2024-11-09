@@ -1,44 +1,106 @@
-import React, { useState, useRef } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  StatusBar,
+  ScrollView,
+} from "react-native";
 import { ResizeMode, Video } from "expo-av";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const VideoPlayer = ({ levelVideo }) => {
-  const [paused, setPaused] = useState(true);
+const VideoPlayer = ({ level }) => {
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [videoEnded, setVideoEnded] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
-  const [, setVideoDuration] = useState(0);
-  const [, setCurrentTime] = useState(0);
   const videoRef = useRef(null);
 
-  // Handle video load
-  const onLoad = (data) => {
-    setVideoDuration(data.durationMillis / 1000);
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
+        );
+        const data = await response.json();
+        if (data.success) {
+          setVideos(data.videos);
+        } else {
+          setError("Failed to fetch videos");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching the videos");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVideos();
+  }, []);
+
+  const video = videos.find((vid) => vid.level === level);
+
+  const onPlaybackStatusUpdate = async (status) => {
+    if (status.didJustFinish) {
+      await videoRef.current.setPositionAsync(0);
+      await videoRef.current.pauseAsync();
+      setVideoEnded(true);
+    }
+    if (status.isPlaying) {
+      setVideoEnded(false);
+    }
+    if (!status.isPlaying) {
+      setVideoEnded(true);
+    }
   };
 
-  // Handle video progress
-  const onProgress = (data) => {
-    setCurrentTime(data.positionMillis / 1000);
+  const toggleFullScreen = () => {
+    setFullScreen(!fullScreen);
   };
+
+  const replayVideo = () => {
+    videoRef.current.setPositionAsync(0);
+    videoRef.current.playAsync();
+    setVideoEnded(false);
+  };
+
+  if (loading) {
+    return (
+      <ActivityIndicator size="large" color="#79d2eb" style={styles.loader} />
+    );
+  }
+
+  if (error) {
+    return <Text style={styles.error}>{error}</Text>;
+  }
 
   return (
-    <View style={styles.container}>
-      {/* Video Player */}
-      <View style={styles.videoContainer}>
-        <Video
-          ref={videoRef}
-          source={{ uri: levelVideo.link }}
-          style={fullScreen ? styles.fullScreenVideo : styles.video}
-          resizeMode={ResizeMode.CONTAIN}
-          useNativeControls
-          onPlaybackStatusUpdate={(status) => {
-            if (status.isLoaded) {
-              onLoad(status);
-              onProgress(status);
-            }
-          }}
-          shouldPlay={!paused}
-        />
-      </View>
-    </View>
+    <ScrollView
+      style={[styles.container, fullScreen && styles.fullScreenContainer]}
+    >
+      {video ? (
+        <View>
+          <Video
+            ref={videoRef}
+            source={{ uri: video.link }}
+            style={fullScreen ? styles.fullScreenVideo : styles.video}
+            resizeMode={ResizeMode.CONTAIN}
+            useNativeControls
+            onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+          />
+          {videoEnded && (
+            <TouchableOpacity style={styles.replayButton} onPress={replayVideo}>
+              <MaterialIcons name="replay" size={40} color="#fff" />
+            </TouchableOpacity>
+          )}
+        </View>
+      ) : (
+        <Text style={styles.error}>Video for level {level} not found</Text>
+      )}
+    </ScrollView>
   );
 };
 
@@ -49,34 +111,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 40,
   },
-  videoContainer: {
-    position: "relative",
+  fullScreenContainer: {
     backgroundColor: "#000",
-    borderRadius: 10,
-    overflow: "hidden",
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  error: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 20,
   },
   video: {
     width: "100%",
-    height: Dimensions.get("window").width * 0.5625,
+    height: Dimensions.get("window").width * 0.8,
   },
   fullScreenVideo: {
     width: Dimensions.get("window").height,
     height: Dimensions.get("window").width,
   },
-  controls: {
+  replayButton: {
     position: "absolute",
-    bottom: 10,
-    left: 10,
-    right: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -20 }, { translateY: -20 }],
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: 10,
-    borderRadius: 5,
-  },
-  progressText: {
-    color: "#fff",
+    borderRadius: 25,
   },
 });
 

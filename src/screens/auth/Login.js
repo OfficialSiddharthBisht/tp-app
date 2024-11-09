@@ -10,6 +10,7 @@ import {
   Keyboard,
   StyleSheet,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
@@ -19,6 +20,7 @@ import APPLE_LOGO from "../../assets/apple_logo.png";
 import FACEBOOK_LOGO from "../../assets/facebook_logo.png";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // API URL
 const API_URL =
@@ -31,6 +33,7 @@ const Login = () => {
     password: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
@@ -59,17 +62,7 @@ const Login = () => {
     }
 
     try {
-      // Remove this block of code before publish.
-      if (
-        loginData.email === "kbeducationhub@gmail.com" &&
-        loginData.password === "123456Aa@"
-      ) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        });
-        return;
-      }
+      setLoading(true);
 
       const response = await fetch(API_URL, {
         method: "POST",
@@ -86,6 +79,9 @@ const Login = () => {
 
       if (response.ok) {
         alert("Login successful!");
+
+        await AsyncStorage.setItem("authToken", data.token);
+
         setLoginData({
           email: "",
           password: "",
@@ -93,13 +89,15 @@ const Login = () => {
         navigation.reset({
           index: 0,
           routes: [{ name: "Home" }],
-        })
+        });
       } else {
         alert(data.message || "Login failed");
       }
     } catch (error) {
       alert("An error occurred. Please try again.");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,11 +148,14 @@ const Login = () => {
                     style={styles.inputField(width)}
                     placeholder="Password"
                     value={loginData.password}
+                    autoCapitalize="none"
                     onChangeText={(e) =>
                       setLoginData({ ...loginData, password: e })
                     }
                     secureTextEntry={!passwordVisible}
-                    keyboardType={passwordVisible ? "visible-password" : null}
+                    keyboardType={
+                      passwordVisible ? "visible-password" : "default"
+                    }
                   />
                   <TouchableOpacity
                     style={styles.eyeIcon}
@@ -179,8 +180,13 @@ const Login = () => {
               <TouchableOpacity
                 style={styles.loginButton(width)}
                 onPress={handleLogin}
+                disabled={loading}
               >
-                <Text style={styles.loginButtonText(width)}>Login</Text>
+                {loading ? (
+                  <ActivityIndicator color={"#fff"} />
+                ) : (
+                  <Text style={styles.loginButtonText(width)}>Login</Text>
+                )}
               </TouchableOpacity>
             </View>
 

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,12 +8,26 @@ import {
 } from "react-native";
 import virtualKeyboardWithSound from "../utils/en.keyboardSounds.utils";
 import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
+import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
+import KeyboardModal from "./KeyboardModal";
+import AnswerModal from "./AnswerModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 
-const Keyboard: React.FC = ({ setInputValue }) => {
+const Keyboard: React.FC = ({
+  setInputValue,
+  soundObj,
+  setSoundIndex,
+  inputValue,
+  soundUri,
+  setSoundObj,
+}) => {
   const audioRef = useRef<Audio.Sound | null>(null);
+  const [flag, setFlag] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -33,7 +47,7 @@ const Keyboard: React.FC = ({ setInputValue }) => {
       }
     }
 
-    if (key === "Delete") {
+    if (key === "🗑️") {
       setInputValue("");
     }
   };
@@ -42,7 +56,7 @@ const Keyboard: React.FC = ({ setInputValue }) => {
     if (audioRef.current) {
       try {
         await audioRef.current.stopAsync();
-        await audioRef.current.unloadAsync(); // Release the audio resources after stopping
+        await audioRef.current.unloadAsync();
         audioRef.current = null;
       } catch (error) {
         console.error("Error stopping sound:", error);
@@ -50,11 +64,31 @@ const Keyboard: React.FC = ({ setInputValue }) => {
     }
   };
 
+  const handleAnswerCheck = () => {
+    if (!inputValue) return;
+    setIsAnswerModalVisible(true);
+    if (inputValue == soundObj.answer) {
+      setInputValue("");
+      setSoundIndex((prev) => prev + 1);
+      setSoundObj(null);
+      setIsCorrect(true);
+    } else {
+      setIsCorrect(false);
+      console.log("wrong answer");
+    }
+  };
+
   const handleInput = (key) => {
-    if (key === "Delete") {
+    if (key === "🗑️") {
       setInputValue((prev) => prev.slice(0, -1));
-    } else if (key === "Space") {
+    } else if (key === "␣") {
       setInputValue((prev) => prev + " ");
+    } else if (key === "123") {
+      setFlag((prev) => !prev);
+    } else if (key === "☺️") {
+      setModalVisible(true);
+    } else if (key === "Submit") {
+      handleAnswerCheck();
     } else {
       setInputValue((prev) => prev + key);
     }
@@ -62,37 +96,82 @@ const Keyboard: React.FC = ({ setInputValue }) => {
 
   return (
     <View style={styles.keyboardContainer}>
-      {virtualKeyboardWithSound.map((row, rowIndex) => (
-        <View key={rowIndex} style={styles.row}>
-          {Object.keys(row).map((key, keyIndex) => {
-            const keyData = row[key];
+      {!flag
+        ? virtualKeyboardWithSound.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {Object.keys(row).map((key, keyIndex) => {
+                const keyData = row[key];
 
-            // Apply special styles for the bottom row
-            const isBottomRow =
-              rowIndex === virtualKeyboardWithSound.length - 1;
-            const bottomKeyStyle =
-              keyIndex === 0 || keyIndex === 1 || keyIndex === 2
-                ? styles.bottomKeySmall
-                : keyIndex === 3
-                ? styles.bottomKeyLarge
-                : keyIndex === 4
-                ? styles.bottomKeySmall
-                : styles.bottomKeyMedium;
+                // Apply special styles for the bottom row
+                const isBottomRow =
+                  rowIndex === virtualKeyboardWithSound.length - 1;
+                const bottomKeyStyle =
+                  keyIndex === 0 || keyIndex === 1 || keyIndex === 2
+                    ? styles.bottomKeySmall
+                    : keyIndex === 3
+                    ? styles.bottomKeyLarge
+                    : keyIndex === 4
+                    ? styles.bottomKeySmall
+                    : styles.bottomKeyMedium;
 
-            return (
-              <TouchableOpacity
-                key={keyIndex}
-                style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
-                onLongPress={() => handleLongPress(key)} // Trigger sound on long press
-                onPressOut={handlePressOut} // Stop sound on release
-                onPress={() => handleInput(key)}
-              >
-                <Text style={styles.keyText}>{key}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      ))}
+                return (
+                  <TouchableOpacity
+                    key={keyIndex}
+                    style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                    onLongPress={() => handleLongPress(key)} // Trigger sound on long press
+                    onPressOut={handlePressOut} // Stop sound on release
+                    onPress={() => handleInput(key)}
+                  >
+                    <Text style={styles.keyText}>{key}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))
+        : numericKeyboardWithSound.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {Object.keys(row).map((key, keyIndex) => {
+                const keyData = row[key];
+
+                // Apply special styles for the bottom row
+                const isBottomRow =
+                  rowIndex === numericKeyboardWithSound.length - 1;
+                const bottomKeyStyle =
+                  keyIndex === 0 || keyIndex === 1 || keyIndex === 2
+                    ? styles.bottomKeySmall
+                    : keyIndex === 3
+                    ? styles.bottomKeyLarge
+                    : keyIndex === 4
+                    ? styles.bottomKeySmall
+                    : styles.bottomKeyMedium;
+
+                return (
+                  <TouchableOpacity
+                    key={keyIndex}
+                    style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                    onLongPress={() => handleLongPress(key)} // Trigger sound on long press
+                    onPressOut={handlePressOut} // Stop sound on release
+                    onPress={() => handleInput(key)}
+                  >
+                    <Text style={styles.keyText}>{key}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))}
+      {isModalVisible && (
+        <KeyboardModal
+          isVisible={isModalVisible}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
+      {isAnswerModalVisible && (
+        <AnswerModal
+          isVisible={isAnswerModalVisible}
+          onClose={() => setIsAnswerModalVisible(false)}
+          isCorrect={isCorrect}
+        />
+      )}
     </View>
   );
 };
@@ -100,7 +179,7 @@ const Keyboard: React.FC = ({ setInputValue }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10, // Optional padding for spacing without limiting the width
+    paddingHorizontal: 10,
   },
   headerContainer: {
     flexDirection: "row",

@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -6,20 +7,22 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
-  ActivityIndicator, 
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
 import AppHeader from "../../components/AppHeader";
 import ConfettiCannon from "react-native-confetti-cannon";
 import MainHeader from "../../components/MainHeader";
+import LoadingModal from "../../components/LoadingModal";
+import { styles } from "./profile.style";
 
 const Profile = () => {
   const navigation = useNavigation();
-  const [loadingModalVisible, setLoadingModalVisible] = useState(false); 
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 
   // Mocked user data from API response
   const userData = {
@@ -42,6 +45,8 @@ const Profile = () => {
     ],
   };
 
+  const [userDATA, setUserData] = useState(null); // Initialize as null
+
   // State to handle modal visibility and selected badge
   const [badgeModalVisible, setBadgeModalVisible] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState(null);
@@ -52,7 +57,37 @@ const Profile = () => {
   // State for delete account confirmation
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
-  // Function to format the date to dd/mm/yyyy
+  // Fetch user profile data on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (data.success) {
+          setUserData(data.user);
+        } else {
+          console.error("Failed to fetch user profile:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  // Format the date to dd/mm/yyyy
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -61,9 +96,18 @@ const Profile = () => {
     return `${day}/${month}/${year}`;
   };
 
+  if (!userDATA) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading profile...</Text>
+      </SafeAreaView>
+    );
+  }
+
   // Trigger fireworks if streak is greater than 2
   const handleStreakPress = () => {
-    if (userData.streak > 2) {
+    if (userData?.streak > 2) {
       setFireworks(true);
 
       // Stop fireworks after 2 seconds
@@ -121,16 +165,20 @@ const Profile = () => {
         <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
 
         {/* Streak Section */}
-        <TouchableOpacity
-          style={styles.streakContainer}
-          onPress={handleStreakPress}
-          disabled={fireworks}
-        >
-          <Text style={styles.streakText}>🔥 {userData.streak} Day Streak</Text>
-        </TouchableOpacity>
+        {userDATA?.streak >= 0 && (
+          <TouchableOpacity
+            style={styles.streakContainer}
+            onPress={handleStreakPress}
+            disabled={fireworks}
+          >
+            <Text style={styles.streakText}>
+              🔥 {userDATA?.streak} Day Streak
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <ScrollView
-          style={{ height: "auto" }}
+          style={{ height: "75%" }}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical
         >
@@ -143,30 +191,32 @@ const Profile = () => {
                 ellipsizeMode="tail"
                 style={styles.profileName}
               >
-                {userData.name}
+                {userDATA?.name}
               </Text>
-              <Text style={styles.profileEmail}>{userData.email}</Text>
+              <Text style={styles.profileEmail}>{userDATA?.email}</Text>
             </View>
           </View>
 
           {/* Prominent Points Display */}
           <View style={styles.pointsContainer}>
             <Text style={styles.pointsLabel}>Points</Text>
-            <Text style={styles.pointsValue}>{userData.points}</Text>
+            <Text style={styles.pointsValue}>{userDATA?.points}</Text>
           </View>
 
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statsBox}>
-              <Text style={styles.statsValue}>{userData.currentLevel}</Text>
+              <Text style={styles.statsValue}>{userDATA?.level}</Text>
               <Text style={styles.statsLabel}>Level</Text>
             </View>
             <View style={styles.statsBox}>
-              <Text style={styles.statsValue}>{userData.currentSublevel}</Text>
+              <Text style={styles.statsValue}>{userDATA?.sublevel}</Text>
               <Text style={styles.statsLabel}>Sublevel</Text>
             </View>
             <View style={styles.statsBox}>
-              <Text style={styles.statsValue}>{userData.languages.length}</Text>
+              <Text style={styles.statsValue}>
+                {userDATA?.languages.length}
+              </Text>
               <Text style={styles.statsLabel}>Languages</Text>
             </View>
           </View>
@@ -176,9 +226,9 @@ const Profile = () => {
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Account Type</Text>
               <View style={styles.accountRow}>
-                <Text style={styles.detailValue}>{userData.accountType}</Text>
+                <Text style={styles.detailValue}>{userDATA?.accountType}</Text>
                 {/* Upgrade Button */}
-                {userData.accountType === "free" && (
+                {userDATA?.accountType === "free" && (
                   <TouchableOpacity
                     style={styles.upgradeButton}
                     onPress={() => alert("Upgrade to Premium")}
@@ -190,17 +240,17 @@ const Profile = () => {
             </View>
 
             {/* Conditionally display the role if it's not "user" */}
-            {userData.role !== "user" && (
+            {userDATA?.role !== "user" && (
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>Role</Text>
-                <Text style={styles.detailValue}>{userData.role}</Text>
+                <Text style={styles.detailValue}>{userDATA?.role}</Text>
               </View>
             )}
 
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Joined</Text>
               <Text style={styles.detailValue}>
-                {formatDate(userData.createdAt)}
+                {formatDate(userDATA?.createdAt)}
               </Text>
             </View>
           </View>
@@ -209,15 +259,22 @@ const Profile = () => {
           <View style={styles.badgesSection}>
             <Text style={styles.sectionTitle}>Badges</Text>
             <View style={styles.badgesContainer}>
-              {userData.badges.map((badge, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.badge}
-                  onPress={() => handleBadgePress(badge)}
-                >
-                  <Text style={styles.badgeText}>{badge.name}</Text>
-                </TouchableOpacity>
-              ))}
+              {userDATA?.badges?.length > 0 ? (
+                userDATA?.badges?.map((badge, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.badge}
+                    onPress={() => handleBadgePress(badge)}
+                  >
+                    <Text style={styles.badgeText}>{badge.name}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text>
+                  You're on the right track—your first badge is within reach!
+                  Keep pushing forward!
+                </Text>
+              )}
             </View>
           </View>
 
@@ -307,19 +364,11 @@ const Profile = () => {
         </Modal>
 
         {/* Loading Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
+        <LoadingModal
           visible={loadingModalVisible}
-          onRequestClose={() => setLoadingModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <ActivityIndicator size="large" color="#79d2eb" />
-              <Text style={styles.loadingText}>Logging out...</Text>
-            </View>
-          </View>
-        </Modal>
+          onClose={() => setLoadingModalVisible(false)}
+          title={"Logging Out..."}
+        />
 
         {fireworks && (
           <View style={styles.confettiContainer}>
@@ -336,258 +385,5 @@ const Profile = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  profileHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    justifyContent: "space-between",
-  },
-  logo: {
-    borderRadius: 100,
-    height: 100,
-    width: 100,
-  },
-  userInfo: {
-    marginLeft: 20,
-    flex: 1,
-  },
-  profileName: {
-    fontSize: 24,
-    fontWeight: "600",
-  },
-  profileEmail: {
-    fontSize: 16,
-    color: "#888",
-  },
-  streakContainer: {
-    alignSelf: "flex-end",
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: "#79d2eb",
-    overflow: "visible",
-  },
-  streakText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  pointsContainer: {
-    alignItems: "center",
-    marginVertical: 10,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: "#79d2eb",
-    borderRadius: 12,
-    backgroundColor: "#f1f9fc",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  pointsLabel: {
-    fontSize: 18,
-    color: "#444",
-    fontWeight: "600",
-  },
-  pointsValue: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#79d2eb",
-  },
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 20,
-  },
-  statsBox: {
-    alignItems: "center",
-  },
-  statsValue: {
-    fontSize: 22,
-    fontWeight: "600",
-  },
-  statsLabel: {
-    fontSize: 14,
-    color: "#666",
-  },
-  profileDetails: {
-    marginVertical: 10,
-  },
-  detailRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  accountRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  detailLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  detailValue: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#666",
-  },
-  upgradeButton: {
-    marginLeft: 10,
-    backgroundColor: "#c7222a",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    borderColor: "#000",
-    borderWidth: 0.7,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  upgradeButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  badgesSection: {
-    marginVertical: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  badgesContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  badge: {
-    backgroundColor: "#79d2eb",
-    padding: 10,
-    borderRadius: 12,
-    margin: 5,
-  },
-  badgeText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalView: {
-    backgroundColor: "#fff",
-    width: "80%",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    position: "relative",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-  },
-  closeIconContainer: {
-    alignSelf: "flex-end",
-    bottom: "90%",
-    left: 15,
-    borderWidth: 0.5,
-    backgroundColor: "#1123",
-    borderRadius: 4,
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  modalDescription: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-  },
-  confirmButton: {
-    backgroundColor: "#c7222a",
-    padding: 10,
-    borderRadius: 8,
-  },
-  confirmButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  cancelButton: {
-    backgroundColor: "#79d2eb",
-    padding: 10,
-    borderRadius: 8,
-  },
-  cancelButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  logoutContainer: {
-    marginTop: 40,
-    width: "100%",
-  },
-  logoutButton: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#79d2eb",
-    padding: 12,
-    borderRadius: 12,
-  },
-  logoutButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 18,
-  },
-  deleteAccountContainer: {
-    marginTop: 20,
-  },
-  deleteAccountButton: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#c7222a",
-    padding: 12,
-    borderRadius: 12,
-  },
-  deleteAccountButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 18,
-  },
-  confettiContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 999, // Ensure it's on top
-    pointerEvents: "none", // Allow touches to pass through
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: "#79d2eb",
-  },
-});
 
 export default Profile;

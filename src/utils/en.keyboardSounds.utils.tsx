@@ -1,4 +1,4 @@
-import { Audio } from 'expo-av';
+import { Audio } from "expo-av";
 
 // Define a utility function to load the sound asynchronously
 const loadSoundAsync = async (soundFile: any) => {
@@ -15,187 +15,304 @@ const loadSoundAsync = async (soundFile: any) => {
 const virtualKeyboardWithSound = [
   {
     ɑ: {
-      phoneticKey: 'ɑ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/aBack.mp3')),
+      phoneticKey: "ɑ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/aBack.mp3")
+        ),
     },
     æ: {
-      phoneticKey: 'æ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/aFront.mp3')),
+      phoneticKey: "æ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/aFront.mp3")
+        ),
     },
     ɜ: {
-      phoneticKey: 'ɜ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/schwaStrong.mp3')),
+      phoneticKey: "ɜ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/schwaStrong.mp3")
+        ),
     },
     ə: {
-      phoneticKey: 'ə',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/schwa.mp3')),
+      phoneticKey: "ə",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/schwa.mp3")
+        ),
     },
     ʇ: {
-      phoneticKey: 'ʇ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/stoppers/glottalStop.mp3')),
+      phoneticKey: "ʇ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/stoppers/glottalStop.mp3")
+        ),
     },
     ʌ: {
-      phoneticKey: 'ʌ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/aClosed.mp3')),
+      phoneticKey: "ʌ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/aClosed.mp3")
+        ),
     },
     ü: {
-      phoneticKey: 'ü',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/uHigh.mp3')),
+      phoneticKey: "ü",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/uHigh.mp3")
+        ),
     },
     ɪ: {
-      phoneticKey: 'ɪ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/iRelaxed.mp3')),
+      phoneticKey: "ɪ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/iRelaxed.mp3")
+        ),
     },
     ɔ: {
-      phoneticKey: 'ɔ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/oClosed.mp3')),
+      phoneticKey: "ɔ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/oClosed.mp3")
+        ),
     },
     ð: {
-      phoneticKey: 'ð',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/fricatives/voicedTH.mp3')),
+      phoneticKey: "ð",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/fricatives/voicedTH.mp3")
+        ),
     },
   },
   {
     ʒ: {
-      phoneticKey: 'ʒ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/fricatives/zh.mp3')),
+      phoneticKey: "ʒ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/fricatives/zh.mp3")
+        ),
     },
     w: {
-      phoneticKey: 'w',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/w.mp3')),
+      phoneticKey: "w",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/w.mp3")
+        ),
     },
     e: {
-      phoneticKey: 'e',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/eStrong.mp3')),
+      phoneticKey: "e",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/eStrong.mp3")
+        ),
     },
     r: {
-      phoneticKey: 'r',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/r.mp3')),
+      phoneticKey: "r",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/r.mp3")
+        ),
     },
     t: {
-      phoneticKey: 't',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/plosives/t.mp3')),
+      phoneticKey: "t",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/plosives/t.mp3")
+        ),
     },
     y: {
-      phoneticKey: 'y',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/y.mp3')),
+      phoneticKey: "y",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/y.mp3")
+        ),
     },
     u: {
-      phoneticKey: 'u',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/uLow.mp3')),
+      phoneticKey: "u",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/uLow.mp3")
+        ),
     },
     i: {
-      phoneticKey: 'i',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/iTight.mp3')),
+      phoneticKey: "i",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/iTight.mp3")
+        ),
     },
     o: {
-      phoneticKey: 'o',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/oOpen.mp3')),
+      phoneticKey: "o",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/oOpen.mp3")
+        ),
     },
     p: {
-      phoneticKey: 'p',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/plosives/p.mp3')),
+      phoneticKey: "p",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/plosives/p.mp3")
+        ),
     },
   },
   {
     ʃ: {
-      phoneticKey: 'ʃ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/fricatives/sh.mp3')),
+      phoneticKey: "ʃ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/fricatives/sh.mp3")
+        ),
     },
     s: {
-      phoneticKey: 's',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/fricatives/s.mp3')),
+      phoneticKey: "s",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/fricatives/s.mp3")
+        ),
     },
     d: {
-      phoneticKey: 'd',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/plosives/d.mp3')),
+      phoneticKey: "d",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/plosives/d.mp3")
+        ),
     },
     f: {
-      phoneticKey: 'f',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/fricatives/f.mp3')),
+      phoneticKey: "f",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/fricatives/f.mp3")
+        ),
     },
     g: {
-      phoneticKey: 'g',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/plosives/g.mp3')),
+      phoneticKey: "g",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/plosives/g.mp3")
+        ),
     },
     h: {
-      phoneticKey: 'h',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/fricatives/h.mp3')),
+      phoneticKey: "h",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/fricatives/h.mp3")
+        ),
     },
     j: {
-      phoneticKey: 'j',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/plosives/j.mp3')),
+      phoneticKey: "j",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/plosives/j.mp3")
+        ),
     },
     k: {
-      phoneticKey: 'k',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/plosives/k.mp3')),
+      phoneticKey: "k",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/plosives/k.mp3")
+        ),
     },
     l: {
-      phoneticKey: 'l',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/l.mp3')),
+      phoneticKey: "l",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/l.mp3")
+        ),
     },
     θ: {
-      phoneticKey: 'θ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/fricatives/unvoicedTH.mp3')),
+      phoneticKey: "θ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/fricatives/unvoicedTH.mp3")
+        ),
     },
   },
   {
     z: {
-      phoneticKey: 'z',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/fricatives/z.mp3')),
+      phoneticKey: "z",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/fricatives/z.mp3")
+        ),
     },
     ʊ: {
-      phoneticKey: 'ʊ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/vowels/schwa.mp3')),
+      phoneticKey: "ʊ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/vowels/schwa.mp3")
+        ),
     },
     ϫ: {
-      phoneticKey: 'ϫ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/unvoicedConsonants/plosives/ch.mp3')),
+      phoneticKey: "ϫ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/unvoicedConsonants/plosives/ch.mp3")
+        ),
     },
     v: {
-      phoneticKey: 'v',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/fricatives/v.mp3')),
+      phoneticKey: "v",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/fricatives/v.mp3")
+        ),
     },
     b: {
-      phoneticKey: 'b',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/plosives/b.mp3')),
+      phoneticKey: "b",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/plosives/b.mp3")
+        ),
     },
     n: {
-      phoneticKey: 'n',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/n.mp3')),
+      phoneticKey: "n",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/n.mp3")
+        ),
     },
     m: {
-      phoneticKey: 'm',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/m.mp3')),
+      phoneticKey: "m",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/m.mp3")
+        ),
     },
     ŋ: {
-      phoneticKey: 'ŋ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/voicedConsonants/unpaired/ng.mp3')),
+      phoneticKey: "ŋ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/voicedConsonants/unpaired/ng.mp3")
+        ),
     },
     ʔ: {
-      phoneticKey: 'ʔ',
-      audio: async () => await loadSoundAsync(require('../assets/sounds/letterSounds/stoppers/glottalStop.mp3')),
+      phoneticKey: "ʔ",
+      audio: async () =>
+        await loadSoundAsync(
+          require("../assets/sounds/letterSounds/stoppers/glottalStop.mp3")
+        ),
     },
-    Delete: {
-      phoneticKey: 'Del',
+    "🗑️": {
+      phoneticKey: "Del",
       audio: null, // No sound associated with Delete
     },
   },
   {
-    '123': {
-      phoneticKey: '123',
+    "123": {
+      phoneticKey: "123",
       audio: null, // No sound associated
     },
-    em: {
-      phoneticKey: 'em',
+    "☺️": {
+      phoneticKey: "em",
       audio: null, // No sound associated with emoji key
     },
-    '.': {
-      phoneticKey: ':',
+    ".": {
+      phoneticKey: ":",
       audio: null, // No sound associated
     },
-    Space: {
-      phoneticKey: 'Space',
+    "␣": {
+      phoneticKey: "Space",
       audio: null, // No sound associated with Space key
     },
     "'": {
@@ -203,7 +320,7 @@ const virtualKeyboardWithSound = [
       audio: null, // No sound associated with apostrophe key
     },
     Submit: {
-      phoneticKey: 'Submit',
+      phoneticKey: "Submit",
       audio: null, // No sound associated with Submit key
     },
   },
@@ -211,4 +328,3 @@ const virtualKeyboardWithSound = [
 
 // Exporting the virtual keyboard with sound data structure
 export default virtualKeyboardWithSound;
-
