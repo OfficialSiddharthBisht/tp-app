@@ -108,8 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f0f0f0",
-    paddingHorizontal: 20,
-    paddingTop: 40,
+    // paddingHorizontal: 20,
   },
   fullScreenContainer: {
     backgroundColor: "#000",

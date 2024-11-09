@@ -92,7 +92,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MainHeader />
+      {/* <MainHeader /> */}
 
       {/* Hint Button */}
       <>

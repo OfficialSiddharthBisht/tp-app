@@ -1,6 +1,9 @@
+import "react-native-gesture-handler";
+
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 // Import screens
 import Login from "./src/screens/auth/Login";
@@ -13,6 +16,16 @@ import ContextProvider from "./src/contexts/ContextProvider";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function MyDrawer() {
+  return (
+    <Drawer.Navigator screenOptions={{}}>
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Profile" component={Profile} />
+    </Drawer.Navigator>
+  );
+}
 
 export default function App() {
   return (
@@ -20,13 +33,12 @@ export default function App() {
       <ContextProvider>
         <StatusBar style="auto" />
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Drawer"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={SignUp} />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Drawer" component={MyDrawer} />
         </Stack.Navigator>
       </ContextProvider>
     </NavigationContainer>
