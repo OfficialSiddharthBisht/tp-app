@@ -33,7 +33,7 @@ export default function App() {
       <ContextProvider>
         <StatusBar style="auto" />
         <Stack.Navigator
-          initialRouteName="Drawer"
+          initialRouteName="Login"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Login" component={Login} />
