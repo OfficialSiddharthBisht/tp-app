@@ -20,70 +20,11 @@ import Profile from "./src/screens/Profile/Profile";
 // Import context provider
 import ContextProvider from "./src/contexts/ContextProvider";
 import LoadingModal from "./src/components/LoadingModal";
+import CustomDrawerContent from "./src/components/CustomDrawerContent";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
-
-// Custom Drawer Content
-function CustomDrawerContent(props) {
-  const [loading, setLoading] = useState(false);
-
-  const navigation = useNavigation();
-
-  const handleLogout = async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetch(
-        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signout",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
-    } catch (error) {
-      console.error("Error during logout:", error);
-    } finally {
-      setLoading(false); // Set loading back to false after API call
-    }
-  };
-
-  return (
-    <DrawerContentScrollView
-      {...props}
-      contentContainerStyle={styles.drawerContainer}
-    >
-      <LoadingModal
-        visible={loading}
-        onClose={() => setLoading(false)}
-        title={"Logging out"}
-      />
-      <View style={styles.userInfo}>
-        <View>
-          <Text style={styles.name}>User Name</Text>
-          <Text style={styles.email}>user@example.com</Text>
-        </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.separator} />
-      <DrawerItemList {...props} />
-    </DrawerContentScrollView>
-  );
-}
 
 // Drawer Navigator with Custom Drawer Content
 function MyDrawer() {
