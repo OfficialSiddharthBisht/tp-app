@@ -39,9 +39,12 @@ function MyDrawer() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerStyle: {
+          paddingTop: 15,
           width: Dimensions.get("window").width * 0.8,
           backgroundColor: "#f2f2f2",
         },
+        // drawerHideStatusBarOnOpen: false,
+        // drawerStatusBarAnimation: "slide",
       }}
     >
       <Drawer.Screen name="Home" component={Home} />
