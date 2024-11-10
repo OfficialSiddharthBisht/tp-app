@@ -5,7 +5,9 @@ import { useNavigation } from "@react-navigation/native";
 const ContextProvider = ({ children }) => {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
-  return <Context.Provider value={{ user }}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={{ user, setUser }}>{children}</Context.Provider>
+  );
 };
 
 export default ContextProvider;
