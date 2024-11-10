@@ -34,7 +34,9 @@ export const styles = StyleSheet.create({
   },
   streakContainer: {
     position: "absolute",
-    top: 10,
+    top: -15,
+    zIndex: -2,
+    right: -15,
     alignSelf: "flex-end",
     padding: 10,
     borderRadius: 10,
@@ -230,6 +232,7 @@ export const styles = StyleSheet.create({
   },
   deleteAccountContainer: {
     marginTop: 20,
+    marginBottom: 20,
   },
   deleteAccountButton: {
     width: "100%",
