@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   TextInput,
@@ -17,6 +17,8 @@ import Keyboard from "../components/Keyboard";
 import MainHeader from "../components/MainHeader";
 import AudioPlayer from "../components/AudioPlayer";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Context from "../contexts/context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
@@ -27,6 +29,37 @@ const Home = () => {
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
   const [showHintNotification, setShowHintNotification] = useState(true);
+
+  const { setUser } = useContext(Context);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (data.success) {
+          setUser(data.user);
+        } else {
+          console.error("Failed to fetch user profile:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
