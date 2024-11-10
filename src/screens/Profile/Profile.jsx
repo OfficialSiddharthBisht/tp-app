@@ -131,10 +131,7 @@ const Profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MainHeader />
       <View style={{ marginHorizontal: 40 }}>
-        <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
-
         {/* Streak Section */}
         {userDATA?.streak >= 0 && (
           <TouchableOpacity
@@ -148,11 +145,7 @@ const Profile = () => {
           </TouchableOpacity>
         )}
 
-        <ScrollView
-          style={{ height: "75%" }}
-          showsVerticalScrollIndicator={false}
-          alwaysBounceVertical
-        >
+        <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical>
           {/* Profile Header */}
           <View style={styles.profileHeader}>
             <Image source={LOGO} style={styles.logo} resizeMode="cover" />
