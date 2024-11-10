@@ -1,9 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from "@react-navigation/drawer";
+import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import Context from "../contexts/context";
 import LoadingModal from "./LoadingModal";
@@ -12,12 +9,13 @@ import { useNavigation } from "@react-navigation/native";
 function CustomDrawerContent(props) {
   const { user } = useContext(Context);
   const [loading, setLoading] = useState(false);
-
   const navigation = useNavigation();
+
+  const { state } = props;
+  const currentRouteName = state?.routeNames[state?.index];
 
   const handleLogout = async () => {
     setLoading(true);
-
     try {
       const response = await fetch(
         "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signout",
@@ -64,7 +62,46 @@ function CustomDrawerContent(props) {
         </TouchableOpacity>
       </View>
       <View style={styles.separator} />
-      <DrawerItemList {...props} />
+
+      {/* Custom Drawer Items with Active Style */}
+      <DrawerItem
+        label="Home"
+        labelStyle={[
+          styles.drawerItemLabel,
+          currentRouteName === "Home" && styles.activeDrawerItemLabel,
+        ]}
+        onPress={() => navigation.navigate("Home")}
+        icon={() => (
+          <Ionicons
+            name="home-outline"
+            size={22}
+            color={currentRouteName === "Home" ? "#78d2eb" : "#333"}
+          />
+        )}
+        style={[
+          styles.drawerItem,
+          currentRouteName === "Home" && styles.activeDrawerItem,
+        ]}
+      />
+      <DrawerItem
+        label="Profile"
+        labelStyle={[
+          styles.drawerItemLabel,
+          currentRouteName === "Profile" && styles.activeDrawerItemLabel,
+        ]}
+        onPress={() => navigation.navigate("Profile")}
+        icon={() => (
+          <Ionicons
+            name="person-outline"
+            size={22}
+            color={currentRouteName === "Profile" ? "#78d2eb" : "#333"}
+          />
+        )}
+        style={[
+          styles.drawerItem,
+          currentRouteName === "Profile" && styles.activeDrawerItem,
+        ]}
+      />
     </DrawerContentScrollView>
   );
 }
@@ -91,9 +128,29 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   separator: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
     marginVertical: 8,
+    padding: 6,
+    backgroundColor: "#8884",
+    marginHorizontal: 8,
+    borderRadius: 8,
+  },
+  drawerItem: {
+    marginVertical: 4,
+    borderRadius: 8,
+    backgroundColor: "#8881",
+    paddingHorizontal: 8,
+  },
+  drawerItemLabel: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "500",
+  },
+  activeDrawerItem: {
+    backgroundColor: "#8882",
+  },
+  activeDrawerItemLabel: {
+    color: "#78d2eb",
+    fontWeight: "bold",
   },
 });
 
