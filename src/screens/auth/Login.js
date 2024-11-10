@@ -88,7 +88,7 @@ const Login = () => {
         });
         navigation.reset({
           index: 0,
-          routes: [{ name: "Home" }],
+          routes: [{ name: "Drawer" }],
         });
       } else {
         alert(data.message || "Login failed");
