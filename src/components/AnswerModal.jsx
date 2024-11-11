@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 
@@ -15,6 +22,7 @@ const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
     wrong: false,
   });
   const [playedSound, setPlayedSound] = useState(false);
+  const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Preload sounds
@@ -38,7 +46,7 @@ const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
   }, []);
 
   useEffect(() => {
-    const playSound = async () => {
+    const playSoundAndAnimate = async () => {
       if (
         !isVisible ||
         !soundsLoaded.correct ||
@@ -57,22 +65,30 @@ const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
         } else {
           await wrongSound.current.replayAsync();
         }
-        setPlayedSound(true); // Set flag to prevent replaying on re-renders
+        setPlayedSound(true); // Prevent re-triggering
+
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          useNativeDriver: true,
+          speed: 1,
+          bounciness: 20,
+        }).start();
       } catch (error) {
         console.error("Error playing sound:", error);
       }
     };
 
     if (isVisible) {
-      playSound();
+      playSoundAndAnimate();
       const timer = setTimeout(() => {
         onClose();
-      }, 7000);
+      }, 3000);
       return () => clearTimeout(timer);
     } else {
-      setPlayedSound(false); // Reset flag when modal is closed
+      setPlayedSound(false);
+      scaleAnim.setValue(0);
     }
-  }, [isVisible, isCorrect, onClose, soundsLoaded, playedSound]);
+  }, [isVisible, isCorrect, onClose, soundsLoaded, playedSound, scaleAnim]);
 
   const handleClose = async () => {
     try {
@@ -89,11 +105,13 @@ const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
     <Modal visible={isVisible} transparent animationType="slide">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <MaterialIcons
-            name={isCorrect ? "check-circle" : "cancel"}
-            size={50}
-            color={isCorrect ? "#4CAF50" : "#f44336"}
-          />
+          <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+            <MaterialIcons
+              name={isCorrect ? "check-circle" : "cancel"}
+              size={50}
+              color={isCorrect ? "#4CAF50" : "#f44336"}
+            />
+          </Animated.View>
           <Text
             style={[styles.text, { color: isCorrect ? "#4CAF50" : "#f44336" }]}
           >
