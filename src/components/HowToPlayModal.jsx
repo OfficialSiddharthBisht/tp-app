@@ -46,14 +46,14 @@ const HowToPlayModal = ({ isVisible, onClose }) => {
             <View style={styles.instructionItem}>
               <FontAwesome name="volume-up" size={24} color="#00796B" />
               <Text style={styles.instructionText}>
-                Hover over the keys with your cursor to hear their sound.
+                Long press the keys to hear their sound.
               </Text>
             </View>
 
             <View style={styles.instructionItem}>
               <FontAwesome name="download" size={24} color="#00796B" />
               <Text style={styles.instructionText}>
-                Download our keyboard layouts on our Downloads page!
+                Download our keyboard layouts by clicking on the emoji button!
               </Text>
             </View>
 
