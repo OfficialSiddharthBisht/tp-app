@@ -102,7 +102,12 @@ const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
   };
 
   return (
-    <Modal visible={isVisible} transparent animationType="slide">
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType="slide"
+      statusBarTranslucent
+    >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
