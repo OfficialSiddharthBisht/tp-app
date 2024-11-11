@@ -11,6 +11,7 @@ import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
 import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
 import KeyboardModal from "./KeyboardModal";
 import AnswerModal from "./AnswerModal";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
@@ -122,7 +123,15 @@ const Keyboard: React.FC = ({
                     onPressOut={handlePressOut} // Stop sound on release
                     onPress={() => handleInput(key)}
                   >
-                    <Text style={styles.keyText}>{key}</Text>
+                    {key == "🗑️" ? (
+                      <Ionicons
+                        name="backspace-outline"
+                        size={24}
+                        color="black"
+                      />
+                    ) : (
+                      <Text style={styles.keyText}>{key}</Text>
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -153,7 +162,15 @@ const Keyboard: React.FC = ({
                     onPressOut={handlePressOut} // Stop sound on release
                     onPress={() => handleInput(key)}
                   >
-                    <Text style={styles.keyText}>{key}</Text>
+                    {key == "🗑️" ? (
+                      <Ionicons
+                        name="backspace-outline"
+                        size={24}
+                        color="black"
+                      />
+                    ) : (
+                      <Text style={styles.keyText}>{key}</Text>
+                    )}
                   </TouchableOpacity>
                 );
               })}
