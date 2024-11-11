@@ -29,6 +29,7 @@ const Home = () => {
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
   const [showHintNotification, setShowHintNotification] = useState(true);
+  const [videoLevel, setVideoLevel] = useState(1);
 
   const { setUser } = useContext(Context);
 
@@ -139,7 +140,7 @@ const Home = () => {
         )}
       </>
 
-      <VideoPlayer level={1} />
+      <VideoPlayer level={videoLevel} />
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
@@ -185,10 +186,12 @@ const Home = () => {
       <Keyboard
         setInputValue={setInputValue}
         soundObj={soundObj}
+        soundIndex={soundIndex}
         setSoundIndex={setSoundIndex}
         inputValue={inputValue}
         soundUri={soundUri}
         setSoundObj={setSoundObj}
+        setVideoLevel={setVideoLevel}
       />
     </SafeAreaView>
   );

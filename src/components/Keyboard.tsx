@@ -19,10 +19,12 @@ const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 const Keyboard: React.FC = ({
   setInputValue,
   soundObj,
+  soundIndex,
   setSoundIndex,
   inputValue,
   soundUri,
   setSoundObj,
+  setVideoLevel,
 }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
@@ -67,10 +69,20 @@ const Keyboard: React.FC = ({
 
   const handleAnswerCheck = () => {
     if (!inputValue) return;
+
     setIsAnswerModalVisible(true);
+
     if (inputValue == soundObj.answer) {
       setInputValue("");
-      setSoundIndex((prev) => prev + 1);
+      setSoundIndex((prev) => {
+        const newSoundIndex = prev + 1;
+
+        if (newSoundIndex % 8 === 0) {
+          setVideoLevel((prev) => prev + 1);
+        }
+
+        return newSoundIndex;
+      });
       setSoundObj(null);
       setIsCorrect(true);
     } else {
