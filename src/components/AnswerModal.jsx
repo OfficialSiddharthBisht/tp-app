@@ -1,16 +1,89 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Audio } from "expo-av";
+
+// sounds for correct and wrong answer
+import correctAnswer from "../assets/sounds/gameSounds/win.mp3";
+import wrongAnswer from "../assets/sounds/gameSounds/wrong.mp3";
 
 const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
+  const correctSound = useRef(new Audio.Sound());
+  const wrongSound = useRef(new Audio.Sound());
+  const [soundsLoaded, setSoundsLoaded] = useState({
+    correct: false,
+    wrong: false,
+  });
+  const [playedSound, setPlayedSound] = useState(false);
+
   useEffect(() => {
+    // Preload sounds
+    const loadSounds = async () => {
+      try {
+        await correctSound.current.loadAsync(correctAnswer);
+        await wrongSound.current.loadAsync(wrongAnswer);
+        setSoundsLoaded({ correct: true, wrong: true });
+      } catch (error) {
+        console.error("Error loading sounds:", error);
+      }
+    };
+
+    loadSounds();
+
+    return () => {
+      // Unload sounds when component unmounts
+      correctSound.current.unloadAsync();
+      wrongSound.current.unloadAsync();
+    };
+  }, []);
+
+  useEffect(() => {
+    const playSound = async () => {
+      if (
+        !isVisible ||
+        !soundsLoaded.correct ||
+        !soundsLoaded.wrong ||
+        playedSound
+      )
+        return;
+
+      try {
+        // Stop any currently playing sound before playing a new one
+        await correctSound.current.stopAsync();
+        await wrongSound.current.stopAsync();
+
+        if (isCorrect) {
+          await correctSound.current.replayAsync();
+        } else {
+          await wrongSound.current.replayAsync();
+        }
+        setPlayedSound(true); // Set flag to prevent replaying on re-renders
+      } catch (error) {
+        console.error("Error playing sound:", error);
+      }
+    };
+
     if (isVisible) {
+      playSound();
       const timer = setTimeout(() => {
         onClose();
-      }, 3000);
+      }, 7000);
       return () => clearTimeout(timer);
+    } else {
+      setPlayedSound(false); // Reset flag when modal is closed
     }
-  }, [isVisible, onClose]);
+  }, [isVisible, isCorrect, onClose, soundsLoaded, playedSound]);
+
+  const handleClose = async () => {
+    try {
+      // Stop any currently playing sound
+      if (soundsLoaded.correct) await correctSound.current.stopAsync();
+      if (soundsLoaded.wrong) await wrongSound.current.stopAsync();
+    } catch (error) {
+      console.error("Error stopping sound:", error);
+    }
+    onClose();
+  };
 
   return (
     <Modal visible={isVisible} transparent animationType="slide">
@@ -26,7 +99,7 @@ const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
           >
             {isCorrect ? "Correct!" : "Wrong!"}
           </Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
         </View>
