@@ -19,6 +19,7 @@ import AudioPlayer from "../components/AudioPlayer";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Context from "../contexts/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import HowToPlayModal from "../components/HowToPlayModal";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
@@ -30,6 +31,7 @@ const Home = () => {
   const [hintIndex, setHintIndex] = useState(0);
   const [showHintNotification, setShowHintNotification] = useState(true);
   const [videoLevel, setVideoLevel] = useState(1);
+  const [howToPlayModal, setHowToPlayModal] = useState(true);
 
   const { setUser } = useContext(Context);
 
@@ -193,6 +195,12 @@ const Home = () => {
         setSoundObj={setSoundObj}
         setVideoLevel={setVideoLevel}
       />
+      {howToPlayModal && (
+        <HowToPlayModal
+          isVisible={howToPlayModal}
+          onClose={() => setHowToPlayModal(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };
