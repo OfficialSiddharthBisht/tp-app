@@ -25,6 +25,7 @@ const Keyboard: React.FC = ({
   soundUri,
   setSoundObj,
   setVideoLevel,
+  videoRef,
 }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
@@ -39,6 +40,9 @@ const Keyboard: React.FC = ({
 
     if (keyData && keyData[1].audio) {
       try {
+        if (videoRef.current) {
+          videoRef.current.pauseAsync();
+        }
         const sound = await keyData[1].audio(); // Load and play the audio on long press
         if (sound) {
           audioRef.current = sound;
