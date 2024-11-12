@@ -75,6 +75,7 @@ const Keyboard: React.FC = ({
     if (!inputValue) return;
 
     setIsAnswerModalVisible(true);
+    if (videoRef.current) videoRef.current.pauseAsync();
 
     if (inputValue == soundObj.answer) {
       setInputValue("");
