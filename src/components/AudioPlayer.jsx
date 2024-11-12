@@ -8,9 +8,8 @@ import {
 import { Audio } from "expo-av";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const AudioPlayer = ({ soundUri, isLoading }) => {
+const AudioPlayer = ({ soundUri, isLoading, isPlaying, setIsPlaying }) => {
   const [currentSound, setCurrentSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   const handlePlayPause = async () => {
     if (currentSound) {
