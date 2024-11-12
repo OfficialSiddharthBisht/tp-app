@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   TextInput,
@@ -32,6 +32,13 @@ const Home = () => {
   const [showHintNotification, setShowHintNotification] = useState(true);
   const [videoLevel, setVideoLevel] = useState(1);
   const [howToPlayModal, setHowToPlayModal] = useState(true);
+
+  // VideoPlayer-related states
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [videoEnded, setVideoEnded] = useState(false);
+  const videoRef = useRef(null);
 
   const { setUser } = useContext(Context);
 
@@ -126,14 +133,53 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    // Fetch videos from the server
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
+        );
+        const data = await response.json();
+        if (data.success) {
+          setVideos(data.videos);
+        } else {
+          setError("Failed to fetch videos");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching the videos");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVideos();
+  }, []);
+
+  const handlePlaybackStatusUpdate = async (status) => {
+    if (status.didJustFinish) {
+      await videoRef.current.setPositionAsync(0);
+      await videoRef.current.pauseAsync();
+      setVideoEnded(true);
+    } else if (status.isPlaying) {
+      setVideoEnded(false);
+    }
+  };
+
+  const togglePlayPause = () => {
+    if (videoRef.current) {
+      videoEnded ? videoRef.current.playAsync() : videoRef.current.pauseAsync();
+      setVideoEnded(!videoEnded);
+    }
+  };
+
+  const video = videos.find((vid) => vid.level === videoLevel);
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <MainHeader /> */}
-
       {/* Hint Button */}
       <>
         <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
-          <FontAwesome name="lightbulb-o" size={24} color="red" />
+          <FontAwesome name="lightbulb-o" size={28} color="red" />
         </TouchableOpacity>
         {showHintNotification && (
           <View style={styles.hintNotification}>
@@ -142,7 +188,14 @@ const Home = () => {
         )}
       </>
 
-      <VideoPlayer level={videoLevel} />
+      <VideoPlayer
+        video={video}
+        loading={loading}
+        error={error}
+        videoEnded={videoEnded}
+        handlePlaybackStatusUpdate={handlePlaybackStatusUpdate}
+        videoRef={videoRef}
+      />
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
