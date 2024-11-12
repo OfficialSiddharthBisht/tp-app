@@ -9,6 +9,7 @@ const HowToPlayModal = ({ isVisible, onClose }) => {
       transparent
       animationType="fade"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
