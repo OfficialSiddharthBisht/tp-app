@@ -28,6 +28,7 @@ const Home = () => {
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [soundIndex, setSoundIndex] = useState(0);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
   const [showHintNotification, setShowHintNotification] = useState(true);
   const [videoLevel, setVideoLevel] = useState(1);
@@ -172,6 +173,12 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    if (isPlaying && videoRef.current) {
+      videoRef.current.pauseAsync();
+    }
+  }, [isPlaying]);
+
   const video = videos.find((vid) => vid.level === videoLevel);
 
   return (
@@ -199,7 +206,12 @@ const Home = () => {
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
-        <AudioPlayer soundUri={soundUri} isLoading={isSoundLoading} />
+        <AudioPlayer
+          soundUri={soundUri}
+          isLoading={isSoundLoading}
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+        />
 
         <View
           style={{
@@ -247,6 +259,7 @@ const Home = () => {
         soundUri={soundUri}
         setSoundObj={setSoundObj}
         setVideoLevel={setVideoLevel}
+        videoRef={videoRef}
       />
       {howToPlayModal && (
         <HowToPlayModal
