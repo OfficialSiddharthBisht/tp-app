@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
 import GOOGLE_LOGO from "../../assets/google_logo.png";
 import APPLE_LOGO from "../../assets/apple_logo.png";
@@ -39,6 +39,21 @@ const Login = () => {
   const inputRef2 = useRef(null);
 
   const { width, height } = Dimensions.get("window");
+
+  useEffect(() => {
+    const fetchSavedCredentials = async () => {
+      try {
+        const savedEmail = await AsyncStorage.getItem("savedEmail");
+        const savedPassword = await AsyncStorage.getItem("savedPassword");
+        if (savedEmail && savedPassword) {
+          setLoginData({ email: savedEmail, password: savedPassword });
+        }
+      } catch (error) {
+        console.error("Failed to load saved credentials:", error);
+      }
+    };
+    fetchSavedCredentials();
+  }, []);
 
   const handleNextInput = () => {
     inputRef2?.current?.focus();
@@ -79,6 +94,9 @@ const Login = () => {
 
       if (response.ok) {
         await AsyncStorage.setItem("authToken", data.token);
+
+        await AsyncStorage.setItem("savedEmail", loginData.email);
+        await AsyncStorage.setItem("savedPassword", loginData.password);
 
         setLoginData({
           email: "",
