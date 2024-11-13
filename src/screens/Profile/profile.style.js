@@ -9,6 +9,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  pointsStreakContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -48,6 +53,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   pointsContainer: {
+    flex: 1,
     alignItems: "center",
     marginVertical: 10,
     padding: 20,
