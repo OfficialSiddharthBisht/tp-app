@@ -78,7 +78,7 @@ const Profile = () => {
 
   // Trigger fireworks if streak is greater than 2
   const handleStreakPress = () => {
-    if (userData?.streak > 2) {
+    if (userDATA?.streak > 2) {
       setFireworks(true);
 
       // Stop fireworks after 2 seconds
@@ -133,17 +133,6 @@ const Profile = () => {
     <SafeAreaView style={styles.container}>
       <View style={{ marginHorizontal: 40 }}>
         {/* Streak Section */}
-        {userDATA?.streak >= 0 && (
-          <TouchableOpacity
-            style={styles.streakContainer}
-            onPress={handleStreakPress}
-            disabled={fireworks}
-          >
-            <Text style={styles.streakText}>
-              🔥 {userDATA?.streak} Day Streak
-            </Text>
-          </TouchableOpacity>
-        )}
 
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical>
           {/* Profile Header */}
@@ -162,11 +151,23 @@ const Profile = () => {
           </View>
 
           {/* Prominent Points Display */}
-          <View style={styles.pointsContainer}>
-            <Text style={styles.pointsLabel}>Points</Text>
-            <Text style={styles.pointsValue}>{userDATA?.points}</Text>
-          </View>
+          <View style={styles.pointsStreakContainer}>
+            <View style={styles.pointsContainer}>
+              <Text style={styles.pointsLabel}>Points</Text>
+              <Text style={styles.pointsValue}>{userDATA?.points}</Text>
+            </View>
 
+            {userDATA?.streak >= 0 && (
+              <TouchableOpacity
+                style={styles.pointsContainer}
+                onPress={handleStreakPress}
+                disabled={fireworks}
+              >
+                <Text style={styles.pointsLabel}>Streak</Text>
+                <Text style={styles.pointsValue}>{userDATA?.streak}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statsBox}>
