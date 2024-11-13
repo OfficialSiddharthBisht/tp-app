@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#a0c1ca",
   },
   loadingContainer: {
     flex: 1,
@@ -35,7 +36,7 @@ export const styles = StyleSheet.create({
   },
   profileEmail: {
     fontSize: 16,
-    color: "#888",
+    color: "#333",
   },
   streakContainer: {
     position: "absolute",
@@ -91,7 +92,7 @@ export const styles = StyleSheet.create({
   },
   statsLabel: {
     fontSize: 14,
-    color: "#666",
+    color: "#333",
   },
   profileDetails: {
     marginVertical: 10,
@@ -112,7 +113,7 @@ export const styles = StyleSheet.create({
   detailValue: {
     fontSize: 16,
     fontWeight: "400",
-    color: "#666",
+    color: "#333",
   },
   upgradeButton: {
     marginLeft: 10,
