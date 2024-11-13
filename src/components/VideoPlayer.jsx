@@ -58,7 +58,7 @@ const VideoPlayer = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#a0c1ca",
     marginTop: "-4%",
   },
   loader: {

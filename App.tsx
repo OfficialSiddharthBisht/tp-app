@@ -43,6 +43,11 @@ function MyDrawer() {
           width: Dimensions.get("window").width * 0.8,
           backgroundColor: "#f2f2f2",
         },
+        headerStyle: {
+          backgroundColor: "#bdd8dd",
+        },
+        headerTintColor: "#000",
+        drawerType: "front",
         // drawerHideStatusBarOnOpen: false,
         // drawerStatusBarAnimation: "slide",
       }}

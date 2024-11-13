@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: "#bdd8dd",
+    backgroundColor: "#a0c1ca",
     marginHorizontal: -10,
   },
   row: {

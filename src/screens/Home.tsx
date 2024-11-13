@@ -275,13 +275,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
+    backgroundColor: "#a0c1ca",
   },
   hintButton: {
     position: "absolute",
     zIndex: 100,
     top: "15%",
     right: 10,
-    backgroundColor: "#bdd8dd",
+    backgroundColor: "#a0c1ca",
     borderWidth: 0.5,
     borderColor: "#888",
     padding: 8,
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
     right: 50,
     zIndex: 100,
     flexDirection: "row",
-    backgroundColor: "#bdd8dd",
+    backgroundColor: "#a0c1ca",
     padding: 5,
     borderRadius: 10,
   },
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#a0c1ca",
     borderRadius: 10,
     paddingVertical: 10,
     gap: 15,
