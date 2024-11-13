@@ -130,11 +130,15 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
       <View style={{ marginHorizontal: 40 }}>
         {/* Streak Section */}
 
-        <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          alwaysBounceVertical
+          style={{ paddingTop: 8 }}
+        >
           {/* Profile Header */}
           <View style={styles.profileHeader}>
             <Image source={LOGO} style={styles.logo} resizeMode="cover" />
