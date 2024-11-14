@@ -41,7 +41,7 @@ function MyDrawer() {
         drawerStyle: {
           paddingTop: 15,
           width: Dimensions.get("window").width * 0.8,
-          backgroundColor: "#f2f2f2",
+          backgroundColor: "#78d2eb",
         },
         headerStyle: {
           backgroundColor: "#bdd8dd",
