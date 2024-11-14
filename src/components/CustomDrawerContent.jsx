@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Context from "../contexts/context";
 import LoadingModal from "./LoadingModal";
 import { useNavigation } from "@react-navigation/native";
@@ -52,18 +53,17 @@ function CustomDrawerContent(props) {
         onClose={() => setLoading(false)}
         title={"Logging out"}
       />
+
+      {/* User Info Section */}
       <View style={styles.userInfo}>
         <View>
           <Text style={styles.name}>{user?.name || "Guest"}</Text>
-          <Text style={styles.email}>{user?.email || "guest@example.com"}</Text>
+          {/* <Text style={styles.email}>{user?.email || "guest@example.com"}</Text> */}
         </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="black" />
-        </TouchableOpacity>
       </View>
       <View style={styles.separator} />
 
-      {/* Custom Drawer Items with Active Style */}
+      {/* Drawer Items with Active Style */}
       <DrawerItem
         label="Home"
         labelStyle={[
@@ -75,7 +75,7 @@ function CustomDrawerContent(props) {
           <Ionicons
             name="home-outline"
             size={22}
-            color={currentRouteName === "Home" ? "#78d2eb" : "#333"}
+            color={currentRouteName === "Home" ? "#000" : "#111"}
           />
         )}
         style={[
@@ -94,7 +94,7 @@ function CustomDrawerContent(props) {
           <Ionicons
             name="person-outline"
             size={22}
-            color={currentRouteName === "Profile" ? "#78d2eb" : "#333"}
+            color={currentRouteName === "Profile" ? "#000" : "#111"}
           />
         )}
         style={[
@@ -102,6 +102,14 @@ function CustomDrawerContent(props) {
           currentRouteName === "Profile" && styles.activeDrawerItem,
         ]}
       />
+
+      {/* Logout Button Positioned at Bottom */}
+      <View style={styles.bottomLogoutContainer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <MaterialCommunityIcons name="exit-to-app" size={22} color="black" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </DrawerContentScrollView>
   );
 }
@@ -117,40 +125,55 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   name: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
   },
   email: {
     fontSize: 14,
     color: "gray",
   },
-  logoutButton: {
-    padding: 8,
-  },
   separator: {
     marginVertical: 8,
     padding: 6,
-    backgroundColor: "#8884",
+    backgroundColor: "#fff6",
     marginHorizontal: 8,
     borderRadius: 8,
   },
   drawerItem: {
     marginVertical: 4,
     borderRadius: 8,
-    backgroundColor: "#8881",
+    backgroundColor: "#fff6",
     paddingHorizontal: 8,
   },
   drawerItemLabel: {
     fontSize: 16,
-    color: "#333",
+    color: "#111",
     fontWeight: "500",
   },
   activeDrawerItem: {
-    backgroundColor: "#8882",
+    backgroundColor: "#fff",
   },
   activeDrawerItemLabel: {
-    color: "#78d2eb",
+    color: "#000",
     fontWeight: "bold",
+  },
+  bottomLogoutContainer: {
+    marginTop: "auto",
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
+    paddingVertical: 15,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+  },
+  logoutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  logoutText: {
+    fontSize: 16,
+    marginLeft: 10,
+    color: "#333",
+    fontWeight: "500",
   },
 });
 
