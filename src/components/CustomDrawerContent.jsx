@@ -1,5 +1,11 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -63,45 +69,47 @@ function CustomDrawerContent(props) {
       </View>
       <View style={styles.separator} />
 
-      {/* Drawer Items with Active Style */}
-      <DrawerItem
-        label="Home"
-        labelStyle={[
-          styles.drawerItemLabel,
-          currentRouteName === "Home" && styles.activeDrawerItemLabel,
-        ]}
-        onPress={() => navigation.navigate("Home")}
-        icon={() => (
-          <Ionicons
-            name="home-outline"
-            size={22}
-            color={currentRouteName === "Home" ? "#000" : "#111"}
-          />
-        )}
-        style={[
-          styles.drawerItem,
-          currentRouteName === "Home" && styles.activeDrawerItem,
-        ]}
-      />
-      <DrawerItem
-        label="Profile"
-        labelStyle={[
-          styles.drawerItemLabel,
-          currentRouteName === "Profile" && styles.activeDrawerItemLabel,
-        ]}
-        onPress={() => navigation.navigate("Profile")}
-        icon={() => (
-          <Ionicons
-            name="person-outline"
-            size={22}
-            color={currentRouteName === "Profile" ? "#000" : "#111"}
-          />
-        )}
-        style={[
-          styles.drawerItem,
-          currentRouteName === "Profile" && styles.activeDrawerItem,
-        ]}
-      />
+      <ScrollView>
+        {/* Drawer Items with Active Style */}
+        <DrawerItem
+          label="Home"
+          labelStyle={[
+            styles.drawerItemLabel,
+            currentRouteName === "Home" && styles.activeDrawerItemLabel,
+          ]}
+          onPress={() => navigation.navigate("Home")}
+          icon={() => (
+            <Ionicons
+              name="home-outline"
+              size={22}
+              color={currentRouteName === "Home" ? "#000" : "#111"}
+            />
+          )}
+          style={[
+            styles.drawerItem,
+            currentRouteName === "Home" && styles.activeDrawerItem,
+          ]}
+        />
+        <DrawerItem
+          label="Profile"
+          labelStyle={[
+            styles.drawerItemLabel,
+            currentRouteName === "Profile" && styles.activeDrawerItemLabel,
+          ]}
+          onPress={() => navigation.navigate("Profile")}
+          icon={() => (
+            <Ionicons
+              name="person-outline"
+              size={22}
+              color={currentRouteName === "Profile" ? "#000" : "#111"}
+            />
+          )}
+          style={[
+            styles.drawerItem,
+            currentRouteName === "Profile" && styles.activeDrawerItem,
+          ]}
+        />
+      </ScrollView>
 
       {/* Logout Button Positioned at Bottom */}
       <View style={styles.bottomLogoutContainer}>
@@ -164,6 +172,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingBottom: 24,
     paddingHorizontal: 24,
+    overflow: "hidden",
+    zIndex: 999,
+    backgroundColor: "#78D2EB",
   },
   logoutButton: {
     flexDirection: "row",
