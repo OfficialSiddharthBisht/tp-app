@@ -5,9 +5,40 @@ import { useNavigation } from "@react-navigation/native";
 const ContextProvider = ({ children }) => {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
-  return (
-    <Context.Provider value={{ user, setUser }}>{children}</Context.Provider>
-  );
+  const [inputValue, setInputValue] = useState("");
+  const [videos, setVideos] = useState([]);
+  const [videoEnded, setVideoEnded] = useState(false);
+  const [soundUri, setSoundUri] = useState(null);
+  const [soundObj, setSoundObj] = useState(null);
+  const [soundIndex, setSoundIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [videoLevel, setVideoLevel] = useState(1);
+  const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
+
+  const value = {
+    user,
+    setUser,
+    inputValue,
+    setInputValue,
+    videos,
+    setVideos,
+    videoEnded,
+    setVideoEnded,
+    soundUri,
+    setSoundUri,
+    soundObj,
+    setSoundObj,
+    soundIndex,
+    setSoundIndex,
+    isPlaying,
+    setIsPlaying,
+    videoLevel,
+    setVideoLevel,
+    isAnswerModalVisible,
+    setIsAnswerModalVisible,
+  };
+
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
 export default ContextProvider;
