@@ -22,26 +22,33 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HowToPlayModal from "../components/HowToPlayModal";
 
 const Home = () => {
-  const [inputValue, setInputValue] = useState("");
-  const [soundUri, setSoundUri] = useState(null);
-  const [soundObj, setSoundObj] = useState(null);
+  // const [inputValue, setInputValue] = useState("");
+
   const [blinkerOpacity] = useState(new Animated.Value(1));
-  const [soundIndex, setSoundIndex] = useState(0);
   const [isSoundLoading, setIsSoundLoading] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [hintIndex, setHintIndex] = useState(0);
   const [showHintNotification, setShowHintNotification] = useState(true);
-  const [videoLevel, setVideoLevel] = useState(1);
   const [howToPlayModal, setHowToPlayModal] = useState(true);
 
   // VideoPlayer-related states
-  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [videoEnded, setVideoEnded] = useState(false);
   const videoRef = useRef(null);
 
-  const { setUser } = useContext(Context);
+  const {
+    setUser,
+    inputValue,
+    setInputValue,
+    videos,
+    setVideos,
+    videoEnded,
+    setVideoEnded,
+    setSoundUri,
+    soundObj,
+    setSoundObj,
+    soundIndex,
+    isPlaying,
+    videoLevel,
+  } = useContext(Context);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -199,19 +206,13 @@ const Home = () => {
         video={video}
         loading={loading}
         error={error}
-        videoEnded={videoEnded}
         handlePlaybackStatusUpdate={handlePlaybackStatusUpdate}
         videoRef={videoRef}
       />
 
       {/* Input with Voice Play/Pause Button */}
       <View style={styles.inputContainer}>
-        <AudioPlayer
-          soundUri={soundUri}
-          isLoading={isSoundLoading}
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
-        />
+        <AudioPlayer isLoading={isSoundLoading} />
 
         <View
           style={{
@@ -250,21 +251,14 @@ const Home = () => {
         </View>
       </View>
       <StatusBar style="dark" />
-      <Keyboard
-        setInputValue={setInputValue}
-        soundObj={soundObj}
-        soundIndex={soundIndex}
-        setSoundIndex={setSoundIndex}
-        inputValue={inputValue}
-        soundUri={soundUri}
-        setSoundObj={setSoundObj}
-        setVideoLevel={setVideoLevel}
-        videoRef={videoRef}
-      />
+      <Keyboard videoRef={videoRef} />
       {howToPlayModal && (
         <HowToPlayModal
           isVisible={howToPlayModal}
-          onClose={() => setHowToPlayModal(false)}
+          onClose={() => {
+            setHowToPlayModal(false);
+            if (videoRef?.current) videoRef.current.playAsync();
+          }}
         />
       )}
     </SafeAreaView>
