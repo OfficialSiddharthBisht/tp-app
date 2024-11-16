@@ -1,22 +1,25 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   StyleSheet,
   ActivityIndicator,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { ResizeMode, Video } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
+import Context from "../contexts/context";
 
 const VideoPlayer = ({
   video,
   loading,
   error,
-  videoEnded,
   handlePlaybackStatusUpdate,
   videoRef,
 }) => {
+  const { videoEnded, videoLevel, isAnswerModalVisible } = useContext(Context);
+
   if (loading) {
     return (
       <ActivityIndicator size="large" color="#79d2eb" style={styles.loader} />
@@ -39,7 +42,7 @@ const VideoPlayer = ({
             useNativeControls
             onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
           />
-          {videoEnded && (
+          {videoEnded && Platform.OS === "android" && (
             <TouchableOpacity
               style={styles.replayButton}
               onPress={() => videoRef.current.playAsync()}
