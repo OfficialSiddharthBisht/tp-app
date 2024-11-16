@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,26 +12,29 @@ import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
 import KeyboardModal from "./KeyboardModal";
 import AnswerModal from "./AnswerModal";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Context from "../contexts/context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 
-const Keyboard: React.FC = ({
-  setInputValue,
-  soundObj,
-  soundIndex,
-  setSoundIndex,
-  inputValue,
-  soundUri,
-  setSoundObj,
-  setVideoLevel,
-  videoRef,
-}) => {
+const Keyboard: React.FC = ({ videoRef }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
+  const [videoReadyToPlay, setVideoReadyToPlay] = useState(false);
+  const [previousVideoLevel, setPreviousVideoLevel] = useState(1);
+  const {
+    inputValue,
+    setInputValue,
+    soundObj,
+    setSoundObj,
+    setSoundIndex,
+    videoLevel,
+    setVideoLevel,
+    isAnswerModalVisible,
+    setIsAnswerModalVisible,
+  } = useContext(Context);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -111,6 +114,16 @@ const Keyboard: React.FC = ({
       setInputValue((prev) => prev + key);
     }
   };
+
+  useEffect(() => {
+    if (videoLevel !== previousVideoLevel) {
+      if (videoReadyToPlay && videoRef.current) {
+        videoRef.current.playAsync();
+        setPreviousVideoLevel(videoLevel);
+      }
+    }
+    setVideoReadyToPlay(false);
+  }, [videoReadyToPlay]);
 
   return (
     <View style={styles.keyboardContainer}>
@@ -202,7 +215,13 @@ const Keyboard: React.FC = ({
       {isAnswerModalVisible && (
         <AnswerModal
           isVisible={isAnswerModalVisible}
-          onClose={() => setIsAnswerModalVisible(false)}
+          onClose={() => {
+            setIsAnswerModalVisible(false);
+            // if (isCorrect && videoRef.current) {
+            //   videoRef.current.playAsync();
+            // }
+            setVideoReadyToPlay(true);
+          }}
           isCorrect={isCorrect}
         />
       )}
