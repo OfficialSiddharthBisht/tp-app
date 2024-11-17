@@ -308,6 +308,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 10,
     color: "#666",
+    fontFamily: "NotoSans",
   },
   blinker: {
     width: 2,

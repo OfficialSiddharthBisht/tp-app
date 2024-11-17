@@ -398,6 +398,7 @@ const styles = StyleSheet.create({
   keyText: {
     fontSize: 20,
     color: "#333",
+    fontFamily: "NotoSans",
   },
 });
 

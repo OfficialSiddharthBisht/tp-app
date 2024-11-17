@@ -1,11 +1,12 @@
 import "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
@@ -15,6 +16,9 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+
+import * as Font from "expo-font";
+
 import { Ionicons } from "@expo/vector-icons"; // For logout icon
 
 // Import screens
@@ -60,6 +64,15 @@ function MyDrawer() {
 
 // Main App Component
 export default function App() {
+  const [fontsLoaded] = Font.useFonts({
+    NotoSans: require("./src/assets/fonts/NotoSans-Regular.ttf"), // Path to your Noto Sans font
+    NotoSansBold: require("./src/assets/fonts/NotoSans-Bold.ttf"), // Path to your Noto Sans Bold font
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#0000ff" />; // Show loading indicator until fonts are loaded
+  }
+
   return (
     <NavigationContainer>
       <ContextProvider>
