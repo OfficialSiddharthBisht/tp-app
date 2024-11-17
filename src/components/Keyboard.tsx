@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   bottomKeyLarge: {
-    width: "40%", // Key with 40% width
+    width: "42%", // Key with 40% width
     height: 50,
     margin: 1,
     justifyContent: "center",
