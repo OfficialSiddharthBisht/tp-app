@@ -34,7 +34,18 @@ const Keyboard: React.FC = ({ videoRef }) => {
     setVideoLevel,
     isAnswerModalVisible,
     setIsAnswerModalVisible,
+    showHintNotification,
+    setShowHintNotification,
+    setShowHintButton,
   } = useContext(Context);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHintNotification(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [showHintNotification]);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -93,6 +104,8 @@ const Keyboard: React.FC = ({ videoRef }) => {
       });
       setSoundObj(null);
       setIsCorrect(true);
+      setShowHintButton(false);
+      setShowHintNotification(false);
     } else {
       setIsCorrect(false);
       console.log("wrong answer");
@@ -221,6 +234,10 @@ const Keyboard: React.FC = ({ videoRef }) => {
             //   videoRef.current.playAsync();
             // }
             setVideoReadyToPlay(true);
+            if (!isCorrect) {
+              setShowHintButton(true);
+              setShowHintNotification(true);
+            }
           }}
           isCorrect={isCorrect}
         />

@@ -14,6 +14,8 @@ const ContextProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoLevel, setVideoLevel] = useState(1);
   const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
+  const [showHintButton, setShowHintButton] = useState(false);
+  const [showHintNotification, setShowHintNotification] = useState(false);
 
   const value = {
     user,
@@ -36,6 +38,10 @@ const ContextProvider = ({ children }) => {
     setVideoLevel,
     isAnswerModalVisible,
     setIsAnswerModalVisible,
+    showHintNotification,
+    setShowHintNotification,
+    showHintButton,
+    setShowHintButton,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

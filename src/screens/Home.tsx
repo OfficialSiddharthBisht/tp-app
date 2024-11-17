@@ -26,7 +26,6 @@ const Home = () => {
 
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [isSoundLoading, setIsSoundLoading] = useState(false);
-  const [showHintNotification, setShowHintNotification] = useState(true);
   const [howToPlayModal, setHowToPlayModal] = useState(true);
 
   // VideoPlayer-related states
@@ -48,6 +47,8 @@ const Home = () => {
     soundIndex,
     isPlaying,
     videoLevel,
+    showHintNotification,
+    showHintButton,
   } = useContext(Context);
 
   useEffect(() => {
@@ -77,14 +78,6 @@ const Home = () => {
     };
 
     fetchUserProfile();
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowHintNotification(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -191,17 +184,18 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Hint Button */}
-      <>
-        <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
-          <FontAwesome name="lightbulb-o" size={28} color="red" />
-        </TouchableOpacity>
-        {showHintNotification && (
-          <View style={styles.hintNotification}>
-            <Text style={styles.hintText}>Press here for a hint!</Text>
-          </View>
-        )}
-      </>
-
+      {showHintButton && (
+        <>
+          <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
+            <FontAwesome name="lightbulb-o" size={28} color="red" />
+          </TouchableOpacity>
+          {showHintNotification && (
+            <View style={styles.hintNotification}>
+              <Text style={styles.hintText}>Press here for a hint!</Text>
+            </View>
+          )}
+        </>
+      )}
       <VideoPlayer
         video={video}
         loading={loading}
