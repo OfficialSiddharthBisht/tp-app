@@ -16,6 +16,7 @@ const ContextProvider = ({ children }) => {
   const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
   const [showHintButton, setShowHintButton] = useState(false);
   const [showHintNotification, setShowHintNotification] = useState(false);
+  const [currentSound, setCurrentSound] = useState(null);
 
   const value = {
     user,
@@ -42,6 +43,8 @@ const ContextProvider = ({ children }) => {
     setShowHintNotification,
     showHintButton,
     setShowHintButton,
+    currentSound,
+    setCurrentSound,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

@@ -10,8 +10,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import Context from "../contexts/context";
 
 const AudioPlayer = ({ isLoading }) => {
-  const [currentSound, setCurrentSound] = useState(null);
-  const { soundUri, isPlaying, setIsPlaying } = useContext(Context);
+  const { soundUri, isPlaying, setIsPlaying, currentSound, setCurrentSound } =
+    useContext(Context);
 
   const handlePlayPause = async () => {
     if (currentSound) {

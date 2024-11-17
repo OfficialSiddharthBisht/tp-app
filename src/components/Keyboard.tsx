@@ -37,6 +37,11 @@ const Keyboard: React.FC = ({ videoRef }) => {
     showHintNotification,
     setShowHintNotification,
     setShowHintButton,
+    soundUri,
+    currentSound,
+    setCurrentSound,
+    isPlaying,
+    setIsPlaying,
   } = useContext(Context);
 
   useEffect(() => {
@@ -129,12 +134,41 @@ const Keyboard: React.FC = ({ videoRef }) => {
   };
 
   useEffect(() => {
-    if (videoLevel !== previousVideoLevel) {
+    const handlePlayPause = async () => {
+      if (currentSound) {
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
+        return;
+      }
+
+      if (soundUri) {
+        setIsPlaying(true);
+        const { sound } = await Audio.Sound.createAsync({ uri: soundUri });
+        setCurrentSound(sound);
+
+        const status = await sound.getStatusAsync();
+        const durationMs = status.durationMillis;
+
+        sound.playAsync();
+
+        setTimeout(async () => {
+          setIsPlaying(false);
+          await sound.unloadAsync();
+          setCurrentSound(null);
+        }, durationMs);
+      }
+    };
+
+    if (videoLevel === previousVideoLevel && videoReadyToPlay) {
+      handlePlayPause();
+    } else {
       if (videoReadyToPlay && videoRef.current) {
         videoRef.current.playAsync();
         setPreviousVideoLevel(videoLevel);
       }
     }
+
     setVideoReadyToPlay(false);
   }, [videoReadyToPlay]);
 

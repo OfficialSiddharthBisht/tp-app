@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
-  TextInput,
   TouchableOpacity,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
   Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import { Audio } from "expo-av";
 import VideoPlayer from "../components/VideoPlayer";
 import { StatusBar } from "expo-status-bar";
 import Keyboard from "../components/Keyboard";
-import MainHeader from "../components/MainHeader";
 import AudioPlayer from "../components/AudioPlayer";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Context from "../contexts/context";
@@ -22,8 +17,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HowToPlayModal from "../components/HowToPlayModal";
 
 const Home = () => {
-  // const [inputValue, setInputValue] = useState("");
-
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [howToPlayModal, setHowToPlayModal] = useState(true);
