@@ -5,6 +5,8 @@ import {
   Text,
   StyleSheet,
   Animated,
+  Modal,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import VideoPlayer from "../components/VideoPlayer";
@@ -20,6 +22,7 @@ const Home = () => {
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [howToPlayModal, setHowToPlayModal] = useState(true);
+  const [gameCompleted, setGameCompleted] = useState(false);
 
   // VideoPlayer-related states
   const [loading, setLoading] = useState(true);
@@ -40,8 +43,10 @@ const Home = () => {
     soundIndex,
     isPlaying,
     videoLevel,
+    setVideoLevel,
     showHintNotification,
     showHintButton,
+    setSoundIndex,
   } = useContext(Context);
 
   useEffect(() => {
@@ -84,6 +89,10 @@ const Home = () => {
         if (data.success && data.sounds[soundIndex]) {
           setSoundUri(data.sounds[soundIndex].sound);
           setSoundObj(data.sounds[soundIndex]);
+        }
+
+        if (data.success && soundIndex === data.sounds.length) {
+          setGameCompleted(true);
         }
       } catch (error) {
         console.error("Error fetching sound:", error);
@@ -164,6 +173,36 @@ const Home = () => {
       videoEnded ? videoRef.current.playAsync() : videoRef.current.pauseAsync();
       setVideoEnded(!videoEnded);
     }
+  };
+
+  const fetchInitialData = async () => {
+    try {
+      const soundResponse = await fetch(
+        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
+      );
+      const soundData = await soundResponse.json();
+      if (soundData.success) {
+        setSoundUri(soundData.sounds[0].sound);
+        setSoundObj(soundData.sounds[0]);
+        setSoundIndex(0);
+      }
+
+      const videoResponse = await fetch(
+        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
+      );
+      const videoData = await videoResponse.json();
+      if (videoData.success) {
+        setVideos(videoData.videos);
+      }
+    } catch (err) {
+      console.error("Error resetting data:", err);
+    }
+  };
+
+  const handleLevelReset = () => {
+    setGameCompleted(false);
+    fetchInitialData();
+    setVideoLevel(1);
   };
 
   useEffect(() => {
@@ -248,6 +287,22 @@ const Home = () => {
           }}
         />
       )}
+
+      {gameCompleted && (
+        <Modal visible={gameCompleted} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.congratulationsText}>
+                🎉 Congratulations! You completed the game! 🎉
+              </Text>
+              <Button
+                title="Click here to go to Level 1"
+                onPress={handleLevelReset}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 };
@@ -315,6 +370,25 @@ const styles = StyleSheet.create({
     height: 20,
     backgroundColor: "#f11",
     borderRadius: 4,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+  congratulationsText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });
 
