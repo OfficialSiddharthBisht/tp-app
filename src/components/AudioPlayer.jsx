@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -7,10 +7,11 @@ import {
 } from "react-native";
 import { Audio } from "expo-av";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Context from "../contexts/context";
 
-const AudioPlayer = ({ soundUri, isLoading }) => {
-  const [currentSound, setCurrentSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+const AudioPlayer = ({ isLoading }) => {
+  const { soundUri, isPlaying, setIsPlaying, currentSound, setCurrentSound } =
+    useContext(Context);
 
   const handlePlayPause = async () => {
     if (currentSound) {

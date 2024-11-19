@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -11,23 +11,46 @@ import { Audio } from "expo-av"; // Assuming you're using Expo's Audio library
 import numericKeyboardWithSound from "../utils/numeric.keyboardSounds.utils";
 import KeyboardModal from "./KeyboardModal";
 import AnswerModal from "./AnswerModal";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Context from "../contexts/context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
 
-const Keyboard: React.FC = ({
-  setInputValue,
-  soundObj,
-  setSoundIndex,
-  inputValue,
-  soundUri,
-  setSoundObj,
-}) => {
+const Keyboard: React.FC = ({ videoRef }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
+  const [videoReadyToPlay, setVideoReadyToPlay] = useState(false);
+  const [previousVideoLevel, setPreviousVideoLevel] = useState(1);
+  const {
+    inputValue,
+    setInputValue,
+    soundObj,
+    setSoundObj,
+    setSoundIndex,
+    videoLevel,
+    setVideoLevel,
+    isAnswerModalVisible,
+    setIsAnswerModalVisible,
+    showHintNotification,
+    setShowHintNotification,
+    setShowHintButton,
+    soundUri,
+    currentSound,
+    setCurrentSound,
+    isPlaying,
+    setIsPlaying,
+  } = useContext(Context);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHintNotification(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [showHintNotification]);
 
   const handleLongPress = async (key: string) => {
     const keyData = virtualKeyboardWithSound
@@ -36,6 +59,9 @@ const Keyboard: React.FC = ({
 
     if (keyData && keyData[1].audio) {
       try {
+        if (videoRef.current) {
+          videoRef.current.pauseAsync();
+        }
         const sound = await keyData[1].audio(); // Load and play the audio on long press
         if (sound) {
           audioRef.current = sound;
@@ -66,12 +92,25 @@ const Keyboard: React.FC = ({
 
   const handleAnswerCheck = () => {
     if (!inputValue) return;
+
     setIsAnswerModalVisible(true);
+    if (videoRef.current) videoRef.current.pauseAsync();
+
     if (inputValue == soundObj.answer) {
       setInputValue("");
-      setSoundIndex((prev) => prev + 1);
+      setSoundIndex((prev) => {
+        const newSoundIndex = prev + 1;
+
+        if (newSoundIndex % 8 === 0) {
+          setVideoLevel((prev) => prev + 1);
+        }
+
+        return newSoundIndex;
+      });
       setSoundObj(null);
       setIsCorrect(true);
+      setShowHintButton(false);
+      setShowHintNotification(false);
     } else {
       setIsCorrect(false);
       console.log("wrong answer");
@@ -93,6 +132,45 @@ const Keyboard: React.FC = ({
       setInputValue((prev) => prev + key);
     }
   };
+
+  useEffect(() => {
+    const handlePlayPause = async () => {
+      if (currentSound) {
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
+        return;
+      }
+
+      if (soundUri) {
+        setIsPlaying(true);
+        const { sound } = await Audio.Sound.createAsync({ uri: soundUri });
+        setCurrentSound(sound);
+
+        const status = await sound.getStatusAsync();
+        const durationMs = status.durationMillis;
+
+        sound.playAsync();
+
+        setTimeout(async () => {
+          setIsPlaying(false);
+          await sound.unloadAsync();
+          setCurrentSound(null);
+        }, durationMs);
+      }
+    };
+
+    if (videoLevel === previousVideoLevel && videoReadyToPlay) {
+      handlePlayPause();
+    } else {
+      if (videoReadyToPlay && videoRef.current) {
+        videoRef.current.playAsync();
+        setPreviousVideoLevel(videoLevel);
+      }
+    }
+
+    setVideoReadyToPlay(false);
+  }, [videoReadyToPlay]);
 
   return (
     <View style={styles.keyboardContainer}>
@@ -122,7 +200,15 @@ const Keyboard: React.FC = ({
                     onPressOut={handlePressOut} // Stop sound on release
                     onPress={() => handleInput(key)}
                   >
-                    <Text style={styles.keyText}>{key}</Text>
+                    {key == "🗑️" ? (
+                      <Ionicons
+                        name="backspace-outline"
+                        size={24}
+                        color="black"
+                      />
+                    ) : (
+                      <Text style={styles.keyText}>{key}</Text>
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -153,7 +239,15 @@ const Keyboard: React.FC = ({
                     onPressOut={handlePressOut} // Stop sound on release
                     onPress={() => handleInput(key)}
                   >
-                    <Text style={styles.keyText}>{key}</Text>
+                    {key == "🗑️" ? (
+                      <Ionicons
+                        name="backspace-outline"
+                        size={24}
+                        color="black"
+                      />
+                    ) : (
+                      <Text style={styles.keyText}>{key}</Text>
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -168,7 +262,17 @@ const Keyboard: React.FC = ({
       {isAnswerModalVisible && (
         <AnswerModal
           isVisible={isAnswerModalVisible}
-          onClose={() => setIsAnswerModalVisible(false)}
+          onClose={() => {
+            setIsAnswerModalVisible(false);
+            // if (isCorrect && videoRef.current) {
+            //   videoRef.current.playAsync();
+            // }
+            setVideoReadyToPlay(true);
+            if (!isCorrect) {
+              setShowHintButton(true);
+              setShowHintNotification(true);
+            }
+          }}
           isCorrect={isCorrect}
         />
       )}
@@ -238,7 +342,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: "#bdd8dd",
+    backgroundColor: "#a0c1ca",
     marginHorizontal: -10,
   },
   row: {
@@ -270,7 +374,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   bottomKeyLarge: {
-    width: "40%", // Key with 40% width
+    width: "42%", // Key with 40% width
     height: 50,
     margin: 1,
     justifyContent: "center",
@@ -294,6 +398,7 @@ const styles = StyleSheet.create({
   keyText: {
     fontSize: 20,
     color: "#333",
+    fontFamily: "NotoSans",
   },
 });
 

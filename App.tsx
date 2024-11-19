@@ -1,6 +1,25 @@
+import "react-native-gesture-handler";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
+
+import * as Font from "expo-font";
+
+import { Ionicons } from "@expo/vector-icons"; // For logout icon
 
 // Import screens
 import Login from "./src/screens/auth/Login";
@@ -10,11 +29,50 @@ import Profile from "./src/screens/Profile/Profile";
 
 // Import context provider
 import ContextProvider from "./src/contexts/ContextProvider";
+import LoadingModal from "./src/components/LoadingModal";
+import CustomDrawerContent from "./src/components/CustomDrawerContent";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
+// Drawer Navigator with Custom Drawer Content
+function MyDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        drawerStyle: {
+          paddingTop: 15,
+          width: Dimensions.get("window").width * 0.8,
+          backgroundColor: "#78d2eb",
+        },
+        headerStyle: {
+          backgroundColor: "#bdd8dd",
+        },
+        headerTintColor: "#000",
+        drawerType: "front",
+        // drawerHideStatusBarOnOpen: false,
+        // drawerStatusBarAnimation: "slide",
+      }}
+    >
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Profile" component={Profile} />
+    </Drawer.Navigator>
+  );
+}
+
+// Main App Component
 export default function App() {
+  const [fontsLoaded] = Font.useFonts({
+    NotoSans: require("./src/assets/fonts/NotoSans-Regular.ttf"), // Path to your Noto Sans font
+    NotoSansBold: require("./src/assets/fonts/NotoSans-Bold.ttf"), // Path to your Noto Sans Bold font
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#0000ff" />; // Show loading indicator until fonts are loaded
+  }
+
   return (
     <NavigationContainer>
       <ContextProvider>
@@ -25,10 +83,38 @@ export default function App() {
         >
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={SignUp} />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Drawer" component={MyDrawer} />
         </Stack.Navigator>
       </ContextProvider>
     </NavigationContainer>
   );
 }
+
+// Styles
+const styles = StyleSheet.create({
+  drawerContainer: {
+    flex: 1,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  email: {
+    fontSize: 14,
+    color: "gray",
+  },
+  logoutButton: {
+    padding: 8,
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginVertical: 8,
+  },
+});

@@ -3,11 +3,17 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#a0c1ca",
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  pointsStreakContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
   },
   profileHeader: {
     flexDirection: "row",
@@ -30,11 +36,13 @@ export const styles = StyleSheet.create({
   },
   profileEmail: {
     fontSize: 16,
-    color: "#888",
+    color: "#333",
   },
   streakContainer: {
     position: "absolute",
-    top: 10,
+    top: -15,
+    zIndex: -2,
+    right: -15,
     alignSelf: "flex-end",
     padding: 10,
     borderRadius: 10,
@@ -46,6 +54,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   pointsContainer: {
+    flex: 1,
     alignItems: "center",
     marginVertical: 10,
     padding: 20,
@@ -83,7 +92,7 @@ export const styles = StyleSheet.create({
   },
   statsLabel: {
     fontSize: 14,
-    color: "#666",
+    color: "#333",
   },
   profileDetails: {
     marginVertical: 10,
@@ -104,7 +113,7 @@ export const styles = StyleSheet.create({
   detailValue: {
     fontSize: 16,
     fontWeight: "400",
-    color: "#666",
+    color: "#333",
   },
   upgradeButton: {
     marginLeft: 10,
@@ -230,6 +239,7 @@ export const styles = StyleSheet.create({
   },
   deleteAccountContainer: {
     marginTop: 20,
+    marginBottom: 20,
   },
   deleteAccountButton: {
     width: "100%",

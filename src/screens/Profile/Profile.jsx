@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import LOGO from "../../assets/true_phonetics_logo_square_bknhyt.jpg";
@@ -19,6 +19,7 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import MainHeader from "../../components/MainHeader";
 import LoadingModal from "../../components/LoadingModal";
 import { styles } from "./profile.style";
+import Context from "../../contexts/context";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -44,8 +45,8 @@ const Profile = () => {
       { name: "Achiever", description: "Completed 10 lessons in a week" },
     ],
   };
-
-  const [userDATA, setUserData] = useState(null); // Initialize as null
+  const { user } = useContext(Context);
+  const [userDATA, setUserData] = useState(user); // Initialize as null
 
   // State to handle modal visibility and selected badge
   const [badgeModalVisible, setBadgeModalVisible] = useState(false);
@@ -56,36 +57,6 @@ const Profile = () => {
 
   // State for delete account confirmation
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-
-  // Fetch user profile data on mount
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        const response = await fetch(
-          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-        if (data.success) {
-          setUserData(data.user);
-        } else {
-          console.error("Failed to fetch user profile:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
 
   // Format the date to dd/mm/yyyy
   const formatDate = (dateString) => {
@@ -107,7 +78,7 @@ const Profile = () => {
 
   // Trigger fireworks if streak is greater than 2
   const handleStreakPress = () => {
-    if (userData?.streak > 2) {
+    if (userDATA?.streak > 2) {
       setFireworks(true);
 
       // Stop fireworks after 2 seconds
@@ -159,28 +130,14 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <MainHeader />
+    <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
       <View style={{ marginHorizontal: 40 }}>
-        <AppHeader onPress={() => navigation.goBack()} title={"Profile"} />
-
         {/* Streak Section */}
-        {userDATA?.streak >= 0 && (
-          <TouchableOpacity
-            style={styles.streakContainer}
-            onPress={handleStreakPress}
-            disabled={fireworks}
-          >
-            <Text style={styles.streakText}>
-              🔥 {userDATA?.streak} Day Streak
-            </Text>
-          </TouchableOpacity>
-        )}
 
         <ScrollView
-          style={{ height: "75%" }}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical
+          style={{ paddingTop: 8 }}
         >
           {/* Profile Header */}
           <View style={styles.profileHeader}>
@@ -198,11 +155,23 @@ const Profile = () => {
           </View>
 
           {/* Prominent Points Display */}
-          <View style={styles.pointsContainer}>
-            <Text style={styles.pointsLabel}>Points</Text>
-            <Text style={styles.pointsValue}>{userDATA?.points}</Text>
-          </View>
+          <View style={styles.pointsStreakContainer}>
+            <View style={styles.pointsContainer}>
+              <Text style={styles.pointsLabel}>Points</Text>
+              <Text style={styles.pointsValue}>{userDATA?.points}</Text>
+            </View>
 
+            {userDATA?.streak >= 0 && (
+              <TouchableOpacity
+                style={styles.pointsContainer}
+                onPress={handleStreakPress}
+                disabled={fireworks}
+              >
+                <Text style={styles.pointsLabel}>Streak</Text>
+                <Text style={styles.pointsValue}>{userDATA?.streak}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statsBox}>

@@ -1,71 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   StyleSheet,
-  Dimensions,
-  TouchableOpacity,
   ActivityIndicator,
   Text,
-  StatusBar,
-  ScrollView,
+  TouchableOpacity,
+  Platform,
 } from "react-native";
 import { ResizeMode, Video } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
+import Context from "../contexts/context";
 
-const VideoPlayer = ({ level }) => {
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [videoEnded, setVideoEnded] = useState(false);
-  const [fullScreen, setFullScreen] = useState(false);
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const response = await fetch(
-          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
-        );
-        const data = await response.json();
-        if (data.success) {
-          setVideos(data.videos);
-        } else {
-          setError("Failed to fetch videos");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching the videos");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchVideos();
-  }, []);
-
-  const video = videos.find((vid) => vid.level === level);
-
-  const onPlaybackStatusUpdate = async (status) => {
-    if (status.didJustFinish) {
-      await videoRef.current.setPositionAsync(0);
-      await videoRef.current.pauseAsync();
-      setVideoEnded(true);
-    }
-    if (status.isPlaying) {
-      setVideoEnded(false);
-    }
-    if (!status.isPlaying) {
-      setVideoEnded(true);
-    }
-  };
-
-  const toggleFullScreen = () => {
-    setFullScreen(!fullScreen);
-  };
-
-  const replayVideo = () => {
-    videoRef.current.setPositionAsync(0);
-    videoRef.current.playAsync();
-    setVideoEnded(false);
-  };
+const VideoPlayer = ({
+  video,
+  loading,
+  error,
+  handlePlaybackStatusUpdate,
+  videoRef,
+}) => {
+  const { videoEnded, videoLevel, isAnswerModalVisible } = useContext(Context);
 
   if (loading) {
     return (
@@ -78,41 +31,38 @@ const VideoPlayer = ({ level }) => {
   }
 
   return (
-    <ScrollView
-      style={[styles.container, fullScreen && styles.fullScreenContainer]}
-    >
+    <View style={styles.container}>
       {video ? (
-        <View>
+        <View style={{ flex: 1 }}>
           <Video
             ref={videoRef}
             source={{ uri: video.link }}
-            style={fullScreen ? styles.fullScreenVideo : styles.video}
+            style={styles.video}
             resizeMode={ResizeMode.CONTAIN}
             useNativeControls
-            onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
           />
-          {videoEnded && (
-            <TouchableOpacity style={styles.replayButton} onPress={replayVideo}>
+          {videoEnded && Platform.OS === "android" && (
+            <TouchableOpacity
+              style={styles.replayButton}
+              onPress={() => videoRef.current.playAsync()}
+            >
               <MaterialIcons name="replay" size={40} color="#fff" />
             </TouchableOpacity>
           )}
         </View>
       ) : (
-        <Text style={styles.error}>Video for level {level} not found</Text>
+        <Text style={styles.error}>Video for this level not found</Text>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
-    paddingHorizontal: 20,
-    paddingTop: 40,
-  },
-  fullScreenContainer: {
-    backgroundColor: "#000",
+    backgroundColor: "#a0c1ca",
+    marginTop: "-4%",
   },
   loader: {
     flex: 1,
@@ -125,12 +75,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   video: {
-    width: "100%",
-    height: Dimensions.get("window").width * 0.8,
-  },
-  fullScreenVideo: {
-    width: Dimensions.get("window").height,
-    height: Dimensions.get("window").width,
+    flex: 1,
   },
   replayButton: {
     position: "absolute",
