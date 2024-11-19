@@ -1,6 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Context from "./context";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const themes = {
+  default: {
+    backgroundColor: "#a0c1ca",
+  },
+  light: {
+    backgroundColor: "#ffffff",
+    textColor: "#000000",
+    buttonColor: "#6200ea",
+  },
+  dark: {
+    backgroundColor: "#121212",
+    textColor: "#ffffff",
+    buttonColor: "#bb86fc",
+  },
+  blue: {
+    backgroundColor: "#e0f7fa",
+    textColor: "#00796b",
+    buttonColor: "#004d40",
+  },
+};
 
 const ContextProvider = ({ children }) => {
   const navigation = useNavigation();
@@ -17,6 +39,38 @@ const ContextProvider = ({ children }) => {
   const [showHintButton, setShowHintButton] = useState(false);
   const [showHintNotification, setShowHintNotification] = useState(false);
   const [currentSound, setCurrentSound] = useState(null);
+
+  const [theme, setTheme] = useState(themes.default);
+
+  const loadTheme = async () => {
+    try {
+      const storedThemeName = await AsyncStorage.getItem("selectedTheme");
+      if (storedThemeName && themes[storedThemeName]) {
+        setTheme(themes[storedThemeName]);
+      }
+    } catch (error) {
+      console.error("Failed to load theme:", error);
+    }
+  };
+
+  const saveTheme = async (themeName) => {
+    try {
+      await AsyncStorage.setItem("selectedTheme", themeName);
+    } catch (error) {
+      console.error("Failed to save theme:", error);
+    }
+  };
+
+  const changeTheme = (themeName) => {
+    if (themes[themeName]) {
+      setTheme(themes[themeName]);
+      saveTheme(themeName);
+    }
+  };
+
+  useEffect(() => {
+    loadTheme();
+  }, []);
 
   const value = {
     user,
@@ -45,6 +99,8 @@ const ContextProvider = ({ children }) => {
     setShowHintButton,
     currentSound,
     setCurrentSound,
+    theme,
+    changeTheme,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
