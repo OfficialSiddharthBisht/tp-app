@@ -3,9 +3,11 @@ import Context from "./context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const themes = {
+export const themes = {
   default: {
     backgroundColor: "#a0c1ca",
+    buttonColor: "#fff",
+    textColor: "#000",
   },
   light: {
     backgroundColor: "#ffffff",
