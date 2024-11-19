@@ -31,6 +31,7 @@ import Profile from "./src/screens/Profile/Profile";
 import ContextProvider from "./src/contexts/ContextProvider";
 import LoadingModal from "./src/components/LoadingModal";
 import CustomDrawerContent from "./src/components/CustomDrawerContent";
+import Settings from "./src/screens/Setting/Setting";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
@@ -58,6 +59,7 @@ function MyDrawer() {
     >
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="Setting" component={Settings} />
     </Drawer.Navigator>
   );
 }
