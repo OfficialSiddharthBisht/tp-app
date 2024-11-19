@@ -109,6 +109,25 @@ function CustomDrawerContent(props) {
             currentRouteName === "Profile" && styles.activeDrawerItem,
           ]}
         />
+        <DrawerItem
+          label="Setting"
+          labelStyle={[
+            styles.drawerItemLabel,
+            currentRouteName === "Setting" && styles.activeDrawerItemLabel,
+          ]}
+          onPress={() => navigation.navigate("Setting")}
+          icon={() => (
+            <Ionicons
+              name="settings-outline"
+              size={22}
+              color={currentRouteName === "Setting" ? "#000" : "#111"}
+            />
+          )}
+          style={[
+            styles.drawerItem,
+            currentRouteName === "Setting" && styles.activeDrawerItem,
+          ]}
+        />
       </ScrollView>
 
       {/* Logout Button Positioned at Bottom */}
