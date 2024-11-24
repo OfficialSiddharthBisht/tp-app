@@ -32,6 +32,7 @@ import ContextProvider from "./src/contexts/ContextProvider";
 import LoadingModal from "./src/components/LoadingModal";
 import CustomDrawerContent from "./src/components/CustomDrawerContent";
 import Settings from "./src/screens/Setting/Setting";
+import SplashScreen from "./src/screens/SplashScreen";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
@@ -67,12 +68,12 @@ function MyDrawer() {
 // Main App Component
 export default function App() {
   const [fontsLoaded] = Font.useFonts({
-    NotoSans: require("./src/assets/fonts/NotoSans-Regular.ttf"), // Path to your Noto Sans font
-    NotoSansBold: require("./src/assets/fonts/NotoSans-Bold.ttf"), // Path to your Noto Sans Bold font
+    NotoSans: require("./src/assets/fonts/NotoSans-Regular.ttf"),
+    NotoSansBold: require("./src/assets/fonts/NotoSans-Bold.ttf"),
   });
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" color="#0000ff" />; // Show loading indicator until fonts are loaded
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   return (
@@ -80,9 +81,14 @@ export default function App() {
       <ContextProvider>
         <StatusBar style="auto" />
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Splash"
           screenOptions={{ headerShown: false }}
         >
+          <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={SignUp} />
           <Stack.Screen name="Drawer" component={MyDrawer} />
