@@ -110,6 +110,25 @@ function CustomDrawerContent(props) {
           ]}
         />
         <DrawerItem
+          label="Quiz"
+          labelStyle={[
+            styles.drawerItemLabel,
+            currentRouteName === "Quiz" && styles.activeDrawerItemLabel,
+          ]}
+          onPress={() => navigation.navigate("Quiz")}
+          icon={() => (
+            <Ionicons
+              name="list-circle-outline"
+              size={22}
+              color={currentRouteName === "Quiz" ? "#000" : "#111"}
+            />
+          )}
+          style={[
+            styles.drawerItem,
+            currentRouteName === "Quiz" && styles.activeDrawerItem,
+          ]}
+        />
+        <DrawerItem
           label="Setting"
           labelStyle={[
             styles.drawerItemLabel,
