@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "tp-mob-app",
+    "name": "True Phonetics",
     "slug": "tp-mob-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.kamlesh_52625.tpmobapp"
