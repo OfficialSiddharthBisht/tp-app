@@ -78,30 +78,30 @@ const Home = () => {
     fetchUserProfile();
   }, []);
 
-  useEffect(() => {
-    const fetchSound = async () => {
-      try {
-        setIsSoundLoading(true);
-        const response = await fetch(
-          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
-        );
-        const data = await response.json();
-        if (data.success && data.sounds[soundIndex]) {
-          setSoundUri(data.sounds[soundIndex].sound);
-          setSoundObj(data.sounds[soundIndex]);
-        }
+  // useEffect(() => {
+  //   const fetchSound = async () => {
+  //     try {
+  //       setIsSoundLoading(true);
+  //       const response = await fetch(
+  //         "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
+  //       );
+  //       const data = await response.json();
+  //       if (data.success && data.sounds[soundIndex]) {
+  //         setSoundUri(data.sounds[soundIndex].sound);
+  //         setSoundObj(data.sounds[soundIndex]);
+  //       }
 
-        if (data.success && soundIndex === data.sounds.length) {
-          setGameCompleted(true);
-        }
-      } catch (error) {
-        console.error("Error fetching sound:", error);
-      } finally {
-        setIsSoundLoading(false);
-      }
-    };
-    fetchSound();
-  }, [soundIndex]);
+  //       if (data.success && soundIndex === data.sounds.length) {
+  //         setGameCompleted(true);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching sound:", error);
+  //     } finally {
+  //       setIsSoundLoading(false);
+  //     }
+  //   };
+  //   fetchSound();
+  // }, [soundIndex]);
 
   // FOR FUTURE REFRENCE IF POINTER NEEDS THE BLINKING EFFECT
 
@@ -128,35 +128,33 @@ const Home = () => {
 
       if (!answerText.startsWith(inputValue)) {
         setInputValue(answerText[0]);
-      } else {
-        if (currentLength < answerText.length) {
-          setInputValue(inputValue + answerText[currentLength]);
-        }
+      } else if (currentLength < answerText.length) {
+        setInputValue(inputValue + answerText[currentLength]);
       }
     }
   };
 
-  useEffect(() => {
-    // Fetch videos from the server
-    const fetchVideos = async () => {
-      try {
-        const response = await fetch(
-          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
-        );
-        const data = await response.json();
-        if (data.success) {
-          setVideos(data.videos);
-        } else {
-          setError("Failed to fetch videos");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching the videos");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchVideos();
-  }, []);
+  // useEffect(() => {
+  //   // Fetch videos from the server
+  //   const fetchVideos = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
+  //       );
+  //       const data = await response.json();
+  //       if (data.success) {
+  //         setVideos(data.videos);
+  //       } else {
+  //         setError("Failed to fetch videos");
+  //       }
+  //     } catch (err) {
+  //       setError("An error occurred while fetching the videos");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchVideos();
+  // }, []);
 
   const handlePlaybackStatusUpdate = async (status) => {
     if (status.didJustFinish) {
@@ -175,33 +173,32 @@ const Home = () => {
     }
   };
 
-  const fetchInitialData = async () => {
-    try {
-      const soundResponse = await fetch(
-        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
-      );
-      const soundData = await soundResponse.json();
-      if (soundData.success) {
-        setSoundUri(soundData.sounds[0].sound);
-        setSoundObj(soundData.sounds[0]);
-        setSoundIndex(0);
-      }
+  // const fetchInitialData = async () => {
+  //   try {
+  //     const soundResponse = await fetch(
+  //       "https://web-true-phonetics-backend-production.up.railway.app/api/v1/sounds"
+  //     );
+  //     const soundData = await soundResponse.json();
+  //     if (soundData.success) {
+  //       setSoundUri(soundData.sounds[0].sound);
+  //       setSoundObj(soundData.sounds[0]);
+  //       setSoundIndex(0);
+  //     }
 
-      const videoResponse = await fetch(
-        "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
-      );
-      const videoData = await videoResponse.json();
-      if (videoData.success) {
-        setVideos(videoData.videos);
-      }
-    } catch (err) {
-      console.error("Error resetting data:", err);
-    }
-  };
+  //     const videoResponse = await fetch(
+  //       "https://web-true-phonetics-backend-production.up.railway.app/api/v1/all-videos"
+  //     );
+  //     const videoData = await videoResponse.json();
+  //     if (videoData.success) {
+  //       setVideos(videoData.videos);
+  //     }
+  //   } catch (err) {
+  //     console.error("Error resetting data:", err);
+  //   }
+  // };
 
   const handleLevelReset = () => {
     setGameCompleted(false);
-    fetchInitialData();
     setVideoLevel(1);
   };
 
@@ -212,6 +209,46 @@ const Home = () => {
   }, [isPlaying]);
 
   const video = videos.find((vid) => vid.level === videoLevel);
+
+  // Fetch levels data from the API
+  useEffect(() => {
+    const fetchLevelsData = async () => {
+      try {
+        setLoading(true);
+
+        const response = await fetch(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/levels"
+        );
+        const data = await response.json();
+
+        if (data.levels && data.levels.length > 0) {
+          const currentLevel = data.levels.find(
+            (lvl) => lvl.level === videoLevel
+          );
+
+          if (currentLevel) {
+            console.log(soundIndex, " ", currentLevel.sounds?.length);
+            setVideos(currentLevel.videos || []);
+            const sounds = currentLevel.sounds || [];
+            if (sounds.length > 0) {
+              setSoundUri(sounds[soundIndex].sound);
+              setSoundObj(sounds[soundIndex]);
+              // setSoundIndex(0);
+            }
+          }
+
+          setGameCompleted(false); // Reset game completion status
+        }
+      } catch (err) {
+        console.error("Error fetching levels data:", err);
+        setError("Failed to load levels");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLevelsData();
+  }, [videoLevel, setVideos, setSoundUri, setSoundObj, soundIndex]);
 
   return (
     <SafeAreaView style={styles.container}>
