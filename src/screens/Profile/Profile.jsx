@@ -129,6 +129,27 @@ const Profile = () => {
     navigation.navigate("Signup");
   };
 
+  // Helper function to extract initials (up to 2 characters)
+  const getInitials = (name) => {
+    if (!name) return "";
+    const words = name.split(" ");
+    const initials = words.slice(0, 2).map((word) => word[0].toUpperCase());
+    return initials.join("");
+  };
+
+  // Helper function to generate a random background color
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
+  const initials = getInitials(userDATA?.name);
+  const randomColor = getRandomColor();
+
   return (
     <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
       <View style={{ marginHorizontal: 40 }}>
@@ -141,7 +162,11 @@ const Profile = () => {
         >
           {/* Profile Header */}
           <View style={styles.profileHeader}>
-            <Image source={LOGO} style={styles.logo} resizeMode="cover" />
+            <View
+              style={[styles.logoContainer, { backgroundColor: randomColor }]}
+            >
+              <Text style={styles.logoText}>{initials}</Text>
+            </View>
             <View style={styles.userInfo}>
               <Text
                 numberOfLines={1}

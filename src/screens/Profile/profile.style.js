@@ -15,6 +15,19 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 8,
   },
+  logoContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    // marginRight: 15,
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
