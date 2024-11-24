@@ -7,8 +7,8 @@
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./src/assets/TRUE-PHONETICS-SPLASH-SCREEN.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -30,8 +30,6 @@
         "projectId": "5d401427-15e1-48a4-b2c0-c092bb4b924c"
       }
     },
-    "plugins": [
-      "expo-font"
-    ]
+    "plugins": ["expo-font"]
   }
 }
