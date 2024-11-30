@@ -6,25 +6,34 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Audio } from "expo-av";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { Ionicons } from "@expo/vector-icons";
 import Context from "../contexts/context";
 
 const AudioPlayer = ({ isLoading }) => {
-  const { soundUri, isPlaying, setIsPlaying, currentSound, setCurrentSound } =
-    useContext(Context);
+  const {
+    soundUri,
+    isPlaying,
+    setIsPlaying,
+    currentSound,
+    setCurrentSound,
+    playableSound,
+    setPlayableSound,
+  } = useContext(Context);
 
   const handlePlayPause = async () => {
-    if (currentSound) {
-      await currentSound.unloadAsync();
-      setCurrentSound(null);
+    if (playableSound) {
+      await playableSound.unloadAsync();
+      setPlayableSound(null);
       setIsPlaying(false);
       return;
     }
 
-    if (soundUri) {
+    if (currentSound) {
       setIsPlaying(true);
-      const { sound } = await Audio.Sound.createAsync({ uri: soundUri });
-      setCurrentSound(sound);
+      const { sound } = await Audio.Sound.createAsync({
+        uri: currentSound?.sound,
+      });
+      setPlayableSound(sound);
 
       const status = await sound.getStatusAsync();
       const durationMs = status.durationMillis;
@@ -34,7 +43,7 @@ const AudioPlayer = ({ isLoading }) => {
       setTimeout(async () => {
         setIsPlaying(false);
         await sound.unloadAsync();
-        setCurrentSound(null);
+        setPlayableSound(null);
       }, durationMs);
     }
   };
@@ -45,10 +54,10 @@ const AudioPlayer = ({ isLoading }) => {
         {isLoading ? (
           <ActivityIndicator size="small" color="#888" />
         ) : (
-          <Icon
-            name={isPlaying ? "pause" : "play-arrow"}
-            size={24}
-            color="#888"
+          <Ionicons
+            name={isPlaying ? "pause-circle" : "play-circle"}
+            size={48}
+            color="green"
           />
         )}
       </TouchableOpacity>
@@ -58,10 +67,10 @@ const AudioPlayer = ({ isLoading }) => {
 
 const styles = StyleSheet.create({
   voiceButton: {
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 5,
-    borderWidth: 0.3,
+    // backgroundColor: "#fff",
+    // paddingVertical: 4,
+    // borderRadius: 5,
+    // borderWidth: 0.3,
   },
 });
 

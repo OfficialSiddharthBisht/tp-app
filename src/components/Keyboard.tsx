@@ -21,7 +21,6 @@ const Keyboard: React.FC = ({ videoRef }) => {
   const audioRef = useRef<Audio.Sound | null>(null);
   const [flag, setFlag] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(null);
   const [videoReadyToPlay, setVideoReadyToPlay] = useState(false);
   const [previousVideoLevel, setPreviousVideoLevel] = useState(1);
   const {
@@ -42,6 +41,9 @@ const Keyboard: React.FC = ({ videoRef }) => {
     setCurrentSound,
     isPlaying,
     setIsPlaying,
+    validateAnswer,
+    isCorrect,
+    setIsCorrect,
   } = useContext(Context);
 
   useEffect(() => {
@@ -96,7 +98,7 @@ const Keyboard: React.FC = ({ videoRef }) => {
     setIsAnswerModalVisible(true);
     if (videoRef.current) videoRef.current.pauseAsync();
 
-    if (inputValue == soundObj.answer) {
+    if (inputValue == currentSound.answer) {
       setInputValue("");
       setSoundIndex((prev) => {
         const newSoundIndex = prev + 1;
@@ -127,7 +129,7 @@ const Keyboard: React.FC = ({ videoRef }) => {
     } else if (key === "☺️") {
       setModalVisible(true);
     } else if (key === "Submit") {
-      handleAnswerCheck();
+      validateAnswer();
     } else {
       setInputValue((prev) => prev + key);
     }
@@ -136,7 +138,7 @@ const Keyboard: React.FC = ({ videoRef }) => {
   useEffect(() => {
     const handlePlayPause = async () => {
       if (currentSound) {
-        await currentSound.unloadAsync();
+        await currentSound?.unloadAsync();
         setCurrentSound(null);
         setIsPlaying(false);
         return;

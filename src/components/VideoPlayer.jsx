@@ -18,7 +18,8 @@ const VideoPlayer = ({
   handlePlaybackStatusUpdate,
   videoRef,
 }) => {
-  const { videoEnded, videoLevel, isAnswerModalVisible } = useContext(Context);
+  const { videoEnded, videoLevel, isAnswerModalVisible, currentVideo } =
+    useContext(Context);
 
   if (loading) {
     return (
@@ -32,11 +33,11 @@ const VideoPlayer = ({
 
   return (
     <View style={styles.container}>
-      {video ? (
+      {currentVideo ? (
         <View style={{ flex: 1 }}>
           <Video
             ref={videoRef}
-            source={{ uri: video.link }}
+            source={{ uri: currentVideo?.link }}
             style={styles.video}
             resizeMode={ResizeMode.CONTAIN}
             useNativeControls

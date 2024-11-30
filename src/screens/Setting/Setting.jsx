@@ -11,8 +11,6 @@ import { themes } from "../../contexts/ContextProvider";
 
 const Settings = () => {
   const { theme, changeTheme } = useContext(Context);
-  console.log(theme);
-
   const renderThemeOption = ({ item }) => {
     const isSelected = theme === themes[item];
 

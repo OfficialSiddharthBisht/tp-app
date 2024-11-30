@@ -17,6 +17,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Context from "../contexts/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HowToPlayModal from "../components/HowToPlayModal";
+import Quiz from "./Quiz";
 
 const Home = () => {
   const [blinkerOpacity] = useState(new Animated.Value(1));
@@ -27,9 +28,10 @@ const Home = () => {
   // VideoPlayer-related states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const videoRef = useRef(null);
 
   const {
+    currentVideo,
+    setCurrentVideo,
     setUser,
     inputValue,
     setInputValue,
@@ -46,7 +48,14 @@ const Home = () => {
     setVideoLevel,
     showHintNotification,
     showHintButton,
-    setSoundIndex,
+    currentSound,
+    setCurrentSound,
+    currentAnswer,
+    setCurrentAnswer,
+    videoRef,
+    isMcq,
+    mcqsData,
+    setSelectedOption,
   } = useContext(Context);
 
   useEffect(() => {
@@ -122,9 +131,11 @@ const Home = () => {
 
   // Function to handle hint button press
   const handleHintPress = () => {
-    if (soundObj?.answer) {
+    if (isMcq && mcqsData) {
+      setSelectedOption(mcqsData.correctAnswer);
+    } else if (currentSound?.answer) {
       const currentLength = inputValue.length;
-      const answerText = soundObj.answer;
+      const answerText = currentSound.answer;
 
       if (!answerText.startsWith(inputValue)) {
         setInputValue(answerText[0]);
@@ -213,6 +224,10 @@ const Home = () => {
 
   const video = videos.find((vid) => vid.level === videoLevel);
 
+  // useEffect(() => {
+  //   console.log(levels[currentLevel]);
+  // }, [levels]);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Hint Button */}
@@ -228,56 +243,62 @@ const Home = () => {
           )}
         </>
       )}
-      <VideoPlayer
-        video={video}
-        loading={loading}
-        error={error}
-        handlePlaybackStatusUpdate={handlePlaybackStatusUpdate}
-        videoRef={videoRef}
-      />
+      {isMcq ? (
+        <Quiz />
+      ) : (
+        <>
+          <VideoPlayer
+            video={video}
+            loading={loading}
+            error={error}
+            handlePlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            videoRef={videoRef}
+          />
 
-      {/* Input with Voice Play/Pause Button */}
-      <View style={styles.inputContainer}>
-        <AudioPlayer isLoading={isSoundLoading} />
+          {/* Input with Voice Play/Pause Button */}
+          <View style={styles.inputContainer}>
+            <AudioPlayer isLoading={isSoundLoading} />
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            backgroundColor: "#fff",
-            borderRadius: 5,
-            borderColor: "#ddd",
-            borderWidth: 1,
-          }}
-        >
-          <Text style={[styles.input, !inputValue && { color: "#999" }]}>
-            {inputValue
-              ? inputValue.length > 20
-                ? `...${inputValue.slice(-30)}`
-                : inputValue
-              : "Enter your answer"}{" "}
-          </Text>
-          {inputValue && (
-            <Text
+            <View
               style={{
-                alignSelf: "center",
-                marginLeft: "-3.5%",
+                flex: 1,
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderRadius: 5,
+                borderColor: "#ddd",
+                borderWidth: 1,
               }}
             >
-              <Animated.View
-                style={[
-                  styles.blinker,
-                  {
-                    opacity: blinkerOpacity,
-                  },
-                ]}
-              />
-            </Text>
-          )}
-        </View>
-      </View>
-      <StatusBar style="dark" />
-      <Keyboard videoRef={videoRef} />
+              <Text style={[styles.input, !inputValue && { color: "#999" }]}>
+                {inputValue
+                  ? inputValue.length > 20
+                    ? `...${inputValue.slice(-30)}`
+                    : inputValue
+                  : "Enter your answer"}{" "}
+              </Text>
+              {inputValue && (
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    marginLeft: "-3.5%",
+                  }}
+                >
+                  <Animated.View
+                    style={[
+                      styles.blinker,
+                      {
+                        opacity: blinkerOpacity,
+                      },
+                    ]}
+                  />
+                </Text>
+              )}
+            </View>
+          </View>
+          <StatusBar style="dark" />
+          <Keyboard videoRef={videoRef} />
+        </>
+      )}
       {howToPlayModal && (
         <HowToPlayModal
           isVisible={howToPlayModal}

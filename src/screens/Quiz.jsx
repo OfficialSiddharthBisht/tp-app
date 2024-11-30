@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -8,15 +8,29 @@ import {
 } from "react-native";
 import { demoQuestions } from "../utils/Quiz/Questions";
 import AnswerModal from "../components/AnswerModal";
+import Context from "../contexts/context";
 
 const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  // const [isCorrect, setIsCorrect] = useState(false);
   const [answeredLastQuestionCorrectly, setAnsweredLastQuestionCorrectly] =
     useState(false);
+
+  const {
+    mcqsData,
+    selectedOption,
+    setSelectedOption,
+    validateQuizAnswer,
+    isAnswerModalVisible,
+    setIsAnswerModalVisible,
+    isCorrect,
+    setIsCorrect,
+    setShowHintButton,
+    setShowHintButtonNotification,
+  } = useContext(Context);
+  // console.log(mcqsData, "HELLO BHAI ");
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
@@ -64,51 +78,41 @@ const Quiz = () => {
       <ScrollView style={styles.scrollableContainer}>
         <View style={styles.questionContainer}>
           <View style={styles.questionBox}>
-            <Text style={styles.questionText}>{currentQuestion.question}</Text>
+            <Text style={styles.questionText}>{mcqsData?.question}</Text>
           </View>
 
           <View style={styles.optionContainer}>
-            {currentQuestion.options.map((item, index) => (
+            {mcqsData?.options.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
                   styles.option,
-                  selectedOption === item
+                  selectedOption === index + 1
                     ? styles.selectedOption
                     : styles.defaultOption,
                 ]}
-                onPress={() => handleOptionClick(item)}
+                onPress={() => {
+                  const option = index + 1;
+                  handleOptionClick(option);
+                }}
               >
-                <Text>{item}</Text>
+                <Text>{item?.text}</Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
       </ScrollView>
 
-      {!isLastQuestion || !answeredLastQuestionCorrectly ? (
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: selectedOption ? "#00bcd4" : "#999" },
-          ]}
-          onPress={handleNextQuestion}
-          disabled={selectedOption === null}
-        >
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: selectedOption ? "#00bcd4" : "#999" },
-          ]}
-          onPress={handleNextQuestion}
-          disabled={selectedOption === null}
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={[
+          styles.button,
+          { backgroundColor: selectedOption ? "#00bcd4" : "#999" },
+        ]}
+        onPress={validateQuizAnswer}
+        disabled={selectedOption <= 0}
+      >
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
 
       {answeredLastQuestionCorrectly && (
         <TouchableOpacity
@@ -122,9 +126,15 @@ const Quiz = () => {
       )}
 
       <AnswerModal
-        isVisible={isModalVisible}
+        isVisible={isAnswerModalVisible}
         isCorrect={isCorrect}
-        onClose={handleCloseModal}
+        onClose={() => {
+          setIsAnswerModalVisible(false);
+          if (!isCorrect) {
+            setShowHintButton(true);
+            setShowHintButtonNotification(true);
+          }
+        }}
       />
     </View>
   );

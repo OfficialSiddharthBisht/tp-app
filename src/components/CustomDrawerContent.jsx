@@ -14,7 +14,7 @@ import LoadingModal from "./LoadingModal";
 import { useNavigation } from "@react-navigation/native";
 
 function CustomDrawerContent(props) {
-  const { user } = useContext(Context);
+  const { user, theme } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
@@ -150,7 +150,12 @@ function CustomDrawerContent(props) {
       </ScrollView>
 
       {/* Logout Button Positioned at Bottom */}
-      <View style={styles.bottomLogoutContainer}>
+      <View
+        style={[
+          styles.bottomLogoutContainer,
+          { backgroundColor: theme?.headerColor },
+        ]}
+      >
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <MaterialCommunityIcons name="exit-to-app" size={22} color="black" />
           <Text style={styles.logoutText}>Logout</Text>
@@ -212,7 +217,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     overflow: "hidden",
     zIndex: 999,
-    backgroundColor: "#78D2EB",
   },
   logoutButton: {
     flexDirection: "row",

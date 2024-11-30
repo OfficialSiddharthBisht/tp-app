@@ -34,6 +34,7 @@ import CustomDrawerContent from "./src/components/CustomDrawerContent";
 import Settings from "./src/screens/Setting/Setting";
 import SplashScreen from "./src/screens/SplashScreen";
 import Quiz from "./src/screens/Quiz";
+import NewHome from "./src/screens/NewHome";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
