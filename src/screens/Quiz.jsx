@@ -29,6 +29,7 @@ const Quiz = () => {
     setIsCorrect,
     setShowHintButton,
     setShowHintButtonNotification,
+    handleMoveToNextMcq,
   } = useContext(Context);
   // console.log(mcqsData, "HELLO BHAI ");
 
@@ -38,7 +39,7 @@ const Quiz = () => {
 
   const handleNextQuestion = () => {
     const currentQuestion = demoQuestions[currentQuestionIndex];
-    const correctAnswer = currentQuestion.correctAnswer;
+    const correctAnswer = currentQuestion.correctAnswer + 1;
 
     if (selectedOption === correctAnswer) {
       setScore(score + 1);
@@ -103,16 +104,27 @@ const Quiz = () => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: selectedOption ? "#00bcd4" : "#999" },
-        ]}
-        onPress={validateQuizAnswer}
-        disabled={selectedOption <= 0}
-      >
-        <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: selectedOption ? "#00bcd4" : "#999" },
+          ]}
+          onPress={validateQuizAnswer}
+          disabled={selectedOption <= 0}
+        >
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.skipButton]}
+          onPress={() => {
+            handleMoveToNextMcq();
+          }}
+        >
+          <Text style={styles.buttonText}>Skip</Text>
+        </TouchableOpacity>
+      </View>
 
       {answeredLastQuestionCorrectly && (
         <TouchableOpacity
@@ -199,7 +211,7 @@ const styles = StyleSheet.create({
     borderColor: "#dcdcdc",
   },
   button: {
-    width: "90%",
+    flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
@@ -224,6 +236,17 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginBottom: 16,
+    gap: 8,
+  },
+  skipButton: {
+    backgroundColor: "#f44336",
+    flex: 1 / 4,
   },
 });
 

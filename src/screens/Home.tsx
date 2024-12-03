@@ -132,7 +132,7 @@ const Home = () => {
   // Function to handle hint button press
   const handleHintPress = () => {
     if (isMcq && mcqsData) {
-      setSelectedOption(mcqsData.correctAnswer);
+      setSelectedOption(mcqsData.correctAnswer + 1);
     } else if (currentSound?.answer) {
       const currentLength = inputValue.length;
       const answerText = currentSound.answer;

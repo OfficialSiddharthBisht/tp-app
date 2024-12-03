@@ -171,7 +171,7 @@ const ContextProvider = ({ children }) => {
     setInputValue("");
     setIsAnswerModalVisible(true);
 
-    if (mcqsData && selectedOption == mcqsData.correctAnswer) {
+    if (mcqsData && selectedOption == mcqsData.correctAnswer + 1) {
       setIsCorrect(true);
       setSelectedOption(null);
       setShowHintButton(false);
@@ -180,8 +180,13 @@ const ContextProvider = ({ children }) => {
     } else setIsCorrect(false);
   };
 
+  const handleMoveToNextMcq = () => {
+    moveToNextMcq();
+  };
+
   const moveToNextMcq = () => {
-    if (mcqsData && mcqIndex < levels[currentLevel - 1].mcqs.length - 1) {
+    setSelectedOption(null);
+    if (mcqsData && mcqIndex < levels[currentLevel - 1]?.mcqs?.length - 1) {
       setMcqIndex((prev) => prev + 1);
       console.log("hello");
       setMcqsData(levels[currentLevel - 1]?.mcqs[mcqIndex + 1]);
@@ -211,10 +216,10 @@ const ContextProvider = ({ children }) => {
   const moveToNextSound = () => {
     if (
       currentSound &&
-      soundIndex < levels[currentLevel - 1].sounds.length - 1
+      soundIndex < levels[currentLevel - 1]?.sounds.length - 1
     ) {
       setSoundIndex((prev) => prev + 1);
-      setCurrentSound(levels[currentLevel - 1].sounds[soundIndex + 1]);
+      setCurrentSound(levels[currentLevel - 1]?.sounds[soundIndex + 1]);
       setCurrentVideo(levels[currentLevel - 1]?.video);
     } else {
       setCurrentLevel((prev) => prev + 1);
@@ -300,6 +305,7 @@ const ContextProvider = ({ children }) => {
     playableSound,
     setPlayableSound,
     mcqsData,
+    handleMoveToNextMcq,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
