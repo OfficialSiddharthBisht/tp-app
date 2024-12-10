@@ -56,6 +56,7 @@ const Home = () => {
     isMcq,
     mcqsData,
     setSelectedOption,
+    theme,
   } = useContext(Context);
 
   useEffect(() => {
@@ -229,16 +230,37 @@ const Home = () => {
   // }, [levels]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme?.backgroundColor }]}
+    >
       {/* Hint Button */}
       {showHintButton && (
         <>
-          <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
-            <FontAwesome name="lightbulb-o" size={28} color="red" />
+          <TouchableOpacity
+            style={[
+              styles.hintButton,
+              { backgroundColor: theme?.backgroundColor },
+            ]}
+            onPress={handleHintPress}
+          >
+            <FontAwesome
+              name="lightbulb-o"
+              size={28}
+              color={theme?.hintIconColor || "red"}
+            />
           </TouchableOpacity>
           {showHintNotification && (
-            <View style={styles.hintNotification}>
-              <Text style={styles.hintText}>Press here for a hint!</Text>
+            <View
+              style={[
+                styles.hintNotification,
+                { backgroundColor: theme?.notificationBackground },
+              ]}
+            >
+              <Text
+                style={[styles.hintText, { color: theme?.notificationText }]}
+              >
+                Press here for a hint!
+              </Text>
             </View>
           )}
         </>
@@ -263,13 +285,22 @@ const Home = () => {
               style={{
                 flex: 1,
                 flexDirection: "row",
-                backgroundColor: "#fff",
+                backgroundColor: theme?.inputBackground || "#fff",
                 borderRadius: 5,
-                borderColor: "#ddd",
+                borderColor: theme?.inputBorder || "#ddd",
                 borderWidth: 1,
               }}
             >
-              <Text style={[styles.input, !inputValue && { color: "#999" }]}>
+              <Text
+                style={[
+                  styles.input,
+                  {
+                    color: inputValue
+                      ? theme?.inputTextColor
+                      : theme?.placeholderColor || "#999",
+                  },
+                ]}
+              >
                 {inputValue
                   ? inputValue.length > 20
                     ? `...${inputValue.slice(-30)}`
@@ -288,6 +319,7 @@ const Home = () => {
                       styles.blinker,
                       {
                         opacity: blinkerOpacity,
+                        backgroundColor: theme?.blinkerColor || "#000",
                       },
                     ]}
                   />
@@ -295,7 +327,7 @@ const Home = () => {
               )}
             </View>
           </View>
-          <StatusBar style="dark" />
+          <StatusBar style={theme?.statusBarStyle || "dark"} />
           <Keyboard videoRef={videoRef} />
         </>
       )}
@@ -312,13 +344,24 @@ const Home = () => {
       {gameCompleted && (
         <Modal visible={gameCompleted} transparent={true} animationType="slide">
           <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.congratulationsText}>
+            <View
+              style={[
+                styles.modalContent,
+                { backgroundColor: theme?.modalBackground },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.congratulationsText,
+                  { color: theme?.modalTextColor },
+                ]}
+              >
                 🎉 Congratulations! You completed the game! 🎉
               </Text>
               <Button
                 title="Click here to go to Level 1"
                 onPress={handleLevelReset}
+                color={theme?.buttonColor}
               />
             </View>
           </View>
@@ -332,23 +375,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    backgroundColor: "#a0c1ca",
   },
   hintButton: {
     position: "absolute",
     zIndex: 100,
     top: "15%",
     right: 10,
-    backgroundColor: "#a0c1ca",
     borderWidth: 0.5,
-    borderColor: "#888",
     padding: 8,
     borderRadius: 80,
     alignItems: "center",
     justifyContent: "center",
   },
   hintButtonText: {
-    color: "#fff",
     fontSize: 14,
     fontWeight: "600",
   },
@@ -357,16 +396,13 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     top: "15.5%",
     borderWidth: 0.5,
-    borderColor: "#888",
     right: 50,
     zIndex: 100,
     flexDirection: "row",
-    backgroundColor: "#a0c1ca",
     padding: 5,
     borderRadius: 10,
   },
   hintText: {
-    color: "black",
     fontSize: 12,
     fontWeight: "600",
     paddingHorizontal: 10,
@@ -375,7 +411,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#a0c1ca",
     borderRadius: 10,
     paddingVertical: 10,
     gap: 15,
@@ -383,13 +418,11 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 16,
     padding: 10,
-    color: "#666",
     fontFamily: "NotoSans",
   },
   blinker: {
     width: 2,
     height: 20,
-    backgroundColor: "#f11",
     borderRadius: 4,
   },
   modalContainer: {
@@ -400,7 +433,6 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "80%",
-    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
     alignItems: "center",

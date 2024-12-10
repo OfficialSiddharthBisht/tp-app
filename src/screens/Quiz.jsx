@@ -30,6 +30,7 @@ const Quiz = () => {
     setShowHintButton,
     setShowHintButtonNotification,
     handleMoveToNextMcq,
+    theme,
   } = useContext(Context);
   // console.log(mcqsData, "HELLO BHAI ");
 
@@ -73,12 +74,26 @@ const Quiz = () => {
   const isLastQuestion = currentQuestionIndex === demoQuestions.length - 1;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Reading Comprehension Activity</Text>
+    <View
+      style={[styles.container, { backgroundColor: theme?.backgroundColor }]}
+    >
+      <Text style={[styles.header, { color: theme?.textColor }]}>
+        Reading Comprehension Activity
+      </Text>
 
-      <ScrollView style={styles.scrollableContainer}>
+      <ScrollView
+        style={[
+          styles.scrollableContainer,
+          { backgroundColor: theme?.quizContainer },
+        ]}
+      >
         <View style={styles.questionContainer}>
-          <View style={styles.questionBox}>
+          <View
+            style={[
+              styles.questionBox,
+              { backgroundColor: theme?.questionBox },
+            ]}
+          >
             <Text style={styles.questionText}>{mcqsData?.question}</Text>
           </View>
 
@@ -89,8 +104,8 @@ const Quiz = () => {
                 style={[
                   styles.option,
                   selectedOption === index + 1
-                    ? styles.selectedOption
-                    : styles.defaultOption,
+                    ? theme?.selectedOption
+                    : theme?.defaultOption,
                 ]}
                 onPress={() => {
                   const option = index + 1;
@@ -108,27 +123,42 @@ const Quiz = () => {
         <TouchableOpacity
           style={[
             styles.button,
-            { backgroundColor: selectedOption ? "#00bcd4" : "#999" },
+            {
+              backgroundColor: selectedOption
+                ? theme?.selectedOptionButton
+                : theme?.unSelectedOptionButton,
+            },
           ]}
           onPress={validateQuizAnswer}
           disabled={selectedOption <= 0}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={[styles.buttonText, { color: theme?.buttonText }]}>
+            Next
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.button, styles.skipButton]}
+          style={[
+            styles.button,
+            styles.skipButton,
+            { backgroundColor: theme?.skipButton },
+          ]}
           onPress={() => {
             handleMoveToNextMcq();
           }}
         >
-          <Text style={styles.buttonText}>Skip</Text>
+          <Text style={[styles.buttonText, { color: theme?.buttonText }]}>
+            Skip
+          </Text>
         </TouchableOpacity>
       </View>
 
       {answeredLastQuestionCorrectly && (
         <TouchableOpacity
-          style={styles.restartButton}
+          style={[
+            styles.restartButton,
+            { backgroundColor: theme?.selectedOptionButton },
+          ]}
           onPress={handleCloseModal}
         >
           <Text style={styles.restartText}>
@@ -157,7 +187,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#9fc1ca",
     padding: 16,
   },
   header: {
@@ -167,7 +196,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   scrollableContainer: {
-    backgroundColor: "#bdd8dd",
     width: "90%",
     maxWidth: 400,
     borderRadius: 8,
@@ -183,7 +211,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   questionBox: {
-    backgroundColor: "#b0e0e6",
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
@@ -202,14 +229,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: "center",
   },
-  selectedOption: {
-    backgroundColor: "#2196f3",
-    borderColor: "#2196f3",
-  },
-  defaultOption: {
-    backgroundColor: "#f0f0f0",
-    borderColor: "#dcdcdc",
-  },
+  selectedOption: {},
+
   button: {
     flex: 1,
     paddingVertical: 12,
@@ -218,10 +239,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#00bcd4",
   },
   buttonText: {
-    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -229,7 +248,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: "#00bcd4",
     borderRadius: 8,
   },
   restartText: {
@@ -245,7 +263,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   skipButton: {
-    backgroundColor: "#f44336",
     flex: 1 / 4,
   },
 });

@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -35,6 +35,7 @@ import Settings from "./src/screens/Setting/Setting";
 import SplashScreen from "./src/screens/SplashScreen";
 import Quiz from "./src/screens/Quiz";
 import NewHome from "./src/screens/NewHome";
+import Context from "./src/contexts/context";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
@@ -42,6 +43,7 @@ const Drawer = createDrawerNavigator();
 
 // Drawer Navigator with Custom Drawer Content
 function MyDrawer() {
+  const { theme } = useContext(Context);
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -49,12 +51,12 @@ function MyDrawer() {
         drawerStyle: {
           paddingTop: 15,
           width: Dimensions.get("window").width * 0.8,
-          backgroundColor: "#78d2eb",
+          backgroundColor: theme?.headerColor,
         },
         headerStyle: {
-          backgroundColor: "#bdd8dd",
+          backgroundColor: theme?.headerStyle,
         },
-        headerTintColor: "#000",
+        headerTintColor: theme?.headerTintColor,
         drawerType: "front",
         // drawerHideStatusBarOnOpen: false,
         // drawerStatusBarAnimation: "slide",
@@ -63,7 +65,7 @@ function MyDrawer() {
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="Setting" component={Settings} />
-      <Drawer.Screen name="Quiz" component={Quiz} />
+      {/* <Drawer.Screen name="Quiz" component={Quiz} /> */}
     </Drawer.Navigator>
   );
 }

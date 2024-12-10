@@ -63,7 +63,9 @@ function CustomDrawerContent(props) {
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <View>
-          <Text style={styles.name}>{user?.name || "Guest"}</Text>
+          <Text style={[styles.name, { color: theme?.logOutText }]}>
+            {user?.name || "Guest"}
+          </Text>
           {/* <Text style={styles.email}>{user?.email || "guest@example.com"}</Text> */}
         </View>
       </View>
@@ -75,76 +77,116 @@ function CustomDrawerContent(props) {
           label="Home"
           labelStyle={[
             styles.drawerItemLabel,
-            currentRouteName === "Home" && styles.activeDrawerItemLabel,
+            currentRouteName === "Home" && theme?.activeDrawerItemLabel,
+            { color: currentRouteName !== "Home" ?? theme?.drawerItemLabel },
           ]}
           onPress={() => navigation.navigate("Home")}
           icon={() => (
             <Ionicons
               name="home-outline"
               size={22}
-              color={currentRouteName === "Home" ? "#000" : "#111"}
+              color={
+                currentRouteName === "Home"
+                  ? theme?.selectedIconColor
+                  : theme?.drawerItemLabel
+              }
             />
           )}
           style={[
             styles.drawerItem,
-            currentRouteName === "Home" && styles.activeDrawerItem,
+            {
+              backgroundColor:
+                currentRouteName === "Home"
+                  ? theme?.activeDrawerItem
+                  : theme?.drawerItem,
+            },
           ]}
         />
         <DrawerItem
           label="Profile"
           labelStyle={[
             styles.drawerItemLabel,
-            currentRouteName === "Profile" && styles.activeDrawerItemLabel,
+            currentRouteName === "Profile" && theme?.activeDrawerItemLabel,
+            { color: currentRouteName !== "Profile" ?? theme?.drawerItemLabel },
           ]}
           onPress={() => navigation.navigate("Profile")}
           icon={() => (
             <Ionicons
               name="person-outline"
               size={22}
-              color={currentRouteName === "Profile" ? "#000" : "#111"}
+              color={
+                currentRouteName === "Profile"
+                  ? theme?.selectedIconColor
+                  : theme?.drawerItemLabel
+              }
             />
           )}
           style={[
             styles.drawerItem,
-            currentRouteName === "Profile" && styles.activeDrawerItem,
+            {
+              backgroundColor:
+                currentRouteName === "Profile"
+                  ? theme?.activeDrawerItem
+                  : theme?.drawerItem,
+            },
           ]}
         />
-        <DrawerItem
+        {/* <DrawerItem
           label="Quiz"
           labelStyle={[
             styles.drawerItemLabel,
-            currentRouteName === "Quiz" && styles.activeDrawerItemLabel,
+            currentRouteName === "Quiz" && theme?.activeDrawerItemLabel,
+            { color: currentRouteName !== "Quiz" ?? theme?.drawerItemLabel },
           ]}
           onPress={() => navigation.navigate("Quiz")}
           icon={() => (
             <Ionicons
               name="list-circle-outline"
               size={22}
-              color={currentRouteName === "Quiz" ? "#000" : "#111"}
+              color={
+                currentRouteName === "Quiz"
+                  ? theme?.selectedIconColor
+                  : theme?.drawerItemLabel
+              }
             />
           )}
           style={[
             styles.drawerItem,
-            currentRouteName === "Quiz" && styles.activeDrawerItem,
+            {
+              backgroundColor:
+                currentRouteName === "Quiz"
+                  ? theme?.activeDrawerItem
+                  : theme?.drawerItem,
+            },
           ]}
-        />
+        /> */}
         <DrawerItem
           label="Setting"
           labelStyle={[
             styles.drawerItemLabel,
-            currentRouteName === "Setting" && styles.activeDrawerItemLabel,
+            currentRouteName === "Setting" && theme?.activeDrawerItemLabel,
+            { color: currentRouteName !== "Setting" ?? theme?.drawerItemLabel },
           ]}
           onPress={() => navigation.navigate("Setting")}
           icon={() => (
             <Ionicons
               name="settings-outline"
               size={22}
-              color={currentRouteName === "Setting" ? "#000" : "#111"}
+              color={
+                currentRouteName === "Setting"
+                  ? theme?.selectedIconColor
+                  : theme?.drawerItemLabel
+              }
             />
           )}
           style={[
             styles.drawerItem,
-            currentRouteName === "Setting" && styles.activeDrawerItem,
+            {
+              backgroundColor:
+                currentRouteName === "Setting"
+                  ? theme?.activeDrawerItem
+                  : theme?.drawerItem,
+            },
           ]}
         />
       </ScrollView>
@@ -157,8 +199,14 @@ function CustomDrawerContent(props) {
         ]}
       >
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <MaterialCommunityIcons name="exit-to-app" size={22} color="black" />
-          <Text style={styles.logoutText}>Logout</Text>
+          <MaterialCommunityIcons
+            name="exit-to-app"
+            size={22}
+            color={theme?.selectedIconColor}
+          />
+          <Text style={[styles.logoutText, { color: theme?.logOutText }]}>
+            Logout
+          </Text>
         </TouchableOpacity>
       </View>
     </DrawerContentScrollView>
@@ -193,21 +241,16 @@ const styles = StyleSheet.create({
   drawerItem: {
     marginVertical: 4,
     borderRadius: 8,
-    backgroundColor: "#fff6",
     paddingHorizontal: 8,
   },
   drawerItemLabel: {
     fontSize: 16,
-    color: "#111",
     fontWeight: "500",
   },
   activeDrawerItem: {
     backgroundColor: "#fff",
   },
-  activeDrawerItemLabel: {
-    color: "#000",
-    fontWeight: "bold",
-  },
+
   bottomLogoutContainer: {
     marginTop: "auto",
     borderTopWidth: 1,

@@ -17,13 +17,18 @@ const VideoPlayer = ({
   error,
   handlePlaybackStatusUpdate,
   videoRef,
+  theme,
 }) => {
   const { videoEnded, videoLevel, isAnswerModalVisible, currentVideo } =
     useContext(Context);
 
   if (loading) {
     return (
-      <ActivityIndicator size="large" color="#79d2eb" style={styles.loader} />
+      <ActivityIndicator
+        size="large"
+        color={theme?.loadingColor}
+        style={styles.loader}
+      />
     );
   }
 
@@ -32,7 +37,9 @@ const VideoPlayer = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme?.backgroundColor }]}
+    >
       {currentVideo ? (
         <View style={{ flex: 1 }}>
           <Video
@@ -62,7 +69,6 @@ const VideoPlayer = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#a0c1ca",
     marginTop: "-4%",
   },
   loader: {

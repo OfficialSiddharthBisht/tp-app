@@ -44,6 +44,7 @@ const Keyboard: React.FC = ({ videoRef }) => {
     validateAnswer,
     isCorrect,
     setIsCorrect,
+    theme,
   } = useContext(Context);
 
   useEffect(() => {
@@ -175,7 +176,12 @@ const Keyboard: React.FC = ({ videoRef }) => {
   }, [videoReadyToPlay]);
 
   return (
-    <View style={styles.keyboardContainer}>
+    <View
+      style={[
+        styles.keyboardContainer,
+        { backgroundColor: theme?.backgroundColor },
+      ]}
+    >
       {!flag
         ? virtualKeyboardWithSound.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
@@ -197,7 +203,13 @@ const Keyboard: React.FC = ({ videoRef }) => {
                 return (
                   <TouchableOpacity
                     key={keyIndex}
-                    style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                    style={[
+                      isBottomRow ? bottomKeyStyle : styles.key,
+                      {
+                        backgroundColor: theme?.keyBackground || "#f9e3d2",
+                        borderColor: theme?.keyBorderColor || "#ccc",
+                      },
+                    ]}
                     onLongPress={() => handleLongPress(key)} // Trigger sound on long press
                     onPressOut={handlePressOut} // Stop sound on release
                     onPress={() => handleInput(key)}
@@ -206,10 +218,17 @@ const Keyboard: React.FC = ({ videoRef }) => {
                       <Ionicons
                         name="backspace-outline"
                         size={24}
-                        color="black"
+                        color={theme?.iconColor || "black"}
                       />
                     ) : (
-                      <Text style={styles.keyText}>{key}</Text>
+                      <Text
+                        style={[
+                          styles.keyText,
+                          { color: theme?.keyTextColor || "black" },
+                        ]}
+                      >
+                        {key}
+                      </Text>
                     )}
                   </TouchableOpacity>
                 );
@@ -236,7 +255,13 @@ const Keyboard: React.FC = ({ videoRef }) => {
                 return (
                   <TouchableOpacity
                     key={keyIndex}
-                    style={isBottomRow ? bottomKeyStyle : styles.key} // Apply the correct style based on row
+                    style={[
+                      isBottomRow ? bottomKeyStyle : styles.key,
+                      {
+                        backgroundColor: theme?.keyBackground || "#f9e3d2",
+                        borderColor: theme?.keyBorderColor || "#ccc",
+                      },
+                    ]} // Apply the correct style based on row
                     onLongPress={() => handleLongPress(key)} // Trigger sound on long press
                     onPressOut={handlePressOut} // Stop sound on release
                     onPress={() => handleInput(key)}
@@ -245,10 +270,17 @@ const Keyboard: React.FC = ({ videoRef }) => {
                       <Ionicons
                         name="backspace-outline"
                         size={24}
-                        color="black"
+                        color={theme?.iconColor || "black"}
                       />
                     ) : (
-                      <Text style={styles.keyText}>{key}</Text>
+                      <Text
+                        style={[
+                          styles.keyText,
+                          { color: theme?.keyTextColor || "black" },
+                        ]}
+                      >
+                        {key}
+                      </Text>
                     )}
                   </TouchableOpacity>
                 );
@@ -266,9 +298,6 @@ const Keyboard: React.FC = ({ videoRef }) => {
           isVisible={isAnswerModalVisible}
           onClose={() => {
             setIsAnswerModalVisible(false);
-            // if (isCorrect && videoRef.current) {
-            //   videoRef.current.playAsync();
-            // }
             setVideoReadyToPlay(true);
             if (!isCorrect) {
               setShowHintButton(true);
@@ -344,7 +373,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: "#a0c1ca",
     marginHorizontal: -10,
   },
   row: {
@@ -358,9 +386,7 @@ const styles = StyleSheet.create({
     margin: 1, // Adjust margin for consistent spacing
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: "#ccc",
     borderWidth: 1,
   },
   // Special styles for the bottom row
@@ -370,9 +396,7 @@ const styles = StyleSheet.create({
     margin: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: "#ccc",
     borderWidth: 1,
   },
   bottomKeyLarge: {
@@ -381,9 +405,7 @@ const styles = StyleSheet.create({
     margin: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: "#ccc",
     borderWidth: 1,
   },
   bottomKeyMedium: {
@@ -392,14 +414,11 @@ const styles = StyleSheet.create({
     margin: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f9e3d2",
     borderRadius: 5,
-    borderColor: "#ccc",
     borderWidth: 1,
   },
   keyText: {
     fontSize: 20,
-    color: "#333",
     fontFamily: "NotoSans",
   },
 });
