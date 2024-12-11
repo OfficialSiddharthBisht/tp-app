@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Context from "./context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export const themes = {
   default: {
@@ -166,20 +167,21 @@ const ContextProvider = ({ children }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   // Fetch API data for levels
-  const fetchLevelsData = async () => {
-    try {
-      const response = await fetch(
+  const fetchLevelsData = () => {
+    axios
+      .get(
         "https://web-true-phonetics-backend-production.up.railway.app/api/v1/levels"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setLevels(data?.levels);
-      } else {
-        console.error("Error fetching levels data:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching levels data:", error);
-    }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setLevels(response.data?.levels);
+        } else {
+          console.error("Error fetching levels data:", response.status);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching levels data:", error);
+      });
   };
 
   // Load the current level

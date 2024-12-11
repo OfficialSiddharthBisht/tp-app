@@ -21,6 +21,7 @@ import FACEBOOK_LOGO from "../../assets/facebook_logo.png";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 // API URL
 const API_URL =
@@ -65,7 +66,7 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (!loginData.email || !loginData.password) {
       alert("Please fill out both fields.");
       return;
@@ -76,45 +77,43 @@ const Login = () => {
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: loginData.email,
-          password: loginData.password,
-        }),
+    axios
+      .post(API_URL, {
+        email: loginData.email,
+        password: loginData.password,
+      })
+      .then((response) => {
+        const data = response.data;
+
+        if (response.status === 200) {
+          AsyncStorage.setItem("authToken", data.token)
+            .then(() => AsyncStorage.setItem("savedEmail", loginData.email))
+            .then(() =>
+              AsyncStorage.setItem("savedPassword", loginData.password)
+            )
+            .then(() => {
+              setLoginData({
+                email: "",
+                password: "",
+              });
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Drawer" }],
+              });
+            });
+        } else {
+          alert(data.message || "Login failed");
+        }
+      })
+      .catch((error) => {
+        alert("An error occurred. Please try again.");
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await AsyncStorage.setItem("authToken", data.token);
-
-        await AsyncStorage.setItem("savedEmail", loginData.email);
-        await AsyncStorage.setItem("savedPassword", loginData.password);
-
-        setLoginData({
-          email: "",
-          password: "",
-        });
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Drawer" }],
-        });
-      } else {
-        alert(data.message || "Login failed");
-      }
-    } catch (error) {
-      alert("An error occurred. Please try again.");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleSocialLogin = (provider) => {
