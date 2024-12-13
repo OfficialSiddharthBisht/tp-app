@@ -166,6 +166,44 @@ const ContextProvider = ({ children }) => {
   const [mcqIndex, setMcqIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
 
+  useEffect(() => {
+    console.log("HELLO LEVEL", currentLevel);
+  }, [currentLevel]);
+
+  useEffect(() => {
+    const fetchUserProfile = () => {
+      AsyncStorage.getItem("authToken")
+        .then((token) => {
+          return axios.get(
+            "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        })
+        .then((response) => {
+          if (response.data.success) {
+            setUser(response.data.user);
+            setCurrentLevel(response.data.user.level);
+            // console.log(response.data.user.level, "hello level");
+          } else {
+            console.error(
+              "Failed to fetch user profile:",
+              response.data.message
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching profile data:", error);
+        });
+    };
+
+    fetchUserProfile();
+  }, []);
+
   // Fetch API data for levels
   const fetchLevelsData = () => {
     axios
