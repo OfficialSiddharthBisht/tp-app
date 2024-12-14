@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,10 +7,30 @@ import {
   View,
 } from "react-native";
 import Context from "../../contexts/context";
-import { themes } from "../../contexts/ContextProvider";
+import { themes } from "../../utils/theme";
+
+// reusable section component
+const SettingsSection = ({ title, children }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <View style={styles.sectionContainer}>
+      <TouchableOpacity
+        style={styles.sectionHeader}
+        onPress={() => setIsExpanded((prev) => !prev)}
+      >
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <Text style={styles.sectionArrow}>{isExpanded ? "▲" : "▼"}</Text>
+      </TouchableOpacity>
+      {isExpanded && <View style={styles.sectionContent}>{children}</View>}
+    </View>
+  );
+};
 
 const Settings = () => {
   const { theme, changeTheme } = useContext(Context);
+
+  // Theme option rendering logic
   const renderThemeOption = ({ item }) => {
     const isSelected = theme === themes[item];
 
@@ -19,7 +39,7 @@ const Settings = () => {
         style={[
           styles.themeButton,
           {
-            backgroundColor: isSelected ? themes[item]?.buttonColor : "#ddd",
+            backgroundColor: isSelected ? theme?.buttonColor : "#ddd",
           },
           isSelected && styles.selectedThemeButton,
         ]}
@@ -49,15 +69,28 @@ const Settings = () => {
         },
       ]}
     >
-      <Text style={[styles.title, { color: theme?.textColor }]}>
-        Select Theme
+      <Text style={[styles.mainTitle, { color: theme?.textColor }]}>
+        Settings
       </Text>
-      <FlatList
-        data={Object.keys(themes)}
-        keyExtractor={(item) => item}
-        renderItem={renderThemeOption}
-        contentContainerStyle={styles.list}
-      />
+
+      {/* Theme Selection Section */}
+      <SettingsSection title="Select Theme">
+        <FlatList
+          data={Object.keys(themes)}
+          keyExtractor={(item) => item}
+          renderItem={renderThemeOption}
+          contentContainerStyle={styles.list}
+        />
+      </SettingsSection>
+
+      {/* Placeholder for future sections */}
+      {/* <SettingsSection title="Notifications">
+        <Text style={{ color: theme?.textColor }}>Coming Soon!</Text>
+      </SettingsSection>
+
+      <SettingsSection title="Account">
+        <Text style={{ color: theme?.textColor }}>Coming Soon!</Text>
+      </SettingsSection> */}
     </View>
   );
 };
@@ -67,8 +100,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  title: {
-    fontSize: 24,
+  mainTitle: {
+    fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
@@ -95,6 +128,31 @@ const styles = StyleSheet.create({
   themeButtonText: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  // Section styling
+  sectionContainer: {
+    marginBottom: 15,
+    borderRadius: 8,
+    backgroundColor: "#f7f7f7",
+    overflow: "hidden",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    backgroundColor: "#ddd",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  sectionArrow: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  sectionContent: {
+    padding: 10,
   },
 });
 
