@@ -13,14 +13,18 @@ import Context from "../contexts/context";
 
 const VideoPlayer = ({
   video,
-  loading,
   error,
   handlePlaybackStatusUpdate,
   videoRef,
   theme,
 }) => {
-  const { videoEnded, videoLevel, isAnswerModalVisible, currentVideo } =
-    useContext(Context);
+  const {
+    loading,
+    videoEnded,
+    videoLevel,
+    isAnswerModalVisible,
+    currentVideo,
+  } = useContext(Context);
 
   if (loading) {
     return (

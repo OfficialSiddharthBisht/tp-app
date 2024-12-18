@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import LOGO from "../assets/true_phonetics_logo_square_bknhyt.jpg";
 import LoadingModal from "./LoadingModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MainHeader = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -43,6 +44,8 @@ const MainHeader = () => {
       if (!response.ok) {
         throw new Error("Logout failed");
       }
+      await AsyncStorage.removeItem("authToken");
+      await AsyncStorage.removeItem("tokenIssuedAt");
 
       navigation.reset({
         index: 0,

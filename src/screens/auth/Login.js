@@ -27,6 +27,8 @@ import axios from "axios";
 const API_URL =
   "https://web-true-phonetics-backend-production.up.railway.app/api/v1/signin";
 
+const TOKEN_EXPIRATION_DAYS = 3;
+
 const Login = () => {
   const navigation = useNavigation();
   const [loginData, setLoginData] = useState({
@@ -88,7 +90,15 @@ const Login = () => {
         const data = response.data;
 
         if (response.status === 200) {
+          const tokenIssuedAt = Date.now();
+
           AsyncStorage.setItem("authToken", data.token)
+            .then(() =>
+              AsyncStorage.setItem(
+                "tokenIssuedAt",
+                JSON.stringify(tokenIssuedAt)
+              )
+            )
             .then(() => AsyncStorage.setItem("savedEmail", loginData.email))
             .then(() =>
               AsyncStorage.setItem("savedPassword", loginData.password)

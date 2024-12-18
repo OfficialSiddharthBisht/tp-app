@@ -12,6 +12,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Context from "../contexts/context";
 import LoadingModal from "./LoadingModal";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function CustomDrawerContent(props) {
   const { user, theme } = useContext(Context);
@@ -42,6 +43,8 @@ function CustomDrawerContent(props) {
         index: 0,
         routes: [{ name: "Login" }],
       });
+      await AsyncStorage.removeItem("authToken");
+      await AsyncStorage.removeItem("tokenIssuedAt");
     } catch (error) {
       console.error("Error during logout:", error);
     } finally {

@@ -54,6 +54,7 @@ export const themes = {
     badgeText: "#fff",
     badgeMessage: "#111",
     logoutButtonText: "#fff",
+    quizText: "#000",
   },
   neon: {
     backgroundColor: "#111122",
@@ -110,6 +111,7 @@ export const themes = {
     badgeText: "#ffa",
     badgeMessage: "#ffa",
     logoutButtonText: "#fff",
+    quizText: "#fff",
   },
   pastel: {
     backgroundColor: "#fef6f0",
@@ -163,6 +165,7 @@ export const themes = {
     badgeText: "#fff",
     badgeMessage: "#111",
     logoutButtonText: "#c7222a",
+    quizText: "#000",
   },
   bubblegum: {
     backgroundColor: "#f8e8ff",
@@ -216,6 +219,7 @@ export const themes = {
     badgeText: "#fff",
     badgeMessage: "#662d91",
     logoutButtonText: "#ff66b2",
+    quizText: "#000",
   },
   sunset: {
     backgroundColor: "#ffefd5",
@@ -269,5 +273,6 @@ export const themes = {
     badgeText: "#fff8dc",
     badgeMessage: "#ff4500",
     logoutButtonText: "#ff4500",
+    quizText: "#000",
   },
 };

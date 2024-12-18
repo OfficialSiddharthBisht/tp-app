@@ -13,6 +13,7 @@ import KeyboardModal from "./KeyboardModal";
 import AnswerModal from "./AnswerModal";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Context from "../contexts/context";
+import GameCompletedModal from "./GameCompletedModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window"); // Get screen width
 const keyWidth = SCREEN_WIDTH / 10 - 10; // Subtract margin for better fit
@@ -45,6 +46,8 @@ const Keyboard: React.FC = ({ videoRef }) => {
     isCorrect,
     setIsCorrect,
     theme,
+    gameCompleted,
+    handleLevelReset,
   } = useContext(Context);
 
   useEffect(() => {

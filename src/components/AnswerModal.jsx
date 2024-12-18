@@ -11,8 +11,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 
 // sounds for correct and wrong answer
-import correctAnswer from "../assets/sounds/gameSounds/win.mp3";
-import wrongAnswer from "../assets/sounds/gameSounds/wrong.mp3";
+import correctAnswer from "../assets/sounds/gameSounds/game-sound-correct.wav";
+import wrongAnswer from "../assets/sounds/gameSounds/game-sound-wrong.wav";
 
 const AnswerModal = ({ isVisible, onClose, isCorrect }) => {
   const correctSound = useRef(new Audio.Sound());

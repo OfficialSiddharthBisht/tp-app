@@ -17,12 +17,12 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Context from "../contexts/context";
 import HowToPlayModal from "../components/HowToPlayModal";
 import Quiz from "./Quiz";
+import GameCompletedModal from "../components/GameCompletedModal";
 
 const Home = () => {
   const [blinkerOpacity] = useState(new Animated.Value(1));
   const [isSoundLoading, setIsSoundLoading] = useState(false);
   const [howToPlayModal, setHowToPlayModal] = useState(true);
-  const [gameCompleted, setGameCompleted] = useState(false);
 
   // VideoPlayer-related states
   // const [loading, setLoading] = useState(true);
@@ -56,6 +56,9 @@ const Home = () => {
     mcqsData,
     setSelectedOption,
     theme,
+    gameCompleted,
+    handleLevelReset,
+    setGameCompleted,
   } = useContext(Context);
 
   // useEffect(() => {
@@ -179,12 +182,6 @@ const Home = () => {
   //     console.error("Error resetting data:", err);
   //   }
   // };
-
-  const handleLevelReset = () => {
-    setGameCompleted(false);
-    // fetchInitialData();
-    setVideoLevel(1);
-  };
 
   useEffect(() => {
     if (isPlaying && videoRef.current) {
@@ -310,32 +307,11 @@ const Home = () => {
         />
       )}
 
-      {gameCompleted && (
-        <Modal visible={gameCompleted} transparent={true} animationType="slide">
-          <View style={styles.modalContainer}>
-            <View
-              style={[
-                styles.modalContent,
-                { backgroundColor: theme?.modalBackground },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.congratulationsText,
-                  { color: theme?.modalTextColor },
-                ]}
-              >
-                🎉 Congratulations! You completed the game! 🎉
-              </Text>
-              <Button
-                title="Click here to go to Level 1"
-                onPress={handleLevelReset}
-                color={theme?.buttonColor}
-              />
-            </View>
-          </View>
-        </Modal>
-      )}
+      <GameCompletedModal
+        visible={gameCompleted}
+        onClose={() => setGameCompleted(false)}
+        onConfirm={handleLevelReset}
+      />
     </SafeAreaView>
   );
 };

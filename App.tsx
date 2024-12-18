@@ -36,10 +36,33 @@ import SplashScreen from "./src/screens/SplashScreen";
 import Quiz from "./src/screens/Quiz";
 import NewHome from "./src/screens/NewHome";
 import Context from "./src/contexts/context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Create stack navigator
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+
+const TOKEN_EXPIRATION_DAYS = 3;
+const TOKEN_EXPIRATION_TIME = TOKEN_EXPIRATION_DAYS * 24 * 60 * 60 * 1000;
+
+// Token expiration check function
+const isTokenExpired = async () => {
+  try {
+    const tokenIssuedAt = await AsyncStorage.getItem("tokenIssuedAt");
+
+    if (tokenIssuedAt) {
+      const currentTime = Date.now();
+      const tokenAge = currentTime - JSON.parse(tokenIssuedAt);
+
+      return tokenAge > TOKEN_EXPIRATION_TIME; // true if token expired
+    }
+
+    return true; // No token issuedAt found => treat as expired
+  } catch (error) {
+    console.error("Error checking token expiration:", error);
+    return true; // Treat as expired on error
+  }
+};
 
 // Drawer Navigator with Custom Drawer Content
 function MyDrawer() {
@@ -76,9 +99,30 @@ export default function App() {
     NotoSans: require("./src/assets/fonts/NotoSans-Regular.ttf"),
     NotoSansBold: require("./src/assets/fonts/NotoSans-Bold.ttf"),
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+
+      if (!token || (await isTokenExpired())) {
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+      }
+    };
+
+    checkToken();
+  }, []);
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <ActivityIndicator
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        size="large"
+        color="#0000ff"
+      />
+    );
   }
 
   return (
@@ -86,7 +130,7 @@ export default function App() {
       <ContextProvider>
         <StatusBar style="auto" />
         <Stack.Navigator
-          initialRouteName="Splash"
+          initialRouteName={isAuthenticated ? "Drawer" : "Splash"}
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen

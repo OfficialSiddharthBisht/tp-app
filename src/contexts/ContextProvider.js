@@ -3,138 +3,7 @@ import Context from "./context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-
-export const themes = {
-  default: {
-    backgroundColor: "#a0c1ca",
-    borderColor: "#888",
-    headerColor: "#79d2eb",
-    buttonColor: "#fff",
-    textColor: "#000",
-    quizContainer: "#bdd8dd",
-    questionBox: "#b0e0e6",
-    selectedOptionButton: "#00bcd4",
-    unSelectedOptionButton: "#999",
-    selectedOption: {
-      backgroundColor: "#2196f3",
-      borderColor: "#2196f3",
-    },
-    defaultOption: {
-      backgroundColor: "#f0f0f0",
-      borderColor: "#dcdcdc",
-    },
-    buttonText: "#fff",
-    skipButton: "#f44336",
-    notificationText: "#000",
-    inputBackground: "#fff",
-    inputBorder: "#ddd",
-    inputTextColor: "#666",
-    placeholderColor: "#999",
-    blinkerColor: "#f11",
-    statusBarStyle: "dark",
-    modalBackground: "#fff",
-    keyTextColor: "#333",
-    keyBackground: "#f9e3d2",
-    keyBorderColor: "#ccc",
-    headerStyle: "#bdd8dd",
-    headerTintColor: "#000",
-    drawerItemLabel: "#111",
-    activeDrawerItemLabel: {
-      color: "#000",
-      fontWeight: "bold",
-    },
-    selectedIconColor: "#000",
-    drawerItem: "#fff6",
-    activeDrawerItem: "#fff",
-    logOutText: "#000",
-  },
-  neon: {
-    backgroundColor: "#111122",
-    borderColor: "#3e3e5c",
-    headerColor: "#222244",
-    buttonColor: "#ff4d88",
-    textColor: "#ffffff",
-    quizContainer: "#2b2b3c",
-    questionBox: "#3e3e4f",
-    selectedOptionButton: "#7c4dff",
-    unSelectedOptionButton: "#4d4d72",
-    selectedOption: {
-      backgroundColor: "#7c4dff",
-      borderColor: "#651fff",
-    },
-    defaultOption: {
-      backgroundColor: "#1a1a2e",
-      borderColor: "#4d4d72",
-    },
-    buttonText: "#ffffff",
-    skipButton: "#ff4081",
-    notificationText: "#f8f8ff",
-    inputBackground: "#1a1a2e",
-    inputBorder: "#4d4d72",
-    inputTextColor: "#ffffff",
-    placeholderColor: "#7c4dff",
-    blinkerColor: "#ff4081",
-    statusBarStyle: "light",
-    modalBackground: "#29293d",
-    keyTextColor: "#ffffff",
-    keyBackground: "#3e3e5c",
-    keyBorderColor: "#555575",
-    headerStyle: "#2a2a42",
-    headerTintColor: "#7c4dff",
-    drawerItemLabel: "#ffffff",
-    activeDrawerItemLabel: {
-      color: "#ff4081",
-      fontWeight: "bold",
-    },
-    selectedIconColor: "#7c4dff",
-    drawerItem: "#29293d",
-    activeDrawerItem: "#353553",
-    logOutText: "#7c4dff",
-  },
-  pastel: {
-    backgroundColor: "#fef6f0",
-    borderColor: "#f8e1dc",
-    headerColor: "#fce1e1",
-    buttonColor: "#ff6f61",
-    textColor: "#2c3e50",
-    quizContainer: "#fbe4e1",
-    questionBox: "#f1d0c1",
-    selectedOptionButton: "#ff6f61",
-    unSelectedOptionButton: "#f7a7b4",
-    selectedOption: {
-      backgroundColor: "#ff6f61",
-      borderColor: "#ff947d",
-    },
-    defaultOption: {
-      backgroundColor: "#fffafa",
-      borderColor: "#ffb6c1",
-    },
-    buttonText: "#ffffff",
-    skipButton: "#ff6f61",
-    notificationText: "#2c3e50",
-    inputBackground: "#ffffff",
-    inputBorder: "#f3d6d0",
-    inputTextColor: "#2c3e50",
-    placeholderColor: "#f39c12",
-    blinkerColor: "#ff947d",
-    statusBarStyle: "dark",
-    modalBackground: "#fffafa",
-    keyTextColor: "#2c3e50",
-    keyBackground: "#fbe4e1",
-    keyBorderColor: "#f8e1dc",
-    headerStyle: "#f1d0c1",
-    headerTintColor: "#2c3e50",
-    drawerItemLabel: "#2c3e50",
-    activeDrawerItemLabel: {
-      color: "#ff6f61",
-      fontWeight: "bold",
-    },
-    selectedIconColor: "#ff6f61",
-    drawerItem: "#fffafa",
-    activeDrawerItem: "#fce1e1",
-    logOutText: "#ff6f61",
-  },
-};
+import { themes } from "../utils/theme";
 
 const ContextProvider = ({ children }) => {
   const videoRef = useRef(null);
@@ -165,60 +34,105 @@ const ContextProvider = ({ children }) => {
   const [mcqsData, setMcqsData] = useState(null);
   const [mcqIndex, setMcqIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [sublevel, setSublevel] = useState(0);
+  const [levelUpdateFlag, setLevelUpdateFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [gameCompleted, setGameCompleted] = useState(false);
 
-  useEffect(() => {
-    console.log("HELLO LEVEL", currentLevel);
-  }, [currentLevel]);
+  const handleLevelReset = () => {
+    if (gameCompleted) {
+      updateLevel(1, 1);
+    }
+    setGameCompleted(false);
+  };
 
-  useEffect(() => {
-    const fetchUserProfile = () => {
-      AsyncStorage.getItem("authToken")
-        .then((token) => {
-          return axios.get(
-            "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-        })
-        .then((response) => {
-          if (response.data.success) {
-            setUser(response.data.user);
-            setCurrentLevel(response.data.user.level);
-            // console.log(response.data.user.level, "hello level");
-          } else {
-            console.error(
-              "Failed to fetch user profile:",
-              response.data.message
-            );
+  const fetchUserProfile = () => {
+    AsyncStorage.getItem("authToken")
+      .then((token) => {
+        return axios.get(
+          "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           }
-        })
-        .catch((error) => {
-          console.error("Error fetching profile data:", error);
-        });
-    };
+        );
+      })
+      .then((response) => {
+        if (response.data.success) {
+          setUser(response.data.user);
+          setCurrentLevel(response.data.user.level);
+          setSublevel(response?.data?.user?.sublevel);
+        } else {
+          console.error("Failed to fetch user profile:", response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching profile data:", error);
+      });
+  };
 
-    fetchUserProfile();
-  }, []);
+  useEffect(() => {
+    if (AsyncStorage.getItem("toekn")) {
+      fetchUserProfile();
+    }
+  }, [levelUpdateFlag]);
 
+  const updateLevel = async (level, sublevel) => {
+    const url =
+      "https://web-true-phonetics-backend-production.up.railway.app/api/v1/me/level";
+
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+
+      if (!token) {
+        console.error("No auth token found. Please log in again.");
+        return;
+      }
+
+      const payload = {
+        level: level,
+        sublevel: sublevel,
+      };
+
+      // Make the API call with the token in headers
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Level updated successfully:", response.data);
+    } catch (error) {
+      console.error(
+        "Error updating level:",
+        error.response?.data || error.message
+      );
+    } finally {
+      setLevelUpdateFlag((prev) => !prev);
+    }
+  };
   // Fetch API data for levels
   const fetchLevelsData = () => {
+    setLoading(true);
+
     axios
       .get(
         "https://web-true-phonetics-backend-production.up.railway.app/api/v1/levels"
       )
       .then((response) => {
         if (response.status === 200) {
-          setLevels(response.data?.levels);
+          setLevels(response.data?.levels); // Update levels data
         } else {
           console.error("Error fetching levels data:", response.status);
         }
       })
       .catch((error) => {
         console.error("Error fetching levels data:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Stop loading after the request completes
       });
   };
 
@@ -233,14 +147,15 @@ const ContextProvider = ({ children }) => {
       if (newCurrentLevel) {
         if (newCurrentLevel?.type === "mcq") {
           setIsMcq(true);
-          setMcqsData(newCurrentLevel?.mcqs[0]);
+          setMcqsData(newCurrentLevel?.mcqs[sublevel - 1]);
           console.log(newCurrentLevel);
-          setMcqIndex(0);
+          setMcqIndex(sublevel - 1);
         } else {
           setIsMcq(false);
-          setCurrentSound(newCurrentLevel?.sounds[0]);
+          // console.log("HEy hEy", newCurrentLevel?.sounds[0]);
+          setCurrentSound(newCurrentLevel?.sounds[sublevel - 1]);
           setCurrentVideo(newCurrentLevel?.video);
-          setSoundIndex(0);
+          setSoundIndex(sublevel - 1);
         }
       }
     }
@@ -252,7 +167,7 @@ const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     loadCurrentLevel();
-  }, [currentLevel, levels]);
+  }, [currentLevel, levels, sublevel]);
 
   // Validate the answer
   const validateAnswer = async () => {
@@ -267,7 +182,12 @@ const ContextProvider = ({ children }) => {
       setIsCorrect(true);
       setShowHintButton(false);
       setShowHintNotification(false);
-      saveProgress(currentLevel, currentSound._id, true);
+      // saveProgress(currentLevel, currentSound._id, true);
+      if (levels.length < currentLevel - 2) {
+        console.log("HEY YOU ");
+        // setIsAnswerModalVisible(false);
+        // setGameCompleted(true);
+      }
       moveToNextSound();
     } else {
       setIsCorrect(false);
@@ -283,7 +203,12 @@ const ContextProvider = ({ children }) => {
       setIsCorrect(true);
       setSelectedOption(null);
       setShowHintButton(false);
-      setShowHintButton(false);
+      setShowHintNotification(false);
+      if (levels.length < currentLevel - 2) {
+        console.log("HELLO SIR");
+        // setIsAnswerModalVisible(false);
+        // setGameCompleted(true);
+      }
       moveToNextMcq();
     } else setIsCorrect(false);
   };
@@ -296,27 +221,15 @@ const ContextProvider = ({ children }) => {
     setSelectedOption(null);
     if (mcqsData && mcqIndex < levels[currentLevel - 1]?.mcqs?.length - 1) {
       setMcqIndex((prev) => prev + 1);
-      console.log("hello");
       setMcqsData(levels[currentLevel - 1]?.mcqs[mcqIndex + 1]);
+      updateLevel(currentLevel, sublevel + 1);
     } else {
-      setCurrentLevel((prev) => prev + 1);
-    }
-  };
-
-  // Save progress in AsyncStorage
-  const saveProgress = async (level, soundId, isCorrect) => {
-    try {
-      const progress = await AsyncStorage.getItem("userProgress");
-      const updatedProgress = progress
-        ? { ...JSON.parse(progress), [`${level}_${soundId}`]: isCorrect }
-        : { [`${level}_${soundId}`]: isCorrect };
-
-      await AsyncStorage.setItem(
-        "userProgress",
-        JSON.stringify(updatedProgress)
-      );
-    } catch (error) {
-      console.error("Error saving progress:", error);
+      // setCurrentLevel((prev) => prev + 1);
+      if (currentLevel < levels.length) updateLevel(currentLevel + 1, 1);
+      else {
+        setIsAnswerModalVisible(false);
+        setGameCompleted(true);
+      }
     }
   };
 
@@ -329,8 +242,15 @@ const ContextProvider = ({ children }) => {
       setSoundIndex((prev) => prev + 1);
       setCurrentSound(levels[currentLevel - 1]?.sounds[soundIndex + 1]);
       setCurrentVideo(levels[currentLevel - 1]?.video);
+      updateLevel(currentLevel, sublevel + 1);
     } else {
-      setCurrentLevel((prev) => prev + 1);
+      // console.log("UPDATING LEVL");
+      if (currentLevel < levels.length) {
+        updateLevel(currentLevel + 1, 1);
+      } else {
+        setIsAnswerModalVisible(false);
+        setGameCompleted(true);
+      }
     }
   };
 
@@ -414,6 +334,10 @@ const ContextProvider = ({ children }) => {
     setPlayableSound,
     mcqsData,
     handleMoveToNextMcq,
+    loading,
+    gameCompleted,
+    handleLevelReset,
+    setGameCompleted,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

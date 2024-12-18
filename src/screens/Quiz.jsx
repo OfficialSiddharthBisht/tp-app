@@ -28,7 +28,7 @@ const Quiz = () => {
     isCorrect,
     setIsCorrect,
     setShowHintButton,
-    setShowHintButtonNotification,
+    setShowHintNotification,
     handleMoveToNextMcq,
     theme,
   } = useContext(Context);
@@ -112,7 +112,7 @@ const Quiz = () => {
                   handleOptionClick(option);
                 }}
               >
-                <Text>{item?.text}</Text>
+                <Text style={{ color: theme?.quizText }}>{item?.text}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -174,7 +174,7 @@ const Quiz = () => {
           setIsAnswerModalVisible(false);
           if (!isCorrect) {
             setShowHintButton(true);
-            setShowHintButtonNotification(true);
+            setShowHintNotification(true);
           }
         }}
       />

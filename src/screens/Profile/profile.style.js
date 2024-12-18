@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#a0c1ca",
   },
   loadingContainer: {
     flex: 1,
@@ -26,7 +25,6 @@ export const styles = StyleSheet.create({
   logoText: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#FFFFFF",
   },
   profileHeader: {
     flexDirection: "row",
@@ -49,7 +47,6 @@ export const styles = StyleSheet.create({
   },
   profileEmail: {
     fontSize: 16,
-    color: "#333",
   },
   streakContainer: {
     position: "absolute",
@@ -72,7 +69,6 @@ export const styles = StyleSheet.create({
     marginVertical: 10,
     padding: 20,
     borderWidth: 2,
-    borderColor: "#79d2eb",
     borderRadius: 12,
     backgroundColor: "#f1f9fc",
     shadowColor: "#000",
@@ -83,13 +79,11 @@ export const styles = StyleSheet.create({
   },
   pointsLabel: {
     fontSize: 18,
-    color: "#444",
     fontWeight: "600",
   },
   pointsValue: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#79d2eb",
   },
   statsContainer: {
     flexDirection: "row",
@@ -105,7 +99,6 @@ export const styles = StyleSheet.create({
   },
   statsLabel: {
     fontSize: 14,
-    color: "#333",
   },
   profileDetails: {
     marginVertical: 10,
@@ -126,11 +119,9 @@ export const styles = StyleSheet.create({
   detailValue: {
     fontSize: 16,
     fontWeight: "400",
-    color: "#333",
   },
   upgradeButton: {
     marginLeft: 10,
-    backgroundColor: "#c7222a",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
@@ -143,7 +134,6 @@ export const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   upgradeButtonText: {
-    color: "#fff",
     fontWeight: "600",
   },
   badgesSection: {
@@ -159,13 +149,11 @@ export const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   badge: {
-    backgroundColor: "#79d2eb",
     padding: 10,
     borderRadius: 12,
     margin: 5,
   },
   badgeText: {
-    color: "#fff",
     fontWeight: "600",
   },
   modalContainer: {
@@ -241,12 +229,10 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#79d2eb",
     padding: 12,
     borderRadius: 12,
   },
   logoutButtonText: {
-    color: "#fff",
     fontWeight: "600",
     fontSize: 18,
   },
